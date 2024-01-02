@@ -18,6 +18,37 @@ void generateUsername(char email[50], char username[50])
             username[i] = email[i];
     };
 }
+// Replace password with *
+void takePassword(char pwd[50])
+{
+#define Enter 13
+#define Tab 9
+#define BKSPC 8
+    int i = 0;
+    char ch;
+    while (1)
+    {
+        ch = getch();
+        if (ch == Enter || ch == Tab)
+        {
+            pwd[i] = '\0';
+            break;
+        }
+        else if (ch == BKSPC)
+        {
+            if (i > 0)
+            {
+                i--;
+                printf("\b \b");
+            }
+        }
+        else
+        {
+            pwd[i++] = ch;
+            printf("* \b");
+        }
+    }
+}
 
 void main()
 {
@@ -31,7 +62,7 @@ void main()
         char phone[50];
     };
     struct user users;
-
+    char password2[50];
     int role;
     printf("\n\t\t\t\t---=====Welcome to estate management system=====---");
     printf("\nPlease choose your role");
@@ -49,12 +80,19 @@ void main()
         takeInput(users.fullName);
         printf("\nEnter your email:\t");
         takeInput(users.email);
-        printf("\nEnter your phone number:\t");
+        printf("\nEnter phone number:\t");
         takeInput(users.phone);
         printf("\nEnter your password:\t");
-        takeInput(users.password);
-        break;
+        takePassword(users.password);
+        printf("\nConfirm your password:\t");
+        takePassword(password2);
 
+        // Compare two passwords
+        if(!strcmp(users.password,password2)){
+            printf("\nYour password matched");
+        }
+        else{  printf("\nYour password didn't match!!");}
+        break;
     default:
         break;
     }
