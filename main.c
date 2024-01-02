@@ -8,7 +8,7 @@ void takeInput(char ch[50])
     ch[strlen(ch) - 1] = 0; // Remove \n and add 0 to end of string
 }
 
-char generateUsername(char email[50], char username[50])
+void generateUsername(char email[50], char username[50])
 {
     int i;
     for (i = 0; i < strlen(email); i++)
@@ -17,9 +17,10 @@ char generateUsername(char email[50], char username[50])
             break;
         else
             username[i] = email[i];
-    };
+    }
     username[i] = '\0';
 }
+
 // Replace password with *
 void takePassword(char pwd[50])
 {
@@ -52,9 +53,8 @@ void takePassword(char pwd[50])
     }
 }
 
-void main()
+void signUp()
 {
-    system("color 0b");
     FILE *fp;
     struct user
     {
@@ -64,8 +64,47 @@ void main()
         char username[50];
         char phone[50];
     };
+
     struct user users;
     char password2[50];
+    // Added do while to repeat the process
+    do
+    {
+        printf("\nEnter your full name:\t");
+        takeInput(users.fullName);
+        printf("\nEnter your email:\t");
+        takeInput(users.email);
+        printf("\nEnter phone number:\t");
+        takeInput(users.phone);
+        printf("\nEnter your password:\t");
+        takePassword(users.password);
+        printf("\nConfirm your password:\t");
+        takePassword(password2);
+
+        // Compare two passwords then generate username by email
+        if (strcmp(users.password, password2))
+        {
+            printf("\nYour passwords didn't match. Please try again!");
+            Beep(750, 300);
+        }
+    } while (strcmp(users.password, password2));
+
+    printf("\nYour password matched");
+    generateUsername(users.email, users.username);
+    fp = fopen("Users.dat", "a+");
+    fwrite(&users, sizeof(struct user), 1, fp);
+    if (fwrite != 0)
+        printf("\n\nUser registration success, Your user name is %s", users.username);
+    else
+        printf("Oops! Something went wrong :( ");
+
+    fclose(fp);
+}
+
+int main()
+{
+    system("color 0b");
+
     int role;
     printf("\n\t\t\t\t---=====Welcome to estate management system=====---");
     printf("\nPlease choose your role");
@@ -79,36 +118,11 @@ void main()
     switch (role)
     {
     case 1:
-        printf("\nEnter your full name:\t");
-        takeInput(users.fullName);
-        printf("\nEnter your email:\t");
-        takeInput(users.email);
-        printf("\nEnter phone number:\t");
-        takeInput(users.phone);
-        printf("\nEnter your password:\t");
-        takePassword(users.password);
-        printf("\nConfirm your password:\t");
-        takePassword(password2);
-
-        // Compare two passwords then generate username by email
-        if (!strcmp(users.password, password2))
-        {
-            printf("\nYour password matched");
-            generateUsername(users.email, users.username);
-            fp = fopen("Users.dat", "a+");
-            fwrite(&users, sizeof(struct user), 1, fp);
-            if (fwrite != 0)
-                printf("\n\nUser registration success, Your user name is %s", users.username);
-            else
-                printf("Oops! Somthing went wrong :( ");
-        }
-        else
-        {
-            printf("\nYour password didn't match!!");
-            Beep(750, 300);
-        }
+        signUp();
         break;
     default:
         break;
     }
+
+    return 0;
 }
