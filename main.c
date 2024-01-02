@@ -8,15 +8,17 @@ void takeInput(char ch[50])
     ch[strlen(ch) - 1] = 0; // Remove \n and add 0 to end of string
 }
 
-void generateUsername(char email[50], char username[50])
+char generateUsername(char email[50], char username[50])
 {
-    for (int i = 0; i < strlen(email); i++)
+    int i;
+    for (i = 0; i < strlen(email); i++)
     {
         if (email[i] == '@')
             break;
         else
             username[i] = email[i];
     };
+    username[i] = '\0';
 }
 // Replace password with *
 void takePassword(char pwd[50])
@@ -87,11 +89,17 @@ void main()
         printf("\nConfirm your password:\t");
         takePassword(password2);
 
-        // Compare two passwords
-        if(!strcmp(users.password,password2)){
+        // Compare two passwords then generate username by email
+        if (!strcmp(users.password, password2))
+        {
             printf("\nYour password matched");
+            generateUsername(users.email, users.username);
+            printf("\nYour username is %s", users.username);
         }
-        else{  printf("\nYour password didn't match!!");}
+        else
+        {
+            printf("\nYour password didn't match!!");
+        }
         break;
     default:
         break;
