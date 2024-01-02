@@ -67,7 +67,7 @@ void signUp()
 
     struct user users;
     char password2[50];
-    // Added do while to repeat the process
+
     do
     {
         printf("\nEnter your full name:\t");
@@ -101,6 +101,58 @@ void signUp()
     fclose(fp);
 }
 
+void login()
+{
+    FILE *fp;
+    struct user
+    {
+        char fullName[50];
+        char email[50];
+        char password[50];
+        char username[50];
+        char phone[50];
+    };
+
+    struct user usr;
+    char username[50], pword[50];
+    int userFound;
+
+    do
+    {
+        userFound = 0; // Reset the flag for each login attempt
+
+        printf("\nEnter your username:\t");
+        takeInput(username);
+        printf("\nEnter your password:\t");
+        takePassword(pword);
+
+        fp = fopen("Users.dat", "r");
+
+        while (fread(&usr, sizeof(struct user), 1, fp))
+        {
+            if (!strcmp(usr.username, username) && !strcmp(usr.password, pword))
+            {
+                printf("\n\t\t\t\tWelcome %s", usr.fullName);
+                printf("\n\n|Full name:\t%s", usr.fullName);
+                printf("\n|Email:\t%s", usr.email);
+                printf("\nUsername:\t%s", usr.username);
+                printf("\nPhone number:\t%s", usr.phone);
+                userFound = 1;
+                break; // Exit the loop once the user is found
+            }
+        }
+
+        if (!userFound)
+        {
+            printf("\n\nInvalid username or password!! Please try again.");
+            Beep(800, 300);
+        }
+
+        fclose(fp);
+
+    } while (!userFound);
+}
+
 int main()
 {
     system("color 0b");
@@ -119,6 +171,9 @@ int main()
     {
     case 1:
         signUp();
+        break;
+    case 2:
+        login();
         break;
     default:
         break;
