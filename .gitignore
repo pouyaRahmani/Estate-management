@@ -1,0 +1,4 @@
+# Ignoring all the file that their changes shouln't be saved on Git
+
+*dat
+*exe

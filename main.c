@@ -55,6 +55,7 @@ void takePassword(char pwd[50])
 void main()
 {
     system("color 0b");
+    FILE *fp;
     struct user
     {
         char fullName[50];
@@ -94,11 +95,17 @@ void main()
         {
             printf("\nYour password matched");
             generateUsername(users.email, users.username);
-            printf("\nYour username is %s", users.username);
+            fp = fopen("Users.dat", "a+");
+            fwrite(&users, sizeof(struct user), 1, fp);
+            if (fwrite != 0)
+                printf("\n\nUser registration success, Your user name is %s", users.username);
+            else
+                printf("Oops! Somthing went wrong :( ");
         }
         else
         {
             printf("\nYour password didn't match!!");
+            Beep(750, 300);
         }
         break;
     default:
