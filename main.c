@@ -5,7 +5,7 @@
 void takeInput(char ch[50])
 {
     gets(ch);
-    //ch[strlen(ch) - 1] = 0; // Remove \n and add 0 to end of string
+    // ch[strlen(ch) - 1] = 0; // Remove \n and add 0 to end of string
 }
 
 // Replace password with *
@@ -167,6 +167,8 @@ void login()
                 printf("\n|Username:\t%s", usr.username);
                 printf("\n|Phone number:\t%s", usr.phone);
                 userFound = 1;
+                system("cls");
+                
                 break; // Exit the loop once the user is found
             }
         }
@@ -181,13 +183,18 @@ void login()
     } while (!userFound);
 }
 
+void mainMenu()
+{
+}
+
 void main()
 {
     system("color 0b");
 
     int role;
 
-    while (1) {
+    while (1)
+    {
         printf("\n\t\t\t\t---=====Welcome to estate management system=====---");
         printf("\nPlease choose your role");
         printf("\n1.Signup");
@@ -196,6 +203,7 @@ void main()
         printf("\n\nYour choice:\t");
         scanf("%d", &role);
         fgetc(stdin);
+        system("cls");
 
         switch (role)
         {
@@ -208,6 +216,5 @@ void main()
         default:
             break;
         }
-    }1
-
+    }
 }
