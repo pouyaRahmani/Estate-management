@@ -14,7 +14,7 @@ struct user
 void takeInput(char ch[50])
 {
     gets(ch);
-    //ch[strlen(ch) - 1] = 0; // Remove \n and add 0 to end of string
+    // ch[strlen(ch) - 1] = 0; // Remove \n and add 0 to end of string
 }
 
 // Replace password with *
@@ -73,7 +73,7 @@ int isUsernameTaken(char username[50])
 void signUp()
 {
     FILE *fp;
-
+    system("cls");
     struct user users;
     char password2[50];
 
@@ -123,11 +123,12 @@ void signUp()
     fclose(fp);
 }
 
+void mainMenu(){
+}
 void login()
 {
     FILE *fp;
-
-
+system("cls");
     struct user usr;
     char username[50], pword[50];
     int userFound;
@@ -173,7 +174,9 @@ void main()
 
     int role;
 
-    while (1) {
+    while (1)
+    {
+        system("cls");
         printf("\n\t\t\t\t---=====Welcome to estate management system=====---");
         printf("\nPlease choose your role");
         printf("\n1.Signup");
