@@ -2,10 +2,19 @@
 #include <conio.h>
 #include <windows.h>
 
+struct user
+{
+    char fullName[50];
+    char email[50];
+    char password[50];
+    char username[50];
+    char phone[50];
+};
+
 void takeInput(char ch[50])
 {
     gets(ch);
-    // ch[strlen(ch) - 1] = 0; // Remove \n and add 0 to end of string
+    //ch[strlen(ch) - 1] = 0; // Remove \n and add 0 to end of string
 }
 
 // Replace password with *
@@ -43,14 +52,6 @@ void takePassword(char pwd[50])
 int isUsernameTaken(char username[50])
 {
     FILE *fp;
-    struct user
-    {
-        char fullName[50];
-        char email[50];
-        char password[50];
-        char username[50];
-        char phone[50];
-    };
 
     struct user usr;
 
@@ -72,14 +73,6 @@ int isUsernameTaken(char username[50])
 void signUp()
 {
     FILE *fp;
-    struct user
-    {
-        char fullName[50];
-        char email[50];
-        char password[50];
-        char username[50];
-        char phone[50];
-    };
 
     struct user users;
     char password2[50];
@@ -133,14 +126,7 @@ void signUp()
 void login()
 {
     FILE *fp;
-    struct user
-    {
-        char fullName[50];
-        char email[50];
-        char password[50];
-        char username[50];
-        char phone[50];
-    };
+
 
     struct user usr;
     char username[50], pword[50];
@@ -167,8 +153,6 @@ void login()
                 printf("\n|Username:\t%s", usr.username);
                 printf("\n|Phone number:\t%s", usr.phone);
                 userFound = 1;
-                system("cls");
-                
                 break; // Exit the loop once the user is found
             }
         }
@@ -183,18 +167,13 @@ void login()
     } while (!userFound);
 }
 
-void mainMenu()
-{
-}
-
 void main()
 {
     system("color 0b");
 
     int role;
 
-    while (1)
-    {
+    while (1) {
         printf("\n\t\t\t\t---=====Welcome to estate management system=====---");
         printf("\nPlease choose your role");
         printf("\n1.Signup");
@@ -203,7 +182,6 @@ void main()
         printf("\n\nYour choice:\t");
         scanf("%d", &role);
         fgetc(stdin);
-        system("cls");
 
         switch (role)
         {
