@@ -5,7 +5,7 @@
 void takeInput(char ch[50])
 {
     gets(ch);
-    ch[strlen(ch) - 1] = 0; // Remove \n and add 0 to end of string
+    //ch[strlen(ch) - 1] = 0; // Remove \n and add 0 to end of string
 }
 
 // Replace password with *
@@ -186,24 +186,28 @@ void main()
     system("color 0b");
 
     int role;
-    printf("\n\t\t\t\t---=====Welcome to estate management system=====---");
-    printf("\nPlease choose your role");
-    printf("\n1.Signup");
-    printf("\n2.Login");
-    printf("\n3.Exit");
-    printf("\n\nYour choice:\t");
-    scanf("%d", &role);
-    fgetc(stdin);
 
-    switch (role)
-    {
-    case 1:
-        signUp();
-        break;
-    case 2:
-        login();
-        break;
-    default:
-        break;
-    }
+    while (1) {
+        printf("\n\t\t\t\t---=====Welcome to estate management system=====---");
+        printf("\nPlease choose your role");
+        printf("\n1.Signup");
+        printf("\n2.Login");
+        printf("\n3.Exit");
+        printf("\n\nYour choice:\t");
+        scanf("%d", &role);
+        fgetc(stdin);
+
+        switch (role)
+        {
+        case 1:
+            signUp();
+            break;
+        case 2:
+            login();
+            break;
+        default:
+            break;
+        }
+    }1
+
 }
