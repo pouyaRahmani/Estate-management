@@ -8,19 +8,6 @@ void takeInput(char ch[50])
     ch[strlen(ch) - 1] = 0; // Remove \n and add 0 to end of string
 }
 
-void generateUsername(char email[50], char username[50])
-{
-    int i;
-    for (i = 0; i < strlen(email); i++)
-    {
-        if (email[i] == '@')
-            break;
-        else
-            username[i] = email[i];
-    }
-    username[i] = '\0';
-}
-
 // Replace password with *
 void takePassword(char pwd[50])
 {
@@ -53,6 +40,35 @@ void takePassword(char pwd[50])
     }
 }
 
+int isUsernameTaken(char username[50])
+{
+    FILE *fp;
+    struct user
+    {
+        char fullName[50];
+        char email[50];
+        char password[50];
+        char username[50];
+        char phone[50];
+    };
+
+    struct user usr;
+
+    fp = fopen("Users.dat", "r");
+
+    while (fread(&usr, sizeof(struct user), 1, fp))
+    {
+        if (!strcmp(usr.username, username))
+        {
+            fclose(fp);
+            return 1; // Username is already taken
+        }
+    }
+
+    fclose(fp);
+    return 0; // Username is not taken
+}
+
 void signUp()
 {
     FILE *fp;
@@ -76,12 +92,25 @@ void signUp()
         takeInput(users.email);
         printf("\nEnter phone number:\t");
         takeInput(users.phone);
+
+        do
+        {
+            printf("\nEnter your username:\t");
+            takeInput(users.username);
+
+            if (isUsernameTaken(users.username))
+            {
+                printf("\nUsername is already taken. Please choose another one.");
+                Beep(750, 300);
+            }
+        } while (isUsernameTaken(users.username));
+
         printf("\nEnter your password:\t");
         takePassword(users.password);
         printf("\nConfirm your password:\t");
         takePassword(password2);
 
-        // Compare two passwords then generate username by email
+        // Compare two passwords
         if (strcmp(users.password, password2))
         {
             printf("\nYour passwords didn't match. Please try again!");
@@ -90,11 +119,11 @@ void signUp()
     } while (strcmp(users.password, password2));
 
     printf("\nYour password matched");
-    generateUsername(users.email, users.username);
+
     fp = fopen("Users.dat", "a+");
     fwrite(&users, sizeof(struct user), 1, fp);
     if (fwrite != 0)
-        printf("\n\nUser registration success, Your user name is %s", users.username);
+        printf("\n\nUser registration was successful");
     else
         printf("Oops! Something went wrong :( ");
 
@@ -132,11 +161,11 @@ void login()
         {
             if (!strcmp(usr.username, username) && !strcmp(usr.password, pword))
             {
-                printf("\n\t\t\t\tWelcome %s", usr.fullName);
+                printf("\n\t\t\t\tWelcome");
                 printf("\n\n|Full name:\t%s", usr.fullName);
                 printf("\n|Email:\t%s", usr.email);
-                printf("\nUsername:\t%s", usr.username);
-                printf("\nPhone number:\t%s", usr.phone);
+                printf("\n|Username:\t%s", usr.username);
+                printf("\n|Phone number:\t%s", usr.phone);
                 userFound = 1;
                 break; // Exit the loop once the user is found
             }
@@ -149,11 +178,10 @@ void login()
         }
 
         fclose(fp);
-
     } while (!userFound);
 }
 
-int main()
+void main()
 {
     system("color 0b");
 
@@ -178,6 +206,4 @@ int main()
     default:
         break;
     }
-
-    return 0;
 }
