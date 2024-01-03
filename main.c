@@ -9,12 +9,12 @@ struct user
     char password[50];
     char username[50];
     char phone[50];
+    char userID[50];
 };
 
 void takeInput(char ch[50])
 {
     gets(ch);
-    // ch[strlen(ch) - 1] = 0; // Remove \n and add 0 to end of string
 }
 
 // Replace password with *
@@ -85,12 +85,13 @@ void signUp()
         takeInput(users.email);
         printf("\nEnter phone number:\t");
         takeInput(users.phone);
+        printf("\nEnter phone ID:\t");
+        takeInput(users.userID);
 
         do
         {
             printf("\nEnter your username:\t");
             takeInput(users.username);
-
             if (isUsernameTaken(users.username))
             {
                 printf("\nUsername is already taken. Please choose another one.");
@@ -116,19 +117,30 @@ void signUp()
     fp = fopen("Users.dat", "a+");
     fwrite(&users, sizeof(struct user), 1, fp);
     if (fwrite != 0)
-        printf("\n\nUser registration was successful");
+    {
+        printf("\n\nUser registration was successful. press any key to contiue...");
+        getch();
+    }
     else
         printf("Oops! Something went wrong :( ");
 
     fclose(fp);
 }
 
-void mainMenu(){
+void mainMenu(struct user usr)
+{
+    // system("cls");
+    printf("\n\t\t\t\t---===== Welcome to Estate Management System =====---");
+    printf("\n\t\t\t\t\t\t   Main Menu");
+    printf("\n\n1. View Profile");
+    printf("\n2. Edit Profile");
+    printf("\n3. Logout");
+    printf("\n\nYour choice:\t");
 }
+
 void login()
 {
     FILE *fp;
-system("cls");
     struct user usr;
     char username[50], pword[50];
     int userFound;
@@ -148,12 +160,36 @@ system("cls");
         {
             if (!strcmp(usr.username, username) && !strcmp(usr.password, pword))
             {
-                printf("\n\t\t\t\tWelcome");
+                system("cls");
+                printf("\n\t\t\t\tWelcome %s", usr.fullName);
                 printf("\n\n|Full name:\t%s", usr.fullName);
                 printf("\n|Email:\t%s", usr.email);
                 printf("\n|Username:\t%s", usr.username);
                 printf("\n|Phone number:\t%s", usr.phone);
+                printf("\n|ID:\t%s", usr.userID);
                 userFound = 1;
+
+                mainMenu(usr);
+                int choice;
+                scanf("%d", &choice);
+                // Adding choices after login
+                switch (choice)
+                {
+                case 1:
+                    // View Profile
+                    // Add code here
+                    break;
+                case 2:
+                    // Edit Profile
+                    // Add code here
+                    break;
+                case 3:
+                    // Logout
+                    // Add code here
+                    break;
+                default:
+                    break;
+                }
                 break; // Exit the loop once the user is found
             }
         }
@@ -178,7 +214,7 @@ void main()
     {
         system("cls");
         printf("\n\t\t\t\t---=====Welcome to estate management system=====---");
-        printf("\nPlease choose your role");
+        printf("\nPlease choose an action");
         printf("\n1.Signup");
         printf("\n2.Login");
         printf("\n3.Exit");
@@ -194,6 +230,9 @@ void main()
         case 2:
             login();
             break;
+        case 3:
+            printf("Goodbye, have nice day :)");
+            exit(0);
         default:
             break;
         }
