@@ -11,6 +11,7 @@ struct user
     char phone[50];
     char userID[50];
 };
+
 struct residentalSale
 {
     char zone[50];
@@ -24,6 +25,7 @@ struct residentalSale
     char bedrooms[50];
     char price[50];
 };
+
 struct officeSale
 {
     char zone[50];
@@ -37,6 +39,7 @@ struct officeSale
     char officeRooms[50];
     char price[50];
 };
+
 struct landSale
 {
     char address[100];
@@ -86,7 +89,6 @@ void takePassword(char pwd[50])
 int isUsernameTaken(char username[50])
 {
     FILE *fp;
-
     struct user usr;
 
     fp = fopen("Users.dat", "r");
@@ -104,16 +106,175 @@ int isUsernameTaken(char username[50])
     return 0; // Username is not taken
 }
 
+void addResidentalSale()
+{
+    struct residentalSale estate;
+    printf("\nEnter zone:\t");
+    takeInput(estate.zone);
+    printf("%c", estate.zone);
+    printf("\nEnter address:\t");
+    takeInput(estate.address);
+    printf("\nEnter estate type:\t");
+    takeInput(estate.estateType);
+    printf("\nEnter age of estate:\t");
+    takeInput(estate.ageEstate);
+    printf("\nEnter size:\t");
+    takeInput(estate.size);
+    printf("\nEnter floors:\t");
+    takeInput(estate.floors);
+    printf("\nEnter size of main estate:\t");
+    takeInput(estate.sizeMainEstate);
+    printf("\nEnter contact number:\t");
+    takeInput(estate.contactNum);
+    printf("\nEnter bedrooms:\t");
+    takeInput(estate.bedrooms);
+    printf("\nEnter price:\t");
+    takeInput(estate.price);
+
+    FILE *fp;
+    fp = fopen("ResidentalSales.dat", "a");
+    fwrite(&estate, sizeof(struct residentalSale), 1, fp);
+    fclose(fp);
+    printf("\nResidental property added successfully!\n");
+}
+
+void addOfficeSale()
+{
+    struct officeSale estate;
+    printf("\nEnter zone:\t");
+    takeInput(estate.zone);
+    printf("\nEnter address:\t");
+    takeInput(estate.address);
+    printf("\nEnter estate type:\t");
+    takeInput(estate.estateType);
+    printf("\nEnter age of estate:\t");
+    takeInput(estate.ageEstate);
+    printf("\nEnter size:\t");
+    takeInput(estate.size);
+    printf("\nEnter floors:\t");
+    takeInput(estate.floors);
+    printf("\nEnter size of main estate:\t");
+    takeInput(estate.sizeMainEstate);
+    printf("\nEnter contact number:\t");
+    takeInput(estate.contactNum);
+    printf("\nEnter office rooms:\t");
+    takeInput(estate.officeRooms);
+    printf("\nEnter price:\t");
+    takeInput(estate.price);
+
+     FILE *fp;
+    fp = fopen("OfficeSales.dat", "a");
+    fwrite(&estate, sizeof(struct officeSale), 1, fp);
+    fclose(fp);
+    printf("\nOffice property added successfully!\n");
+}
+
+void addLandSale()
+{
+    struct landSale estate;
+    printf("\nEnter address:\t");
+    takeInput(estate.address);
+    printf("\nEnter land type:\t");
+    takeInput(estate.landType);
+    printf("\nEnter size:\t");
+    takeInput(estate.size);
+    printf("\nEnter contact number:\t");
+    takeInput(estate.contactNum);
+    printf("\nEnter price:\t");
+    takeInput(estate.price);
+
+    FILE *fp;
+    fp = fopen("LandSales.dat", "a");
+    fwrite(&estate, sizeof(struct landSale), 1, fp);
+    fclose(fp);
+    printf("\nLand property added successfully!\n");
+}
+
+void addEstate()
+{
+    int choice;
+    printf("\n\t\t\t\tAdding new estate");
+    printf("\n\n1. Add residental property");
+    printf("\n2. Add office property");
+    printf("\n3. Add land property");
+    printf("\n4. Back to menu");
+    printf("\n\nYour choice:\t");
+    scanf("%d", &choice);
+    getchar();
+    switch (choice)
+    {
+    case 1:
+        addResidentalSale();
+        break;
+    case 2:
+        addOfficeSale();
+        break;
+    case 3:
+        addLandSale();
+        break;
+    case 4:
+        // Return to the main menu
+        break;
+    default:
+        printf("\nInvalid choice! Please try again.\n");
+        break;
+    }
+}
+
+void mainMenu(struct user usr)
+{
+    int choice;
+
+    do
+    {
+        // system("cls");
+        printf("\n\t\t\t\t---===== Welcome to Estate Management System =====---");
+        printf("\n\t\t\t\t\t\t   Main Menu");
+        printf("\n\n1. Add new estate");
+        printf("\n2. Delete estate");
+        printf("\n3. Reports");
+        printf("\n4. Account setting");
+        printf("\n5. Log out");
+        printf("\n6. Exit the program");
+        printf("\n\nYour choice:\t");
+        scanf("%d", &choice);
+
+        switch (choice)
+        {
+        case 1:
+            addEstate();
+            break;
+        case 2:
+            // Add function here
+            break;
+        case 3:
+            // Add function here
+            break;
+        case 4:
+            // Add function here
+            break;
+        case 5:
+            // Add function here
+            break;
+        case 6:
+            // Add function here
+            break;
+        default:
+            printf("\nInvalid choice! Please try again.\n");
+            break;
+        }
+    } while (choice != 6);
+}
+
 void signUp()
 {
     FILE *fp;
-    system("cls");
     struct user users;
     char password2[50];
 
     do
     {
-        printf("\nEnter your full name:\t");
+        printf("\n\nEnter your full name:\t");
         takeInput(users.fullName);
         printf("\nEnter your email:\t");
         takeInput(users.email);
@@ -122,7 +283,7 @@ void signUp()
         printf("\nEnter phone ID:\t");
         takeInput(users.userID);
 
-        do // Check if username is diff
+        do // Check if username is different
         {
             printf("\nEnter your username:\t");
             takeInput(users.username);
@@ -152,53 +313,12 @@ void signUp()
     fwrite(&users, sizeof(struct user), 1, fp);
     if (fwrite != 0)
     {
-        printf("\n\nUser registration was successful. press any key to contiue...");
-        getch();
+        printf("\n\nUser registration was successful. Press any key to continue...");
     }
     else
         printf("Oops! Something went wrong :( ");
 
     fclose(fp);
-}
-
-void mainMenu(struct user usr)
-{
-    // system("cls");
-    printf("\n\t\t\t\t---===== Welcome to Estate Management System =====---");
-    printf("\n\t\t\t\t\t\t   Main Menu");
-    printf("\n\n1. Add new estate");
-    printf("\n2. Delete estate");
-    printf("\n3. Reports");
-    printf("\n4. Account setting");
-    printf("\n5. Log out");
-    printf("\n6. Exite the program");
-    printf("\n\nYour choice:\t");
-    int choice;
-    scanf("%d", &choice);
-    // Adding choices after login
-    switch (choice)
-    {
-    case 1:
-        addEstate();
-        break;
-    case 2:
-        // Add function here
-        break;
-    case 3:
-        // Add function here
-        break;
-    case 4:
-        // Add function here
-        break;
-    case 5:
-        // Add function here
-        break;
-    case 6:
-        // Add function here
-        break;
-    default:
-        break;
-    }
 }
 
 void login()
@@ -247,47 +367,6 @@ void login()
     } while (!userFound);
 }
 
-void addEstate()
-{
-    printf("\n\t\t\t\tAdding new estate");
-    printf("\n\n1. Add for sale");
-    printf("\n2. Add for rent");
-    printf("\n3. Back to menu");
-    printf("\n\nYour choice:\t");
-    int choice;
-    scanf("%d", choice);
-    switch (choice)
-    {
-    case 1:
-        printf("Enter kind of your property");
-        printf("\n\n1. Residental property");
-        printf("\n2. Office property");
-        printf("\n3. Add land");
-        printf("\n4. Back to menu");
-        printf("\n\nYour choice:\t");
-        int ch1;
-        scanf("%d", ch1);
-        switch (ch1)
-        {
-        case 1:
-            break;
-        case 2:
-            break;
-        case 3:
-            break;
-        case 4:
-            break;
-        default:
-            printf("ERROR, Invalid inpute");
-            break;
-        }
-        break;
-
-    default:
-        break;
-    }
-}
-
 void main()
 {
     system("color 0b");
@@ -296,7 +375,7 @@ void main()
 
     while (1)
     {
-        system("cls");
+        // system("cls");
         printf("\n\t\t\t\t---=====Welcome to estate management system=====---");
         printf("\nPlease choose an action");
         printf("\n1.Signup");
@@ -315,7 +394,7 @@ void main()
             login();
             break;
         case 3:
-            printf("Goodbye, have nice day :)");
+            printf("Goodbye, have a nice day :)");
             exit(0);
         default:
             break;
