@@ -11,6 +11,40 @@ struct user
     char phone[50];
     char userID[50];
 };
+struct residentalSale
+{
+    char zone[50];
+    char address[100];
+    char estateType[50];
+    char ageEstate[50];
+    char size[50];
+    char floors[50];
+    char sizeMainEstate[50];
+    char contactNum[50];
+    char bedrooms[50];
+    char price[50];
+};
+struct officeSale
+{
+    char zone[50];
+    char address[100];
+    char estateType[50];
+    char ageEstate[50];
+    char size[50];
+    char floors[50];
+    char sizeMainEstate[50];
+    char contactNum[50];
+    char officeRooms[50];
+    char price[50];
+};
+struct landSale
+{
+    char address[100];
+    char landType[50];
+    char size[50];
+    char contactNum[50];
+    char price[50];
+};
 
 void takeInput(char ch[50])
 {
@@ -88,7 +122,7 @@ void signUp()
         printf("\nEnter phone ID:\t");
         takeInput(users.userID);
 
-        do
+        do // Check if username is diff
         {
             printf("\nEnter your username:\t");
             takeInput(users.username);
@@ -132,10 +166,39 @@ void mainMenu(struct user usr)
     // system("cls");
     printf("\n\t\t\t\t---===== Welcome to Estate Management System =====---");
     printf("\n\t\t\t\t\t\t   Main Menu");
-    printf("\n\n1. View Profile");
-    printf("\n2. Edit Profile");
-    printf("\n3. Logout");
+    printf("\n\n1. Add new estate");
+    printf("\n2. Delete estate");
+    printf("\n3. Reports");
+    printf("\n4. Account setting");
+    printf("\n5. Log out");
+    printf("\n6. Exite the program");
     printf("\n\nYour choice:\t");
+    int choice;
+    scanf("%d", &choice);
+    // Adding choices after login
+    switch (choice)
+    {
+    case 1:
+        addEstate();
+        break;
+    case 2:
+        // Add function here
+        break;
+    case 3:
+        // Add function here
+        break;
+    case 4:
+        // Add function here
+        break;
+    case 5:
+        // Add function here
+        break;
+    case 6:
+        // Add function here
+        break;
+    default:
+        break;
+    }
 }
 
 void login()
@@ -170,26 +233,6 @@ void login()
                 userFound = 1;
 
                 mainMenu(usr);
-                int choice;
-                scanf("%d", &choice);
-                // Adding choices after login
-                switch (choice)
-                {
-                case 1:
-                    // View Profile
-                    // Add code here
-                    break;
-                case 2:
-                    // Edit Profile
-                    // Add code here
-                    break;
-                case 3:
-                    // Logout
-                    // Add code here
-                    break;
-                default:
-                    break;
-                }
                 break; // Exit the loop once the user is found
             }
         }
@@ -202,6 +245,47 @@ void login()
 
         fclose(fp);
     } while (!userFound);
+}
+
+void addEstate()
+{
+    printf("\n\t\t\t\tAdding new estate");
+    printf("\n\n1. Add for sale");
+    printf("\n2. Add for rent");
+    printf("\n3. Back to menu");
+    printf("\n\nYour choice:\t");
+    int choice;
+    scanf("%d", choice);
+    switch (choice)
+    {
+    case 1:
+        printf("Enter kind of your property");
+        printf("\n\n1. Residental property");
+        printf("\n2. Office property");
+        printf("\n3. Add land");
+        printf("\n4. Back to menu");
+        printf("\n\nYour choice:\t");
+        int ch1;
+        scanf("%d", ch1);
+        switch (ch1)
+        {
+        case 1:
+            break;
+        case 2:
+            break;
+        case 3:
+            break;
+        case 4:
+            break;
+        default:
+            printf("ERROR, Invalid inpute");
+            break;
+        }
+        break;
+
+    default:
+        break;
+    }
 }
 
 void main()
