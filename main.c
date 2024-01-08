@@ -10,6 +10,7 @@ struct user
     char username[50];
     char phone[50];
     char userID[50];
+    struct user *link;
 };
 
 struct residentalSale
@@ -24,6 +25,7 @@ struct residentalSale
     char contactNum[50];
     char bedrooms[50];
     char price[50];
+    char addedByUser[50];
 };
 
 struct officeSale
@@ -38,6 +40,7 @@ struct officeSale
     char contactNum[50];
     char officeRooms[50];
     char price[50];
+    char addedByUser[50];
 };
 
 struct landSale
@@ -47,6 +50,7 @@ struct landSale
     char size[50];
     char contactNum[50];
     char price[50];
+    char addedByUser[50];
 };
 struct rentalResidental
 {
@@ -61,6 +65,7 @@ struct rentalResidental
     char bedrooms[50];
     char mortgage[50];
     char rent[50];
+    char addedByUser[50];
 };
 struct rentalOffice
 {
@@ -75,6 +80,7 @@ struct rentalOffice
     char bedrooms[50];
     char mortgage[50];
     char rent[50];
+    char addedByUser[50];
 };
 struct rentalLand
 {
@@ -84,6 +90,7 @@ struct rentalLand
     char contactNum[50];
     char mortgage[50];
     char rent[50];
+    char addedByUser[50];
 };
 void takeInput(char ch[50])
 {
@@ -167,6 +174,8 @@ void addResidentalSale(struct user usr)
     printf("\nEnter price:\t");
     takeInput(estate.price);
     system("cls");
+    // Set the addedByUser field to the username of the user who added the property
+    strcpy(estate.addedByUser, usr.username);
     FILE *fp;
     fp = fopen("ResidentalSales.dat", "a");
     fwrite(&estate, sizeof(struct residentalSale), 1, fp);
@@ -211,7 +220,8 @@ void addOfficeSale(struct user usr)
     takeInput(estate.officeRooms);
     printf("\nEnter price:\t");
     takeInput(estate.price);
-
+    // Set the addedByUser field to the username of the user who added the property
+    strcpy(estate.addedByUser, usr.username);
     FILE *fp;
     fp = fopen("OfficeSales.dat", "a");
     fwrite(&estate, sizeof(struct officeSale), 1, fp);
@@ -247,7 +257,8 @@ void addLandSale(struct user usr)
     takeInput(estate.contactNum);
     printf("\nEnter price:\t");
     takeInput(estate.price);
-
+    // Set the addedByUser field to the username of the user who added the property
+    strcpy(estate.addedByUser, usr.username);
     FILE *fp;
     fp = fopen("LandSales.dat", "a");
     fwrite(&estate, sizeof(struct landSale), 1, fp);
@@ -318,7 +329,8 @@ void addRentalResidental(struct user usr)
     takeInput(rentalEstate.mortgage);
     printf("\nEnter rent:\t");
     takeInput(rentalEstate.rent);
-
+    // Set the addedByUser field to the username of the user who added the property
+    strcpy(rentalEstate.addedByUser, usr.username);
     FILE *fp;
     fp = fopen("RentalResidental.dat", "a");
     fwrite(&rentalEstate, sizeof(struct rentalResidental), 1, fp);
@@ -366,7 +378,8 @@ void addRentalOffice(struct user usr)
     takeInput(rentalOffice.mortgage);
     printf("\nEnter rent:\t");
     takeInput(rentalOffice.rent);
-
+    // Set the addedByUser field to the username of the user who added the property
+    strcpy(rentalOffice.addedByUser, usr.username);
     FILE *fp;
     fp = fopen("RentalOffice.dat", "a");
     fwrite(&rentalOffice, sizeof(struct rentalOffice), 1, fp);
@@ -404,7 +417,8 @@ void addRentalLand(struct user usr)
     takeInput(rentalLand.mortgage);
     printf("\nEnter rent:\t");
     takeInput(rentalLand.rent);
-
+    // Set the addedByUser field to the username of the user who added the property
+    strcpy(rentalLand.addedByUser, usr.username);
     FILE *fp;
     fp = fopen("RentalLands.dat", "a");
     fwrite(&rentalLand, sizeof(struct rentalLand), 1, fp);
@@ -567,6 +581,7 @@ void signUp()
     if (fwrite != 0)
     {
         printf("\n\nUser registration was successful. Press any key to continue...");
+        getch();
     }
     else
         printf("Oops! Something went wrong :( ");
@@ -577,7 +592,7 @@ void signUp()
 void login()
 {
     FILE *fp;
-    struct user usr;
+    struct user *start = NULL, *end, *usr, ur;
     char username[50], pword[50];
     int userFound;
 
@@ -589,25 +604,46 @@ void login()
         takeInput(username);
         printf("\nEnter your password:\t");
         takePassword(pword);
-
         fp = fopen("Users.dat", "r");
 
-        while (fread(&usr, sizeof(struct user), 1, fp))
+        while (!feof(fp))
         {
-            if (!strcmp(usr.username, username) && !strcmp(usr.password, pword))
+            usr = malloc(sizeof(struct user));
+            fread(usr, sizeof(struct user), 1, fp);
+
+            if (start == NULL)
+            {
+                start = usr;
+                end = usr;
+                end->link = NULL;
+            }
+            else
+            {
+                end->link = usr;
+                end = usr;
+                end->link = NULL;
+            }
+        }
+
+        usr = start;
+        while (usr)
+        {
+            if (!strcmp(usr->username, username) && !strcmp(usr->password, pword))
             {
                 system("cls");
-                printf("\n\t\t\t\tWelcome %s", usr.fullName);
-                printf("\n\n|Full name:\t%s", usr.fullName);
-                printf("\n|Email:\t%s", usr.email);
-                printf("\n|Username:\t%s", usr.username);
-                printf("\n|Phone number:\t%s", usr.phone);
-                printf("\n|ID:\t%s", usr.userID);
+                printf("\n\t\t\t\tWelcome %s", usr->fullName);
+                printf("\n\n|Full name:\t%s", usr->fullName);
+                printf("\n|Email:\t%s", usr->email);
+                printf("\n|Username:\t%s", usr->username);
+                printf("\n|Phone number:\t%s", usr->phone);
+                printf("\n|ID:\t%s", usr->userID);
                 userFound = 1;
 
-                mainMenu(usr);
+                mainMenu(*usr);
                 break; // Exit the loop once the user is found
             }
+
+            usr= usr->link;
         }
 
         if (!userFound)
@@ -650,6 +686,8 @@ void main()
             printf("Goodbye, have a nice day :)");
             exit(0);
         default:
+        printf("Error, Invalid input! try again");
+
             break;
         }
     }
