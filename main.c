@@ -132,13 +132,14 @@ void takePassword(char pwd[50])
 int isUsernameTaken(char username[50])
 {
     FILE *fp;
-    struct user usr;
+    struct user *node;
 
     fp = fopen("Users.dat", "r");
 
-    while (fread(&usr, sizeof(struct user), 1, fp))
+    node = malloc(sizeof(struct user));
+    while (fread(node, sizeof(struct user), 1, fp))
     {
-        if (!strcmp(usr.username, username))
+        if (!strcmp(node->username, username))
         {
             fclose(fp);
             return 1; // Username is already taken
@@ -154,7 +155,6 @@ void addResidentalSale(struct user usr)
     struct residentalSale estate;
     printf("\nEnter zone:\t");
     takeInput(estate.zone);
-    printf("%c", estate.zone);
     printf("\nEnter address:\t");
     takeInput(estate.address);
     printf("\nEnter estate type:\t");
@@ -536,48 +536,51 @@ void mainMenu(struct user usr)
 void signUp()
 {
     FILE *fp;
-    struct user users;
+    struct user *node;
     char password2[50];
 
+    node = malloc(sizeof(struct user));
     do
     {
         printf("\n\nEnter your full name:\t");
-        takeInput(users.fullName);
+        takeInput(node->fullName);
         printf("\nEnter your email:\t");
-        takeInput(users.email);
+        takeInput(node->email);
         printf("\nEnter phone number:\t");
-        takeInput(users.phone);
+        takeInput(node->phone);
         printf("\nEnter phone ID:\t");
-        takeInput(users.userID);
+        takeInput(node->userID);
 
         do // Check if username is different
         {
             printf("\nEnter your username:\t");
-            takeInput(users.username);
-            if (isUsernameTaken(users.username))
+            takeInput(node->username);
+            if (isUsernameTaken(node->username) == 0)
             {
-                printf("\nUsername is already taken. Please choose another one.");
-                Beep(750, 300);
+                break;
             }
-        } while (isUsernameTaken(users.username));
+
+            printf("\nUsername is already taken. Please choose another one.");
+            Beep(750, 300);
+        } while (1);
 
         printf("\nEnter your password:\t");
-        takePassword(users.password);
+        takePassword(node->password);
         printf("\nConfirm your password:\t");
         takePassword(password2);
 
         // Compare two passwords
-        if (strcmp(users.password, password2))
+        if (strcmp(node->password, password2))
         {
             printf("\nYour passwords didn't match. Please try again!");
             Beep(750, 300);
         }
-    } while (strcmp(users.password, password2));
+    } while (strcmp(node->password, password2));
 
     printf("\nYour password matched");
 
     fp = fopen("Users.dat", "a+");
-    fwrite(&users, sizeof(struct user), 1, fp);
+    fwrite(node, sizeof(struct user), 1, fp);
     if (fwrite != 0)
     {
         printf("\n\nUser registration was successful. Press any key to continue...");
@@ -592,7 +595,7 @@ void signUp()
 void login()
 {
     FILE *fp;
-    struct user *start = NULL, *end, *usr, ur;
+    struct user *start = NULL, *end, *usr;
     char username[50], pword[50];
     int userFound;
 
