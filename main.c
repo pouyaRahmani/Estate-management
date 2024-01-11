@@ -102,7 +102,7 @@ struct residentalSale *residentalSaleHead = NULL, *residentalSaleLast, *resident
 struct officeSale *officeSaleHead = NULL, *officeSaleLast, *officeSaleNode;
 struct landSale *landSaleHead = NULL, *landSaleLast, *landSaleNode;
 struct rentalResidential *rentalResidentalHead = NULL, *rentalResidentalLast, *rentalResidentalNode;
-struct rentalOffice *rentalOfficeHead = NULL, *rentalOfficeLast,  *rentalOfficeNode;
+struct rentalOffice *rentalOfficeHead = NULL, *rentalOfficeLast, *rentalOfficeNode;
 struct rentalLand *rentalLandHead = NULL, *rentalLandLast, *rentalLandNode;
 
 void takeInput(char ch[50])
@@ -151,7 +151,7 @@ int isUsernameTaken(char username[50])
     node = malloc(sizeof(struct user));
     while (fread(node, sizeof(struct user), 1, fp))
     {
-        if (strcmp(node->username, username) ==0  && node->username != "admin")
+        if (strcmp(node->username, username) == 0 && node->username != "admin")
         {
             fclose(fp);
             return 1; // Username is already taken
@@ -223,7 +223,6 @@ void addResidentalSale(struct user usr)
     printf("\n\n Press any key to continue...");
     getch();
 }
-
 void addOfficeSale(struct user usr)
 {
     struct officeSale *newEstate = malloc(sizeof(struct officeSale));
@@ -286,7 +285,6 @@ void addOfficeSale(struct user usr)
     printf("\n\n Press any key to continue...");
     getch();
 }
-
 void addLandSale(struct user usr)
 {
     struct landSale *newEstate = malloc(sizeof(struct landSale));
@@ -594,12 +592,140 @@ void addEstate(struct user usr)
         break;
     }
 }
+void countEstates()
+{
+    FILE *residentialFile, *officeFile, *landFile, *rentalResidentialFile, *rentalOfficeFile, *rentalLandFile;
+    struct residentalSale *residentialNode;
+    struct officeSale *officeNode;
+    struct landSale *landNode;
+    struct rentalResidental *rentalResidentialNode;
+    struct rentalOffice *rentalOfficeNode;
+    struct rentalLand *rentalLandNode;
+    int residentialCount = 0, officeCount = 0, landCount = 0, rentalResidentialCount = 0, rentalOfficeCount = 0, rentalLandCount = 0;
 
+    residentialFile = fopen("ResidentialSales.dat", "r");
+    officeFile = fopen("OfficeSales.dat", "r");
+    landFile = fopen("LandSales.dat", "r");
+    rentalResidentialFile = fopen("RentalResidental.dat", "r");
+    rentalOfficeFile = fopen("RentalOffice.dat", "r");
+    rentalLandFile = fopen("RentalLands.dat", "r");
+    // // This part will be used when all the files is existing
+    // if (residentialFile == NULL || officeFile == NULL || landFile == NULL ||
+    //     rentalResidentialFile == NULL || rentalOfficeFile == NULL || rentalLandFile == NULL)
+    // {
+    //     printf("Error opening one or more files.\n");
+    //     return;
+    // }
+    residentialNode = malloc(sizeof(struct residentalSale));
+    while (fread(residentialNode, sizeof(struct residentalSale), 1, residentialFile))
+    {
+        residentialCount++;
+    }
+    fclose(residentialFile);
+
+    officeNode = malloc(sizeof(struct officeSale));
+    while (fread(officeNode, sizeof(struct officeSale), 1, officeFile))
+    {
+        officeCount++;
+    }
+    fclose(officeFile);
+
+    landNode = malloc(sizeof(struct landSale));
+    while (fread(landNode, sizeof(struct landSale), 1, landFile))
+    {
+        landCount++;
+    }
+    fclose(landFile);
+
+    rentalResidentialNode = malloc(sizeof(struct rentalResidental));
+    while (fread(rentalResidentialNode, sizeof(struct rentalResidental), 1, rentalResidentialFile))
+    {
+        rentalResidentialCount++;
+    }
+    fclose(rentalResidentialFile);
+
+    rentalOfficeNode = malloc(sizeof(struct rentalOffice));
+    while (fread(rentalOfficeNode, sizeof(struct rentalOffice), 1, rentalOfficeFile))
+    {
+        rentalOfficeCount++;
+    }
+    fclose(rentalOfficeFile);
+
+    rentalLandNode = malloc(sizeof(struct rentalLand));
+    while (fread(rentalLandNode, sizeof(struct rentalLand), 1, rentalLandFile))
+    {
+        rentalLandCount++;
+    }
+    fclose(rentalLandFile);
+
+    printf("\nNumber of existing residential sales estates: %d", residentialCount);
+    printf("\nNumber of existing office sales estates: %d", officeCount);
+    printf("\nNumber of existing land sales estates: %d", landCount);
+    printf("\nNumber of existing rental residential estates: %d", rentalResidentialCount);
+    printf("\nNumber of existing rental office estates: %d", rentalOfficeCount);
+    printf("\nNumber of existing rental land estates: %d\n", rentalLandCount);
+}
+// Users report
+void reports()
+{
+    int choice;
+    do
+    {
+        // system("cls");
+        printf("\n\t\t\t\t---===== Reports =====---");
+        printf("\n\n1. Number of exiting estates in the system");
+        printf("\n2. List of estates available int a specific zone(by the zone's code)");
+        printf("\n3. List of estates by the age range");
+        printf("\n4. List of estates by the size of infrastructure");
+        printf("\n5. List of estates by the price range");
+        printf("\n6. List of estates by the specific number of rooms");
+        printf("\n7. Total value of the estates in the system");
+        // Write admin reports in the end!!
+        printf("\n8. List of rental estates sorted by mortgage and rent");
+        printf("\n9. Back to the main menu");
+        printf("\n\nYour choice:\t");
+        scanf("%d", &choice);
+        getchar(); // for not reading the \n
+        switch (choice)
+        {
+        case 1:
+            countEstates();
+
+            break;
+        case 2:
+            // Add code for List of estates available in a specific zone
+            break;
+        case 3:
+            // Add code for List of estates by the age range
+            break;
+        case 4:
+            // Add code for List of estates by the size of infrastructure
+            break;
+        case 5:
+            // Add code for List of estates by the price range
+            break;
+        case 6:
+            // Add code for List of estates by the specific number of rooms
+            break;
+        case 7:
+            // Add code for Total value of the estates in the system
+            break;
+        case 8:
+            // Add code for List of rental estates sorted by mortgage and rent
+            break;
+        case 9:
+            // Return to the main menu
+            break;
+        default:
+            printf("\nInvalid choice! Please try again.\n");
+            break;
+        }
+    } while (choice != 9);
+}
 void changeProfile(struct user *currentUser)
 {
     FILE *fp;
-    fp = fopen("Users.dat", "r+");  // Open the file in read and write mode
-
+    fp = fopen("Users.dat", "r+"); // Open the file in read and write mode
     if (fp == NULL)
     {
         printf("\nError opening the file!");
@@ -607,7 +733,6 @@ void changeProfile(struct user *currentUser)
     }
 
     int choice;
-
     do
     {
         // system("cls");
@@ -619,7 +744,7 @@ void changeProfile(struct user *currentUser)
         printf("\n5. Back to Menu");
         printf("\n\nYour choice:\t");
         scanf("%d", &choice);
-        getchar(); // خواندن \n اضافی
+        getchar(); // for not reading the \n
 
         switch (choice)
         {
@@ -645,11 +770,9 @@ void changeProfile(struct user *currentUser)
             break;
         case 5:
             // Write the updated user data back to the file
-            fseek(fp, ftell(fp) - sizeof(struct user), SEEK_SET);  // Move the file pointer to the beginning
+            fseek(fp, -sizeof(struct user), SEEK_CUR); // Move the file pointer back by the size of struct user
             fwrite(currentUser, sizeof(struct user), 1, fp);
-            
-            // برگشت به منوی قبلی
-            fclose(fp);  // Close the file
+            fclose(fp); // Close the file
             return;
         default:
             printf("\nInvalid choice! Please try again.\n");
@@ -657,7 +780,7 @@ void changeProfile(struct user *currentUser)
         }
     } while (1);
 
-    fclose(fp);  // Close the file
+    fclose(fp); // Close the file
 }
 
 void mainMenu(struct user usr)
@@ -687,7 +810,7 @@ void mainMenu(struct user usr)
             // Add function here
             break;
         case 3:
-            // Add function here
+            reports();
             break;
         case 4:
             changeProfile(&usr);
@@ -823,7 +946,7 @@ void login()
                 break; // Exit the loop once the user is found
             }
 
-            userNode= userNode->link;
+            userNode = userNode->link;
         }
 
         if (!userFound)
@@ -866,7 +989,7 @@ void main()
             printf("Goodbye, have a nice day :)");
             exit(0);
         default:
-        printf("Error, Invalid input! try again");
+            printf("Error, Invalid input! try again");
 
             break;
         }
