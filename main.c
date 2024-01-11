@@ -595,6 +595,71 @@ void addEstate(struct user usr)
     }
 }
 
+void changeProfile(struct user *currentUser)
+{
+    FILE *fp;
+    fp = fopen("Users.dat", "r+");  // Open the file in read and write mode
+
+    if (fp == NULL)
+    {
+        printf("\nError opening the file!");
+        return;
+    }
+
+    int choice;
+
+    do
+    {
+        // system("cls");
+        printf("\n\t\t\t\t---===== Change Profile =====---");
+        printf("\n\n1. Change Password");
+        printf("\n2. Change Email");
+        printf("\n3. Change Phone Number");
+        printf("\n4. Change User ID");
+        printf("\n5. Back to Menu");
+        printf("\n\nYour choice:\t");
+        scanf("%d", &choice);
+        getchar(); // خواندن \n اضافی
+
+        switch (choice)
+        {
+        case 1:
+            printf("\nEnter your new password:\t");
+            takePassword(currentUser->password);
+            printf("\nPassword changed successfully!");
+            break;
+        case 2:
+            printf("\nEnter your new email:\t");
+            takeInput(currentUser->email);
+            printf("\nEmail changed successfully!");
+            break;
+        case 3:
+            printf("\nEnter your new phone number:\t");
+            takeInput(currentUser->phone);
+            printf("\nPhone number changed successfully!");
+            break;
+        case 4:
+            printf("\nEnter your new User ID:\t");
+            takeInput(currentUser->userID);
+            printf("\nUser ID changed successfully!");
+            break;
+        case 5:
+            // Write the updated user data back to the file
+            fseek(fp, ftell(fp) - sizeof(struct user), SEEK_SET);  // Move the file pointer to the beginning
+            fwrite(currentUser, sizeof(struct user), 1, fp);
+            
+            // برگشت به منوی قبلی
+            fclose(fp);  // Close the file
+            return;
+        default:
+            printf("\nInvalid choice! Please try again.\n");
+            break;
+        }
+    } while (1);
+
+    fclose(fp);  // Close the file
+}
+
 void mainMenu(struct user usr)
 {
     int choice;
@@ -625,7 +690,7 @@ void mainMenu(struct user usr)
             // Add function here
             break;
         case 4:
-            // Add function here
+            changeProfile(&usr);
             break;
         case 5:
             // Add function here
@@ -704,8 +769,6 @@ void signUp()
     printf("\n\nUser registration was successful. Press any key to continue...");
     getch();
 }
-
-
 
 void login()
 {
