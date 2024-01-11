@@ -26,6 +26,7 @@ struct residentalSale
     char bedrooms[50];
     char price[50];
     char addedByUser[50];
+    struct residentalSale *next;
 };
 
 struct officeSale
@@ -41,8 +42,8 @@ struct officeSale
     char officeRooms[50];
     char price[50];
     char addedByUser[50];
+    struct officeSale *next;
 };
-
 struct landSale
 {
     char address[100];
@@ -51,6 +52,7 @@ struct landSale
     char contactNum[50];
     char price[50];
     char addedByUser[50];
+    struct landSale *next;
 };
 struct rentalResidental
 {
@@ -66,6 +68,7 @@ struct rentalResidental
     char mortgage[50];
     char rent[50];
     char addedByUser[50];
+    struct rentalResidental *next;
 };
 struct rentalOffice
 {
@@ -81,6 +84,7 @@ struct rentalOffice
     char mortgage[50];
     char rent[50];
     char addedByUser[50];
+    struct rentalOffice *next;
 };
 struct rentalLand
 {
@@ -91,7 +95,16 @@ struct rentalLand
     char mortgage[50];
     char rent[50];
     char addedByUser[50];
+    struct rentalLand *next;
 };
+struct user *userHead = NULL, *userLast, *userNode;
+struct residentalSale *residentalSaleHead = NULL, *residentalSaleLast, *residentalSaleNode;
+struct officeSale *officeSaleHead = NULL, *officeSaleLast, *officeSaleNode;
+struct landSale *landSaleHead = NULL, *landSaleLast, *landSaleNode;
+struct rentalResidential *rentalResidentalHead = NULL, *rentalResidentalLast, *rentalResidentalNode;
+struct rentalOffice *rentalOfficeHead = NULL, *rentalOfficeLast,  *rentalOfficeNode;
+struct rentalLand *rentalLandHead = NULL, *rentalLandLast, *rentalLandNode;
+
 void takeInput(char ch[50])
 {
     gets(ch);
@@ -128,7 +141,6 @@ void takePassword(char pwd[50])
         }
     }
 }
-
 int isUsernameTaken(char username[50])
 {
     FILE *fp;
@@ -139,7 +151,7 @@ int isUsernameTaken(char username[50])
     node = malloc(sizeof(struct user));
     while (fread(node, sizeof(struct user), 1, fp))
     {
-        if (!strcmp(node->username, username))
+        if (strcmp(node->username, username) ==0  && node->username != "admin")
         {
             fclose(fp);
             return 1; // Username is already taken
@@ -149,49 +161,64 @@ int isUsernameTaken(char username[50])
     fclose(fp);
     return 0; // Username is not taken
 }
-
 void addResidentalSale(struct user usr)
 {
-    struct residentalSale estate;
+    struct residentalSale *newEstate = malloc(sizeof(struct residentalSale));
+    if (newEstate == NULL)
+    {
+        printf("Memory allocation failed.\n");
+        exit(EXIT_FAILURE);
+    }
+
     printf("\nEnter zone:\t");
-    takeInput(estate.zone);
+    takeInput(newEstate->zone);
     printf("\nEnter address:\t");
-    takeInput(estate.address);
+    takeInput(newEstate->address);
     printf("\nEnter estate type:\t");
-    takeInput(estate.estateType);
+    takeInput(newEstate->estateType);
     printf("\nEnter age of estate:\t");
-    takeInput(estate.ageEstate);
+    takeInput(newEstate->ageEstate);
     printf("\nEnter area in meter:\t");
-    takeInput(estate.size);
+    takeInput(newEstate->size);
     printf("\nEnter floors:\t");
-    takeInput(estate.floors);
+    takeInput(newEstate->floors);
     printf("\nEnter area of main structure in meter:\t");
-    takeInput(estate.sizeMainEstate);
+    takeInput(newEstate->sizeMainEstate);
     printf("\nEnter contact number:\t");
-    takeInput(estate.contactNum);
+    takeInput(newEstate->contactNum);
     printf("\nEnter bedrooms:\t");
-    takeInput(estate.bedrooms);
+    takeInput(newEstate->bedrooms);
     printf("\nEnter price:\t");
-    takeInput(estate.price);
-    system("cls");
+    takeInput(newEstate->price);
+
     // Set the addedByUser field to the username of the user who added the property
-    strcpy(estate.addedByUser, usr.username);
+    strcpy(newEstate->addedByUser, usr.username);
+    newEstate->next = residentalSaleHead;
+    residentalSaleHead = newEstate;
+
     FILE *fp;
-    fp = fopen("ResidentalSales.dat", "a");
-    fwrite(&estate, sizeof(struct residentalSale), 1, fp);
+    fp = fopen("ResidentialSales.dat", "ab");
+    if (fp == NULL)
+    {
+        printf("Error opening file.\n");
+        exit(EXIT_FAILURE);
+    }
+
+    fwrite(newEstate, sizeof(struct residentalSale), 1, fp);
     fclose(fp);
+
     // Display property features
     printf("\nResidential property added successfully!");
-    printf("\nZone: %s", estate.zone);
-    printf("\nAddress: %s", estate.address);
-    printf("\nEstate Type: %s", estate.estateType);
-    printf("\nAge of Estate: %s", estate.ageEstate);
-    printf("\nArea: %s", estate.size);
-    printf("\nFloors: %s", estate.floors);
-    printf("\nArea of Main Estate: %s", estate.sizeMainEstate);
-    printf("\nContact Number: %s", estate.contactNum);
-    printf("\nBedrooms: %s", estate.bedrooms);
-    printf("\nPrice: %s", estate.price);
+    printf("\nZone: %s", newEstate->zone);
+    printf("\nAddress: %s", newEstate->address);
+    printf("\nEstate Type: %s", newEstate->estateType);
+    printf("\nAge of Estate: %s", newEstate->ageEstate);
+    printf("\nArea: %s", newEstate->size);
+    printf("\nFloors: %s", newEstate->floors);
+    printf("\nArea of Main Estate: %s", newEstate->sizeMainEstate);
+    printf("\nContact Number: %s", newEstate->contactNum);
+    printf("\nBedrooms: %s", newEstate->bedrooms);
+    printf("\nPrice: %s", newEstate->price);
     printf("\nAdded by User: %s", usr.username);
     printf("\n\n Press any key to continue...");
     getch();
@@ -199,46 +226,62 @@ void addResidentalSale(struct user usr)
 
 void addOfficeSale(struct user usr)
 {
-    struct officeSale estate;
+    struct officeSale *newEstate = malloc(sizeof(struct officeSale));
+    if (newEstate == NULL)
+    {
+        printf("Memory allocation failed.\n");
+        exit(EXIT_FAILURE);
+    }
+
     printf("\nEnter zone:\t");
-    takeInput(estate.zone);
+    takeInput(newEstate->zone);
     printf("\nEnter address:\t");
-    takeInput(estate.address);
+    takeInput(newEstate->address);
     printf("\nEnter estate type:\t");
-    takeInput(estate.estateType);
+    takeInput(newEstate->estateType);
     printf("\nEnter age of estate:\t");
-    takeInput(estate.ageEstate);
+    takeInput(newEstate->ageEstate);
     printf("\nEnter area in meter:\t");
-    takeInput(estate.size);
+    takeInput(newEstate->size);
     printf("\nEnter floors:\t");
-    takeInput(estate.floors);
+    takeInput(newEstate->floors);
     printf("\nEnter area of main structure in meter:\t");
-    takeInput(estate.sizeMainEstate);
+    takeInput(newEstate->sizeMainEstate);
     printf("\nEnter contact number:\t");
-    takeInput(estate.contactNum);
+    takeInput(newEstate->contactNum);
     printf("\nEnter office rooms:\t");
-    takeInput(estate.officeRooms);
+    takeInput(newEstate->officeRooms);
     printf("\nEnter price:\t");
-    takeInput(estate.price);
+    takeInput(newEstate->price);
+
     // Set the addedByUser field to the username of the user who added the property
-    strcpy(estate.addedByUser, usr.username);
+    strcpy(newEstate->addedByUser, usr.username);
+    newEstate->next = officeSaleHead;
+    officeSaleHead = newEstate;
+
     FILE *fp;
-    fp = fopen("OfficeSales.dat", "a");
-    fwrite(&estate, sizeof(struct officeSale), 1, fp);
+    fp = fopen("OfficeSales.dat", "ab");
+    if (fp == NULL)
+    {
+        printf("Error opening file.\n");
+        exit(EXIT_FAILURE);
+    }
+
+    fwrite(newEstate, sizeof(struct officeSale), 1, fp);
     fclose(fp);
-    printf("\nOffice property added successfully!\n");
+
     // Display property features
-    printf("\nResidential property added successfully!");
-    printf("\nZone: %s", estate.zone);
-    printf("\nAddress: %s", estate.address);
-    printf("\nEstate Type: %s", estate.estateType);
-    printf("\nAge of Estate: %s", estate.ageEstate);
-    printf("\nArea: %s", estate.size);
-    printf("\nFloors: %s", estate.floors);
-    printf("\nArea of Main structure: %s", estate.sizeMainEstate);
-    printf("\nContact Number: %s", estate.contactNum);
-    printf("\nBedrooms: %s", estate.officeRooms);
-    printf("\nPrice: %s", estate.price);
+    printf("\nOffice property added successfully!");
+    printf("\nZone: %s", newEstate->zone);
+    printf("\nAddress: %s", newEstate->address);
+    printf("\nEstate Type: %s", newEstate->estateType);
+    printf("\nAge of Estate: %s", newEstate->ageEstate);
+    printf("\nArea: %s", newEstate->size);
+    printf("\nFloors: %s", newEstate->floors);
+    printf("\nArea of Main structure: %s", newEstate->sizeMainEstate);
+    printf("\nContact Number: %s", newEstate->contactNum);
+    printf("\nOffice Rooms: %s", newEstate->officeRooms);
+    printf("\nPrice: %s", newEstate->price);
     printf("\nAdded by User: %s", usr.username);
     printf("\n\n Press any key to continue...");
     getch();
@@ -246,34 +289,48 @@ void addOfficeSale(struct user usr)
 
 void addLandSale(struct user usr)
 {
-    struct landSale estate;
+    struct landSale *newEstate = malloc(sizeof(struct landSale));
+    if (newEstate == NULL)
+    {
+        printf("Memory allocation failed.\n");
+        exit(EXIT_FAILURE);
+    }
+
     printf("\nEnter address:\t");
-    takeInput(estate.address);
+    takeInput(newEstate->address);
     printf("\nEnter land type:\t");
-    takeInput(estate.landType);
+    takeInput(newEstate->landType);
     printf("\nEnter area in meter:\t");
-    takeInput(estate.size);
+    takeInput(newEstate->size);
     printf("\nEnter contact number:\t");
-    takeInput(estate.contactNum);
+    takeInput(newEstate->contactNum);
     printf("\nEnter price:\t");
-    takeInput(estate.price);
+    takeInput(newEstate->price);
+
     // Set the addedByUser field to the username of the user who added the property
-    strcpy(estate.addedByUser, usr.username);
+    strcpy(newEstate->addedByUser, usr.username);
+    newEstate->next = landSaleHead;
+    landSaleHead = newEstate;
     FILE *fp;
-    fp = fopen("LandSales.dat", "a");
-    fwrite(&estate, sizeof(struct landSale), 1, fp);
+    fp = fopen("LandSales.dat", "ab");
+    if (fp == NULL)
+    {
+        printf("Error opening file.\n");
+        exit(EXIT_FAILURE);
+    }
+    fwrite(newEstate, sizeof(struct landSale), 1, fp);
     fclose(fp);
-    printf("\nLand property added successfully!\n");
-    printf("\nAddress: %s", estate.address);
-    printf("\nLand type: %s", estate.landType);
-    printf("\nArea: %s", estate.size);
-    printf("\nContact Number: %s", estate.contactNum);
-    printf("\nPrice: %s", estate.price);
+    // Display property features
+    printf("\nLand property added successfully!");
+    printf("\nAddress: %s", newEstate->address);
+    printf("\nLand type: %s", newEstate->landType);
+    printf("\nArea: %s", newEstate->size);
+    printf("\nContact Number: %s", newEstate->contactNum);
+    printf("\nPrice: %s", newEstate->price);
     printf("\nAdded by User: %s", usr.username);
     printf("\n\n Press any key to continue...");
     getch();
 }
-
 void addSaleEstate(struct user usr)
 {
     int choice;
@@ -306,130 +363,180 @@ void addSaleEstate(struct user usr)
 }
 void addRentalResidental(struct user usr)
 {
-    struct rentalResidental rentalEstate;
+    struct rentalResidental *newEstate = malloc(sizeof(struct rentalResidental));
+    if (newEstate == NULL)
+    {
+        printf("Memory allocation failed.\n");
+        exit(EXIT_FAILURE);
+    }
+
     printf("\nEnter zone:\t");
-    takeInput(rentalEstate.zone);
+    takeInput(newEstate->zone);
     printf("\nEnter address:\t");
-    takeInput(rentalEstate.address);
+    takeInput(newEstate->address);
     printf("\nEnter estate type:\t");
-    takeInput(rentalEstate.estateType);
+    takeInput(newEstate->estateType);
     printf("\nEnter age of estate:\t");
-    takeInput(rentalEstate.ageEstate);
+    takeInput(newEstate->ageEstate);
     printf("\nEnter area in meter:\t");
-    takeInput(rentalEstate.size);
+    takeInput(newEstate->size);
     printf("\nEnter floors:\t");
-    takeInput(rentalEstate.floors);
+    takeInput(newEstate->floors);
     printf("\nEnter area of main structure in meter:\t");
-    takeInput(rentalEstate.sizeMainEstate);
+    takeInput(newEstate->sizeMainEstate);
     printf("\nEnter contact number:\t");
-    takeInput(rentalEstate.contactNum);
+    takeInput(newEstate->contactNum);
     printf("\nEnter bedrooms:\t");
-    takeInput(rentalEstate.bedrooms);
+    takeInput(newEstate->bedrooms);
     printf("\nEnter mortgage:\t");
-    takeInput(rentalEstate.mortgage);
+    takeInput(newEstate->mortgage);
     printf("\nEnter rent:\t");
-    takeInput(rentalEstate.rent);
+    takeInput(newEstate->rent);
+
     // Set the addedByUser field to the username of the user who added the property
-    strcpy(rentalEstate.addedByUser, usr.username);
+    strcpy(newEstate->addedByUser, usr.username);
+    newEstate->next = rentalResidentalHead;
+    rentalResidentalHead = newEstate;
+
     FILE *fp;
-    fp = fopen("RentalResidental.dat", "a");
-    fwrite(&rentalEstate, sizeof(struct rentalResidental), 1, fp);
+    fp = fopen("RentalResidental.dat", "ab"); // Use "wb" for the first write
+    if (fp == NULL)
+    {
+        printf("Error opening file.\n");
+        exit(EXIT_FAILURE);
+    }
+
+    fwrite(newEstate, sizeof(struct rentalResidental), 1, fp);
     fclose(fp);
 
     // Display property features
     printf("\nRental Residential property added successfully!");
-    printf("\nZone: %s", rentalEstate.zone);
-    printf("\nAddress: %s", rentalEstate.address);
-    printf("\nEstate Type: %s", rentalEstate.estateType);
-    printf("\nAge of Estate: %s", rentalEstate.ageEstate);
-    printf("\nArea: %s", rentalEstate.size);
-    printf("\nFloors: %s", rentalEstate.floors);
-    printf("\nArea of Main structure: %s", rentalEstate.sizeMainEstate);
-    printf("\nContact Number: %s", rentalEstate.contactNum);
-    printf("\nBedrooms: %s", rentalEstate.bedrooms);
-    printf("\nMortgage: %s", rentalEstate.mortgage);
-    printf("\nRent: %s", rentalEstate.rent);
+    printf("\nZone: %s", newEstate->zone);
+    printf("\nAddress: %s", newEstate->address);
+    printf("\nEstate Type: %s", newEstate->estateType);
+    printf("\nAge of Estate: %s", newEstate->ageEstate);
+    printf("\nArea: %s", newEstate->size);
+    printf("\nFloors: %s", newEstate->floors);
+    printf("\nArea of Main structure: %s", newEstate->sizeMainEstate);
+    printf("\nContact Number: %s", newEstate->contactNum);
+    printf("\nBedrooms: %s", newEstate->bedrooms);
+    printf("\nMortgage: %s", newEstate->mortgage);
+    printf("\nRent: %s", newEstate->rent);
     printf("\nAdded by User: %s", usr.username);
     printf("\n\n Press any key to continue...");
     getch();
 }
 void addRentalOffice(struct user usr)
 {
-    struct rentalOffice rentalOffice;
+    struct rentalOffice *newEstate = malloc(sizeof(struct rentalOffice));
+    if (newEstate == NULL)
+    {
+        printf("Memory allocation failed.\n");
+        exit(EXIT_FAILURE);
+    }
+
     printf("\nEnter zone:\t");
-    takeInput(rentalOffice.zone);
+    takeInput(newEstate->zone);
     printf("\nEnter address:\t");
-    takeInput(rentalOffice.address);
+    takeInput(newEstate->address);
     printf("\nEnter estate type:\t");
-    takeInput(rentalOffice.estateType);
+    takeInput(newEstate->estateType);
     printf("\nEnter age of estate:\t");
-    takeInput(rentalOffice.ageEstate);
+    takeInput(newEstate->ageEstate);
     printf("\nEnter Area in meter:\t");
-    takeInput(rentalOffice.size);
+    takeInput(newEstate->size);
     printf("\nEnter floors:\t");
-    takeInput(rentalOffice.floors);
+    takeInput(newEstate->floors);
     printf("\nEnter Area of main structure in meter:\t");
-    takeInput(rentalOffice.sizeMainEstate);
+    takeInput(newEstate->sizeMainEstate);
     printf("\nEnter contact number:\t");
-    takeInput(rentalOffice.contactNum);
+    takeInput(newEstate->contactNum);
     printf("\nEnter bedrooms:\t");
-    takeInput(rentalOffice.bedrooms);
+    takeInput(newEstate->bedrooms);
     printf("\nEnter mortgage:\t");
-    takeInput(rentalOffice.mortgage);
+    takeInput(newEstate->mortgage);
     printf("\nEnter rent:\t");
-    takeInput(rentalOffice.rent);
+    takeInput(newEstate->rent);
+
     // Set the addedByUser field to the username of the user who added the property
-    strcpy(rentalOffice.addedByUser, usr.username);
+    strcpy(newEstate->addedByUser, usr.username);
+    newEstate->next = rentalOfficeHead;
+    rentalOfficeHead = newEstate;
+
     FILE *fp;
-    fp = fopen("RentalOffice.dat", "a");
-    fwrite(&rentalOffice, sizeof(struct rentalOffice), 1, fp);
+    fp = fopen("RentalOffice.dat", "ab");
+    if (fp == NULL)
+    {
+        printf("Error opening file.\n");
+        exit(EXIT_FAILURE);
+    }
+
+    fwrite(newEstate, sizeof(struct rentalOffice), 1, fp);
     fclose(fp);
 
     // Display property features
     printf("\nRental office property added successfully!");
-    printf("\nZone: %s", rentalOffice.zone);
-    printf("\nAddress: %s", rentalOffice.address);
-    printf("\nEstate Type: %s", rentalOffice.estateType);
-    printf("\nAge of Estate: %s", rentalOffice.ageEstate);
-    printf("\nArea: %s", rentalOffice.size);
-    printf("\nFloors: %s", rentalOffice.floors);
-    printf("\nArea of Main Estate: %s", rentalOffice.sizeMainEstate);
-    printf("\nContact Number: %s", rentalOffice.contactNum);
-    printf("\nBedrooms: %s", rentalOffice.bedrooms);
-    printf("\nMortgage: %s", rentalOffice.mortgage);
-    printf("\nRent: %s", rentalOffice.rent);
+    printf("\nZone: %s", newEstate->zone);
+    printf("\nAddress: %s", newEstate->address);
+    printf("\nEstate Type: %s", newEstate->estateType);
+    printf("\nAge of Estate: %s", newEstate->ageEstate);
+    printf("\nArea: %s", newEstate->size);
+    printf("\nFloors: %s", newEstate->floors);
+    printf("\nArea of Main Estate: %s", newEstate->sizeMainEstate);
+    printf("\nContact Number: %s", newEstate->contactNum);
+    printf("\nBedrooms: %s", newEstate->bedrooms);
+    printf("\nMortgage: %s", newEstate->mortgage);
+    printf("\nRent: %s", newEstate->rent);
     printf("\nAdded by User: %s", usr.username);
     printf("\n\n Press any key to continue...");
     getch();
 }
 void addRentalLand(struct user usr)
 {
-    struct rentalLand rentalLand;
+    struct rentalLand *newEstate = malloc(sizeof(struct rentalLand));
+    if (newEstate == NULL)
+    {
+        printf("Memory allocation failed.\n");
+        exit(EXIT_FAILURE);
+    }
+
     printf("\nEnter address:\t");
-    takeInput(rentalLand.address);
+    takeInput(newEstate->address);
     printf("\nEnter land type:\t");
-    takeInput(rentalLand.landType);
+    takeInput(newEstate->landType);
     printf("\nEnter area in meter:\t");
-    takeInput(rentalLand.size);
+    takeInput(newEstate->size);
     printf("\nEnter contact number:\t");
-    takeInput(rentalLand.contactNum);
+    takeInput(newEstate->contactNum);
     printf("\nEnter mortgage:\t");
-    takeInput(rentalLand.mortgage);
+    takeInput(newEstate->mortgage);
     printf("\nEnter rent:\t");
-    takeInput(rentalLand.rent);
+    takeInput(newEstate->rent);
+
     // Set the addedByUser field to the username of the user who added the property
-    strcpy(rentalLand.addedByUser, usr.username);
+    strcpy(newEstate->addedByUser, usr.username);
+    newEstate->next = rentalLandHead;
+    rentalLandHead = newEstate;
+
     FILE *fp;
-    fp = fopen("RentalLands.dat", "a");
-    fwrite(&rentalLand, sizeof(struct rentalLand), 1, fp);
+    fp = fopen("RentalLands.dat", "ab");
+    if (fp == NULL)
+    {
+        printf("Error opening file.\n");
+        exit(EXIT_FAILURE);
+    }
+
+    fwrite(newEstate, sizeof(struct rentalLand), 1, fp);
     fclose(fp);
-    printf("\nLand property added successfully!\n");
-    printf("\nAddress: %s", rentalLand.address);
-    printf("\nLand type: %s", rentalLand.landType);
-    printf("\nArea: %s", rentalLand.size);
-    printf("\nContact Number: %s", rentalLand.contactNum);
-    printf("\nMortgage: %s", rentalLand.mortgage);
-    printf("\nRent: %s", rentalLand.rent);
+
+    // Display property features
+    printf("\nLand property added successfully!");
+    printf("\nAddress: %s", newEstate->address);
+    printf("\nLand type: %s", newEstate->landType);
+    printf("\nArea: %s", newEstate->size);
+    printf("\nContact Number: %s", newEstate->contactNum);
+    printf("\nMortgage: %s", newEstate->mortgage);
+    printf("\nRent: %s", newEstate->rent);
     printf("\nAdded by User: %s", usr.username);
     printf("\n\n Press any key to continue...");
     getch();
@@ -536,26 +643,31 @@ void mainMenu(struct user usr)
 void signUp()
 {
     FILE *fp;
-    struct user *node;
     char password2[50];
 
-    node = malloc(sizeof(struct user));
+    userNode = malloc(sizeof(struct user));
+    if (userNode == NULL)
+    {
+        printf("Memory allocation failed.\n");
+        exit(EXIT_FAILURE);
+    }
+
     do
     {
         printf("\n\nEnter your full name:\t");
-        takeInput(node->fullName);
+        takeInput(userNode->fullName);
         printf("\nEnter your email:\t");
-        takeInput(node->email);
+        takeInput(userNode->email);
         printf("\nEnter phone number:\t");
-        takeInput(node->phone);
+        takeInput(userNode->phone);
         printf("\nEnter phone ID:\t");
-        takeInput(node->userID);
+        takeInput(userNode->userID);
 
         do // Check if username is different
         {
             printf("\nEnter your username:\t");
-            takeInput(node->username);
-            if (isUsernameTaken(node->username) == 0)
+            takeInput(userNode->username);
+            if (isUsernameTaken(userNode->username) == 0)
             {
                 break;
             }
@@ -565,37 +677,39 @@ void signUp()
         } while (1);
 
         printf("\nEnter your password:\t");
-        takePassword(node->password);
+        takePassword(userNode->password);
         printf("\nConfirm your password:\t");
         takePassword(password2);
 
         // Compare two passwords
-        if (strcmp(node->password, password2))
+        if (strcmp(userNode->password, password2))
         {
             printf("\nYour passwords didn't match. Please try again!");
             Beep(750, 300);
         }
-    } while (strcmp(node->password, password2));
+    } while (strcmp(userNode->password, password2));
 
     printf("\nYour password matched");
 
-    fp = fopen("Users.dat", "a+");
-    fwrite(node, sizeof(struct user), 1, fp);
-    if (fwrite != 0)
+    fp = fopen("Users.dat", "ab"); // Use "wb" for the first write
+    if (fp == NULL)
     {
-        printf("\n\nUser registration was successful. Press any key to continue...");
-        getch();
+        printf("Error opening file.\n");
+        exit(EXIT_FAILURE);
     }
-    else
-        printf("Oops! Something went wrong :( ");
 
+    fwrite(userNode, sizeof(struct user), 1, fp);
     fclose(fp);
+
+    printf("\n\nUser registration was successful. Press any key to continue...");
+    getch();
 }
+
+
 
 void login()
 {
     FILE *fp;
-    struct user *start = NULL, *end, *usr;
     char username[50], pword[50];
     int userFound;
 
@@ -611,42 +725,42 @@ void login()
 
         while (!feof(fp))
         {
-            usr = malloc(sizeof(struct user));
-            fread(usr, sizeof(struct user), 1, fp);
+            userNode = malloc(sizeof(struct user));
+            fread(userNode, sizeof(struct user), 1, fp);
 
-            if (start == NULL)
+            if (userHead == NULL)
             {
-                start = usr;
-                end = usr;
-                end->link = NULL;
+                userHead = userNode;
+                userLast = userNode;
+                userLast->link = NULL;
             }
             else
             {
-                end->link = usr;
-                end = usr;
-                end->link = NULL;
+                userLast->link = userNode;
+                userLast = userNode;
+                userLast->link = NULL;
             }
         }
 
-        usr = start;
-        while (usr)
+        userNode = userHead;
+        while (userNode)
         {
-            if (!strcmp(usr->username, username) && !strcmp(usr->password, pword))
+            if (!strcmp(userNode->username, username) && !strcmp(userNode->password, pword))
             {
                 system("cls");
-                printf("\n\t\t\t\tWelcome %s", usr->fullName);
-                printf("\n\n|Full name:\t%s", usr->fullName);
-                printf("\n|Email:\t%s", usr->email);
-                printf("\n|Username:\t%s", usr->username);
-                printf("\n|Phone number:\t%s", usr->phone);
-                printf("\n|ID:\t%s", usr->userID);
+                printf("\n\t\t\t\tWelcome %s", userNode->fullName);
+                printf("\n\n|Full name:\t%s", userNode->fullName);
+                printf("\n|Email:\t%s", userNode->email);
+                printf("\n|Username:\t%s", userNode->username);
+                printf("\n|Phone number:\t%s", userNode->phone);
+                printf("\n|ID:\t%s", userNode->userID);
                 userFound = 1;
 
-                mainMenu(*usr);
+                mainMenu(*userNode);
                 break; // Exit the loop once the user is found
             }
 
-            usr= usr->link;
+            userNode= userNode->link;
         }
 
         if (!userFound)
