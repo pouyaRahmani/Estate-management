@@ -1,6 +1,7 @@
 #include <stdio.h>
 #include <conio.h>
 #include <windows.h>
+#include <time.h>
 
 struct user
 {
@@ -10,6 +11,7 @@ struct user
     char username[50];
     char phone[50];
     char userID[50];
+    char date[9];
     struct user *link;
 };
 
@@ -146,7 +148,7 @@ int isUsernameTaken(char username[50])
     FILE *fp;
     struct user *node;
 
-    fp = fopen("Users.dat", "r");
+    fp = fopen("Users.dat", "rb");
 
     node = malloc(sizeof(struct user));
     while (fread(node, sizeof(struct user), 1, fp))
@@ -603,12 +605,12 @@ void countEstates()
     struct rentalLand *rentalLandNode;
     int residentialCount = 0, officeCount = 0, landCount = 0, rentalResidentialCount = 0, rentalOfficeCount = 0, rentalLandCount = 0;
 
-    residentialFile = fopen("ResidentialSales.dat", "r");
-    officeFile = fopen("OfficeSales.dat", "r");
-    landFile = fopen("LandSales.dat", "r");
-    rentalResidentialFile = fopen("RentalResidental.dat", "r");
-    rentalOfficeFile = fopen("RentalOffice.dat", "r");
-    rentalLandFile = fopen("RentalLands.dat", "r");
+    residentialFile = fopen("ResidentialSales.dat", "rb");
+    officeFile = fopen("OfficeSales.dat", "rb");
+    landFile = fopen("LandSales.dat", "rb");
+    rentalResidentialFile = fopen("RentalResidental.dat", "rb");
+    rentalOfficeFile = fopen("RentalOffice.dat", "rb");
+    rentalLandFile = fopen("RentalLands.dat", "rb");
     // // This part will be used when all the files is existing
     // if (residentialFile == NULL || officeFile == NULL || landFile == NULL ||
     //     rentalResidentialFile == NULL || rentalOfficeFile == NULL || rentalLandFile == NULL)
@@ -675,15 +677,12 @@ void listEstatesByZone(const char *zoneCode)
     struct rentalOffice *rentalOfficeNode;
     struct rentalLand *rentalLandNode;
 
-    residentialFile = fopen("ResidentialSales.dat", "r");
-    officeFile = fopen("OfficeSales.dat", "r");
-    landFile = fopen("LandSales.dat", "r");
-    rentalResidentialFile = fopen("RentalResidental.dat", "r");
-    rentalOfficeFile = fopen("RentalOffice.dat", "r");
-    rentalLandFile = fopen("RentalLands.dat", "r");
-
-    printf("| %-15s | %-30s | %-15s | %-10s | %-12s | %-10s | %-15s |\n", "Zone", "Address", "Type", "Age", "Size", "Bedrooms", "Price");
-    printf("|-----------------|--------------------------------|-----------------|------------|--------------|------------|-----------------|\n");
+    residentialFile = fopen("ResidentialSales.dat", "rb");
+    officeFile = fopen("OfficeSales.dat", "rb");
+    landFile = fopen("LandSales.dat", "rb");
+    rentalResidentialFile = fopen("RentalResidental.dat", "rb");
+    rentalOfficeFile = fopen("RentalOffice.dat", "rb");
+    rentalLandFile = fopen("RentalLands.dat", "rb");
 
     // Process residential sales estates
     residentialNode = malloc(sizeof(struct residentalSale));
@@ -691,27 +690,61 @@ void listEstatesByZone(const char *zoneCode)
     {
         if (strcmp(residentialNode->zone, zoneCode) == 0)
         {
-            printf("| %-15s | %-30s | %-15s | %-10s | %-12s | %-10s | %-15s |\n",
-                   residentialNode->zone, residentialNode->address, residentialNode->estateType, residentialNode->ageEstate, residentialNode->size, residentialNode->bedrooms, residentialNode->price);
-            printf("| Added by: %-38s |\n", residentialNode->addedByUser);
-            printf("--------------------------------------------------------------------------------------------------------------------------------\n");
-        }
-        else
-        {
-            printf("Nothing to show!! Press any key to continue...");
-            getch();
-            return;
+            printf("\nZone: %s\t\tAddress: %s\t\tType: %s\t\tAge: %s", residentialNode->zone, residentialNode->address, residentialNode->estateType, residentialNode->ageEstate);
+            printf("\nSize: %s\t\tFloors: %s\t\tInfrastructure: %s\t\tNum: %s", residentialNode->size, residentialNode->floors, residentialNode->sizeMainEstate, residentialNode->contactNum);
+            printf("\nBedrooms: %s\t\tPrice: %s\t\tAdded by user: _%s_ for  RESIDENTAL sales", residentialNode->bedrooms, residentialNode->price, residentialNode->addedByUser);
+            printf("\n-------------------------------------------------------------------------------------------------------------\n");
         }
     }
-    fclose(residentialFile);
-    return;
+        fclose(residentialFile);
+    officeNode = malloc(sizeof(struct officeSale));
+    while (fread(officeNode, sizeof(struct officeSale), 1, officeFile))
+    {
+        if (strcmp(officeNode->zone, zoneCode) == 0)
+        {
+            printf("\nZone: %s\t\tAddress: %s\t\tType: %s\t\tAge: %s", officeNode->zone, officeNode->address, officeNode->estateType, officeNode->ageEstate);
+            printf("\nSize: %s\t\tFloors: %s\t\tInfrastructure: %s\t\tNum: %s", officeNode->size, officeNode->floors, officeNode->sizeMainEstate, officeNode->contactNum);
+            printf("\nOffice rooms: %s\t\tPrice: %s\t\tAdded by user: _%s_ for OFFICE sales", officeNode->officeRooms, officeNode->price, officeNode->addedByUser);
+            printf("\n-------------------------------------------------------------------------------------------------------------\n");
+        }
+    }
+
+    fclose(officeFile);
+
+    // Process rental residential estates
+    rentalResidentialNode = malloc(sizeof(struct rentalResidental));
+    while (fread(rentalResidentialNode, sizeof(struct rentalResidental), 1, rentalResidentialFile))
+    {
+        if (strcmp(rentalResidentialNode->zone, zoneCode) == 0)
+        {
+            printf("\nZone: %s\t\tAddress: %s\t\tType: %s\t\tAge: %s", rentalResidentialNode->zone, rentalResidentialNode->address, rentalResidentialNode->estateType, rentalResidentialNode->ageEstate);
+            printf("\nSize: %s\t\tFloors: %s\t\tInfrastructure: %s\t\tNum: %s", rentalResidentialNode->size, rentalResidentialNode->floors, rentalResidentialNode->sizeMainEstate, rentalResidentialNode->contactNum);
+            printf("\nBedrooms: %s\t\tRent: %s\t\tAdded by user: _%s_ for RENTAL RESIDENTIAL", rentalResidentialNode->bedrooms, rentalResidentialNode->rent, rentalResidentialNode->addedByUser);
+            printf("\n-------------------------------------------------------------------------------------------------------------\n");
+        }
+    }
+    fclose(rentalResidentialFile);
+
+    // Process rental office estates
+    rentalOfficeNode = malloc(sizeof(struct rentalOffice));
+    while (fread(rentalOfficeNode, sizeof(struct rentalOffice), 1, rentalOfficeFile))
+    {
+        if (strcmp(rentalOfficeNode->zone, zoneCode) == 0)
+        {
+            printf("\nZone: %s\t\tAddress: %s\t\tType: %s\t\tAge: %s", rentalOfficeNode->zone, rentalOfficeNode->address, rentalOfficeNode->estateType, rentalOfficeNode->ageEstate);
+            printf("\nSize: %s\t\tFloors: %s\t\tInfrastructure: %s\t\tNum: %s", rentalOfficeNode->size, rentalOfficeNode->floors, rentalOfficeNode->sizeMainEstate, rentalOfficeNode->contactNum);
+            printf("\nOffice rooms: %s\t\tRent: %s\t\tAdded by user: _%s_ for RENTAL OFFICE", rentalOfficeNode->bedrooms, rentalOfficeNode->rent, rentalOfficeNode->addedByUser);
+            printf("\n-------------------------------------------------------------------------------------------------------------\n");
+        }
+    }
+    fclose(rentalOfficeFile);
+
     // Free allocated memory
     free(residentialNode);
     free(officeNode);
-    free(landNode);
     free(rentalResidentialNode);
     free(rentalOfficeNode);
-    free(rentalLandNode);
+    return;
 }
 // Users report
 void reports()
@@ -775,7 +808,7 @@ void reports()
 void changeProfile(struct user *currentUser)
 {
     FILE *fp;
-    fp = fopen("Users.dat", "r+"); // Open the file in read and write mode
+    fp = fopen("Users.dat", "rb+"); // Open the file in read and write mode
     if (fp == NULL)
     {
         printf("\nError opening the file!");
@@ -882,6 +915,8 @@ void signUp()
 {
     FILE *fp;
     char password2[50];
+    time_t t;
+    struct tm *local_time;
 
     userNode = malloc(sizeof(struct user));
     if (userNode == NULL)
@@ -936,6 +971,10 @@ void signUp()
         exit(EXIT_FAILURE);
     }
 
+    t = time(NULL);
+    local_time = localtime(&t);
+    sprintf(userNode->date, "%0d/%0d/%0d", local_time->tm_year+1900, local_time->tm_mon+1, local_time->tm_mday);
+    
     fwrite(userNode, sizeof(struct user), 1, fp);
     fclose(fp);
 
@@ -957,7 +996,7 @@ void login()
         takeInput(username);
         printf("\nEnter your password:\t");
         takePassword(pword);
-        fp = fopen("Users.dat", "r");
+        fp = fopen("Users.dat", "rb");
 
         while (!feof(fp))
         {
