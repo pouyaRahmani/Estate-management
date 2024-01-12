@@ -696,7 +696,7 @@ void listEstatesByZone(const char *zoneCode)
             printf("\n-------------------------------------------------------------------------------------------------------------\n");
         }
     }
-        fclose(residentialFile);
+    fclose(residentialFile);
     officeNode = malloc(sizeof(struct officeSale));
     while (fread(officeNode, sizeof(struct officeSale), 1, officeFile))
     {
@@ -746,10 +746,98 @@ void listEstatesByZone(const char *zoneCode)
     free(rentalOfficeNode);
     return;
 }
+void listEstatesByAge( int minAge,  int maxAge)
+{
+    FILE *residentialFile, *officeFile, *landFile, *rentalResidentialFile, *rentalOfficeFile, *rentalLandFile;
+    struct residentalSale *residentialNode;
+    struct officeSale *officeNode;
+    struct landSale *landNode;
+    struct rentalResidental *rentalResidentialNode;
+    struct rentalOffice *rentalOfficeNode;
+    struct rentalLand *rentalLandNode;
+
+    residentialFile = fopen("ResidentialSales.dat", "rb");
+    officeFile = fopen("OfficeSales.dat", "rb");
+    landFile = fopen("LandSales.dat", "rb");
+    rentalResidentialFile = fopen("RentalResidental.dat", "rb");
+    rentalOfficeFile = fopen("RentalOffice.dat", "rb");
+    rentalLandFile = fopen("RentalLands.dat", "rb");
+
+    // Process residential sales estates
+    residentialNode = malloc(sizeof(struct residentalSale));
+    while (fread(residentialNode, sizeof(struct residentalSale), 1, residentialFile))
+    {
+        int age = atoi(residentialNode->ageEstate);
+        if (age >= minAge && age <= maxAge)
+        {
+            printf("\nZone: %s\t\tAddress: %s\t\tType: %s\t\tAge: %s", residentialNode->zone, residentialNode->address, residentialNode->estateType, residentialNode->ageEstate);
+            printf("\nSize: %s\t\tFloors: %s\t\tInfrastructure: %s\t\tNum: %s", residentialNode->size, residentialNode->floors, residentialNode->sizeMainEstate, residentialNode->contactNum);
+            printf("\nBedrooms: %s\t\tPrice: %s\t\tAdded by user: _%s_ for  RESIDENTAL sales", residentialNode->bedrooms, residentialNode->price, residentialNode->addedByUser);
+            printf("\n-------------------------------------------------------------------------------------------------------------\n");
+        }
+    }
+    fclose(residentialFile);
+
+    // Process office sales estates
+    officeNode = malloc(sizeof(struct officeSale));
+    while (fread(officeNode, sizeof(struct officeSale), 1, officeFile))
+    {
+        int age = atoi(officeNode->ageEstate);
+        if (age >= minAge && age <= maxAge)
+        {
+            printf("\nZone: %s\t\tAddress: %s\t\tType: %s\t\tAge: %s", officeNode->zone, officeNode->address, officeNode->estateType, officeNode->ageEstate);
+            printf("\nSize: %s\t\tFloors: %s\t\tInfrastructure: %s\t\tNum: %s", officeNode->size, officeNode->floors, officeNode->sizeMainEstate, officeNode->contactNum);
+            printf("\nOffice rooms: %s\t\tPrice: %s\t\tAdded by user: _%s_ for OFFICE sales", officeNode->officeRooms, officeNode->price, officeNode->addedByUser);
+            printf("\n-------------------------------------------------------------------------------------------------------------\n");
+        }
+    }
+    fclose(officeFile);
+
+    // Process rental residential estates
+    rentalResidentialNode = malloc(sizeof(struct rentalResidental));
+    while (fread(rentalResidentialNode, sizeof(struct rentalResidental), 1, rentalResidentialFile))
+    {
+        int age = atoi(rentalResidentialNode->ageEstate);
+        if (age >= minAge && age <= maxAge)
+        {
+            printf("\nZone: %s\t\tAddress: %s\t\tType: %s\t\tAge: %s", rentalResidentialNode->zone, rentalResidentialNode->address, rentalResidentialNode->estateType, rentalResidentialNode->ageEstate);
+            printf("\nSize: %s\t\tFloors: %s\t\tInfrastructure: %s\t\tNum: %s", rentalResidentialNode->size, rentalResidentialNode->floors, rentalResidentialNode->sizeMainEstate, rentalResidentialNode->contactNum);
+            printf("\nBedrooms: %s\t\tRent: %s\t\tAdded by user: _%s_ for RENTAL RESIDENTIAL", rentalResidentialNode->bedrooms, rentalResidentialNode->rent, rentalResidentialNode->addedByUser);
+            printf("\n-------------------------------------------------------------------------------------------------------------\n");
+        }
+    }
+    fclose(rentalResidentialFile);
+
+    // Process rental office estates
+    rentalOfficeNode = malloc(sizeof(struct rentalOffice));
+    while (fread(rentalOfficeNode, sizeof(struct rentalOffice), 1, rentalOfficeFile))
+    {
+        int age = atoi(rentalOfficeNode->ageEstate);
+        if (age >= minAge && age <= maxAge)
+        {
+            printf("\nZone: %s\t\tAddress: %s\t\tType: %s\t\tAge: %s", rentalOfficeNode->zone, rentalOfficeNode->address, rentalOfficeNode->estateType, rentalOfficeNode->ageEstate);
+            printf("\nSize: %s\t\tFloors: %s\t\tInfrastructure: %s\t\tNum: %s", rentalOfficeNode->size, rentalOfficeNode->floors, rentalOfficeNode->sizeMainEstate, rentalOfficeNode->contactNum);
+            printf("\nOffice rooms: %s\t\tRent: %s\t\tAdded by user: _%s_ for RENTAL OFFICE", rentalOfficeNode->bedrooms, rentalOfficeNode->rent, rentalOfficeNode->addedByUser);
+            printf("\n-------------------------------------------------------------------------------------------------------------\n");
+        }
+    }
+    fclose(rentalOfficeFile);
+
+    // Free allocated memory
+    free(residentialNode);
+    free(officeNode);
+    free(rentalResidentialNode);
+    free(rentalOfficeNode);
+    return;
+}
+
 // Users report
 void reports()
 {
+    char zoneCode[50];
     int choice;
+    int minAge, maxAge;
+    
     do
     {
         // system("cls");
@@ -773,13 +861,16 @@ void reports()
             countEstates();
             break;
         case 2:
-            printf("Enter the zone code (1 to 6): ");
-            char zoneCode[50];
+            printf("Enter the zone code: ");
             scanf("%s", &zoneCode);
             listEstatesByZone(zoneCode);
             break;
         case 3:
-            // Add code for List of estates by the age range
+            printf("Enter min age of the estate: ");
+            scanf("%d", &minAge);
+            printf("Enter max age of the estate: ");
+            scanf("%d", &maxAge);
+            listEstatesByAge(minAge, maxAge);
             break;
         case 4:
             // Add code for List of estates by the size of infrastructure
@@ -973,8 +1064,8 @@ void signUp()
 
     t = time(NULL);
     local_time = localtime(&t);
-    sprintf(userNode->date, "%0d/%0d/%0d", local_time->tm_year+1900, local_time->tm_mon+1, local_time->tm_mday);
-    
+    sprintf(userNode->date, "%0d/%0d/%0d", local_time->tm_year + 1900, local_time->tm_mon + 1, local_time->tm_mday);
+
     fwrite(userNode, sizeof(struct user), 1, fp);
     fclose(fp);
 
