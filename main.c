@@ -665,6 +665,54 @@ void countEstates()
     printf("\nNumber of existing rental office estates: %d", rentalOfficeCount);
     printf("\nNumber of existing rental land estates: %d\n", rentalLandCount);
 }
+void listEstatesByZone(const char *zoneCode)
+{
+    FILE *residentialFile, *officeFile, *landFile, *rentalResidentialFile, *rentalOfficeFile, *rentalLandFile;
+    struct residentalSale *residentialNode;
+    struct officeSale *officeNode;
+    struct landSale *landNode;
+    struct rentalResidental *rentalResidentialNode;
+    struct rentalOffice *rentalOfficeNode;
+    struct rentalLand *rentalLandNode;
+
+    residentialFile = fopen("ResidentialSales.dat", "r");
+    officeFile = fopen("OfficeSales.dat", "r");
+    landFile = fopen("LandSales.dat", "r");
+    rentalResidentialFile = fopen("RentalResidental.dat", "r");
+    rentalOfficeFile = fopen("RentalOffice.dat", "r");
+    rentalLandFile = fopen("RentalLands.dat", "r");
+
+    printf("| %-15s | %-30s | %-15s | %-10s | %-12s | %-10s | %-15s |\n", "Zone", "Address", "Type", "Age", "Size", "Bedrooms", "Price");
+    printf("|-----------------|--------------------------------|-----------------|------------|--------------|------------|-----------------|\n");
+
+    // Process residential sales estates
+    residentialNode = malloc(sizeof(struct residentalSale));
+    while (fread(residentialNode, sizeof(struct residentalSale), 1, residentialFile))
+    {
+        if (strcmp(residentialNode->zone, zoneCode) == 0)
+        {
+            printf("| %-15s | %-30s | %-15s | %-10s | %-12s | %-10s | %-15s |\n",
+                   residentialNode->zone, residentialNode->address, residentialNode->estateType, residentialNode->ageEstate, residentialNode->size, residentialNode->bedrooms, residentialNode->price);
+            printf("| Added by: %-38s |\n", residentialNode->addedByUser);
+            printf("--------------------------------------------------------------------------------------------------------------------------------\n");
+        }
+        else
+        {
+            printf("Nothing to show!! Press any key to continue...");
+            getch();
+            return;
+        }
+    }
+    fclose(residentialFile);
+    return;
+    // Free allocated memory
+    free(residentialNode);
+    free(officeNode);
+    free(landNode);
+    free(rentalResidentialNode);
+    free(rentalOfficeNode);
+    free(rentalLandNode);
+}
 // Users report
 void reports()
 {
@@ -674,7 +722,7 @@ void reports()
         // system("cls");
         printf("\n\t\t\t\t---===== Reports =====---");
         printf("\n\n1. Number of exiting estates in the system");
-        printf("\n2. List of estates available int a specific zone(by the zone's code)");
+        printf("\n2. List of estates by the specific zone(by the zone's code)");
         printf("\n3. List of estates by the age range");
         printf("\n4. List of estates by the size of infrastructure");
         printf("\n5. List of estates by the price range");
@@ -690,10 +738,12 @@ void reports()
         {
         case 1:
             countEstates();
-
             break;
         case 2:
-            // Add code for List of estates available in a specific zone
+            printf("Enter the zone code (1 to 6): ");
+            char zoneCode[50];
+            scanf("%s", &zoneCode);
+            listEstatesByZone(zoneCode);
             break;
         case 3:
             // Add code for List of estates by the age range
