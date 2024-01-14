@@ -11,7 +11,7 @@ struct user
     char username[50];
     char phone[50];
     char userID[50];
-    char date[9];
+    char date[21];
     struct user *link;
 };
 
@@ -1179,14 +1179,27 @@ void listByRentAndMortgage(int minMortgage, int maxMortgage, int minRent, int ma
     free(rentalOfficeNode);
     return;
 }
-// Users report
+void lastActive()
+{
+    FILE *usersFile;
+    struct user *userNode;
+    usersFile = fopen("Users.dat", "rb");
+    userNode = malloc(sizeof(struct user));
+    while (fread(userNode, sizeof(struct user), 1, usersFile))
+    {
+        printf("\nUsername: %s\t\tName: %s\t\tuserID: %s", userNode->username, userNode->fullName, userNode->userID);
+        printf("\nLast activity in %s", userNode->date);
+        printf("\n---------------------------------------------------------------------------------------------\n");
+    }
+    fclose(usersFile);
+}
 void reports(struct user usr)
 {
     char zoneCode[50], rooms[50];
     int choice;
     int minAge, maxAge, minSize, maxSize, minPrice, maxPrice;
     int minMortgage, maxMortgage, minRent, maxRent;
-    if (strcmp(usr.username, "admin") != 0)
+    if (strcmp(usr.username, "admin") != 0) // Users report
     {
         do
         {
@@ -1265,7 +1278,7 @@ void reports(struct user usr)
             }
         } while (choice != 9);
     }
-    else
+    else // Admin reports
     {
         do
         {
@@ -1278,9 +1291,8 @@ void reports(struct user usr)
             printf("\n5. List of estates by the price range");
             printf("\n6. List of estates by the specific number of rooms");
             printf("\n7. Total value of the estates in the system");
-            // Write admin reports in the end!!
             printf("\n8. List of rental estates sorted by mortgage and rent");
-            printf("\n9. List of users by number of registered estates");
+            printf("\n9. List of users by the number of registered estates");
             printf("\n10. List of registered estates in specific period of time");
             printf("\n11. List of deleted estates");
             printf("\n12. List of last users activity");
@@ -1340,16 +1352,16 @@ void reports(struct user usr)
                 listByRentAndMortgage(minMortgage, maxMortgage, minRent, maxRent);
                 break;
             case 9:
-           
+
                 break;
             case 10:
-            
+
                 break;
             case 11:
-             
+
                 break;
             case 12:
-               
+                lastActive();
                 break;
             case 13:
                 // Return to the main menu
@@ -1529,7 +1541,8 @@ void signUp()
 
     t = time(NULL);
     local_time = localtime(&t);
-    sprintf(userNode->date, "%0d/%0d/%0d", local_time->tm_year + 1900, local_time->tm_mon + 1, local_time->tm_mday);
+    sprintf(userNode->date, "%0d/%0d/%0d %02d:%02d:%02d", local_time->tm_year + 1900, local_time->tm_mon + 1,
+            local_time->tm_mday, local_time->tm_hour, local_time->tm_min, local_time->tm_sec);
 
     fwrite(userNode, sizeof(struct user), 1, fp);
     fclose(fp);
@@ -1552,7 +1565,7 @@ void login()
         takeInput(username);
         printf("\nEnter your password:\t");
         takePassword(pword);
-        fp = fopen("Users.dat", "rb");
+        fp = fopen("Users.dat", "rb+");
 
         while (!feof(fp))
         {
@@ -1578,6 +1591,16 @@ void login()
         {
             if (!strcmp(userNode->username, username) && !strcmp(userNode->password, pword))
             {
+                // Update login time
+                time_t t = time(NULL);
+                struct tm *local_time = localtime(&t);
+                sprintf(userNode->date, "%0d/%0d/%0d %02d:%02d:%02d", local_time->tm_year + 1900, local_time->tm_mon + 1,
+                        local_time->tm_mday, local_time->tm_hour, local_time->tm_min, local_time->tm_sec);
+
+                // Save updated user data back to the file
+                fseek(fp, -sizeof(struct user), SEEK_CUR); // Move the file pointer back by the size of struct user
+                fwrite(userNode, sizeof(struct user), 1, fp);
+
                 system("cls");
                 printf("\n\t\t\t\tWelcome %s", userNode->fullName);
                 printf("\n\n|Full name:\t%s", userNode->fullName);
@@ -1585,6 +1608,7 @@ void login()
                 printf("\n|Username:\t%s", userNode->username);
                 printf("\n|Phone number:\t%s", userNode->phone);
                 printf("\n|ID:\t%s", userNode->userID);
+                printf("\n|Last login:\t%s", userNode->date);
                 userFound = 1;
 
                 mainMenu(*userNode);
