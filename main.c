@@ -1193,6 +1193,129 @@ void lastActive()
     }
     fclose(usersFile);
 }
+void userRegistrations()
+{
+    FILE *usersFile, *residentialFile, *officeFile, *landFile, *rentalResidentialFile, *rentalOfficeFile, *rentalLandFile;
+    struct user *userNode;
+    struct residentalSale *residentialNode;
+    struct officeSale *officeNode;
+    struct landSale *landNode;
+    struct rentalResidental *rentalResidentialNode;
+    struct rentalOffice *rentalOfficeNode;
+    struct rentalLand *rentalLandNode;
+
+    usersFile = fopen("Users.dat", "rb");
+    residentialFile = fopen("ResidentialSales.dat", "rb");
+    officeFile = fopen("OfficeSales.dat", "rb");
+    landFile = fopen("LandSales.dat", "rb");
+    rentalResidentialFile = fopen("RentalResidental.dat", "rb");
+    rentalOfficeFile = fopen("RentalOffice.dat", "rb");
+    rentalLandFile = fopen("RentalLands.dat", "rb");
+
+    userNode = malloc(sizeof(struct user));
+    residentialNode = malloc(sizeof(struct residentalSale));
+    officeNode = malloc(sizeof(struct officeSale));
+    landNode = malloc(sizeof(struct landSale));
+    rentalResidentialNode = malloc(sizeof(struct rentalResidental));
+    rentalOfficeNode = malloc(sizeof(struct rentalOffice));
+    rentalLandNode = malloc(sizeof(struct rentalLand));
+
+    while (fread(userNode, sizeof(struct user), 1, usersFile))
+    {
+        int residentialCount = 0;
+        int officeCount = 0;
+        int landCount = 0;
+        int rentalResidentialCount = 0;
+        int rentalOfficeCount = 0;
+        int rentalLandCount = 0;
+        int totalCount = 0;
+
+        // Reset the file position indicators for each estate type
+        fseek(residentialFile, 0, SEEK_SET);
+        fseek(officeFile, 0, SEEK_SET);
+        fseek(landFile, 0, SEEK_SET);
+        fseek(rentalResidentialFile, 0, SEEK_SET);
+        fseek(rentalOfficeFile, 0, SEEK_SET);
+        fseek(rentalLandFile, 0, SEEK_SET);
+
+        while (fread(residentialNode, sizeof(struct residentalSale), 1, residentialFile))
+        {
+            if (strcmp(userNode->username, residentialNode->addedByUser) == 0)
+            {
+                residentialCount++;
+                totalCount++;
+            }
+        }
+
+        while (fread(officeNode, sizeof(struct officeSale), 1, officeFile))
+        {
+            if (strcmp(userNode->username, officeNode->addedByUser) == 0)
+            {
+                officeCount++;
+                totalCount++;
+            }
+        }
+
+        while (fread(landNode, sizeof(struct landSale), 1, landFile))
+        {
+            if (strcmp(userNode->username, landNode->addedByUser) == 0)
+            {
+                landCount++;
+                totalCount++;
+            }
+        }
+
+        while (fread(rentalResidentialNode, sizeof(struct rentalResidental), 1, rentalResidentialFile))
+        {
+            if (strcmp(userNode->username, rentalResidentialNode->addedByUser) == 0)
+            {
+                rentalResidentialCount++;
+                totalCount++;
+            }
+        }
+
+        while (fread(rentalOfficeNode, sizeof(struct rentalOffice), 1, rentalOfficeFile))
+        {
+            if (strcmp(userNode->username, rentalOfficeNode->addedByUser) == 0)
+            {
+                rentalOfficeCount++;
+                totalCount++;
+            }
+        }
+
+        while (fread(rentalLandNode, sizeof(struct rentalLand), 1, rentalLandFile))
+        {
+            if (strcmp(userNode->username, rentalLandNode->addedByUser) == 0)
+            {
+                rentalLandCount++;
+                totalCount++;
+            }
+        }
+
+        printf("User: %s\t\tResidential: %d\t\tOffice: %d\t\tLand: %d\nRental Residential: %d\t\tRental Office: %d\t\tRental Land: %d\t\tTotal added:%d\n",
+               userNode->username, residentialCount, officeCount, landCount, rentalResidentialCount, rentalOfficeCount, rentalLandCount, totalCount);
+        printf("\n-----------------------------------------------------------------------------------------------------------------\n");
+    }
+
+    // Close all files
+    fclose(usersFile);
+    fclose(residentialFile);
+    fclose(officeFile);
+    fclose(landFile);
+    fclose(rentalResidentialFile);
+    fclose(rentalOfficeFile);
+    fclose(rentalLandFile);
+
+    // Free allocated memory
+    free(userNode);
+    free(residentialNode);
+    free(officeNode);
+    free(landNode);
+    free(rentalResidentialNode);
+    free(rentalOfficeNode);
+    free(rentalLandNode);
+}
+
 void reports(struct user usr)
 {
     char zoneCode[50], rooms[50];
@@ -1352,7 +1475,7 @@ void reports(struct user usr)
                 listByRentAndMortgage(minMortgage, maxMortgage, minRent, maxRent);
                 break;
             case 9:
-
+                userRegistrations();
                 break;
             case 10:
 
