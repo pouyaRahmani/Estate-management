@@ -730,7 +730,7 @@ void listEstatesByZone(const char *zoneCode)
     officeNode = malloc(sizeof(struct officeSale));
     while (fread(officeNode, sizeof(struct officeSale), 1, officeFile))
     {
-        if (strcmp(officeNode->zone, zoneCode) == 0)
+        if (strcmp(officeNode->zone, zoneCode) == 0 && strcmp(officeNode->deleteDate, "0") == 0)
         {
             printf("\nZone: %s\t\tAddress: %s\t\tType: %s\t\tAge: %s", officeNode->zone, officeNode->address, officeNode->estateType, officeNode->ageEstate);
             printf("\nSize: %s\t\tFloors: %s\t\tInfrastructure: %s\t\tNum: %s", officeNode->size, officeNode->floors, officeNode->infrastructure, officeNode->contactNum);
@@ -745,7 +745,7 @@ void listEstatesByZone(const char *zoneCode)
     rentalResidentialNode = malloc(sizeof(struct rentalResidental));
     while (fread(rentalResidentialNode, sizeof(struct rentalResidental), 1, rentalResidentialFile))
     {
-        if (strcmp(rentalResidentialNode->zone, zoneCode) == 0)
+        if (strcmp(rentalResidentialNode->zone, zoneCode) == 0 && strcmp(rentalResidentialNode->deleteDate, "0") == 0)
         {
             printf("\nZone: %s\t\tAddress: %s\t\tType: %s\t\tAge: %s\t\tSize: %s", rentalResidentialNode->zone, rentalResidentialNode->address, rentalResidentialNode->estateType, rentalResidentialNode->ageEstate, rentalResidentialNode->size);
             printf("\nFloors: %s\t\tInfrastructure: %s\t\tNum: %s\t\tMortgage: %s", rentalResidentialNode->floors, rentalResidentialNode->infrastructure, rentalResidentialNode->contactNum, rentalResidentialNode->mortgage);
@@ -759,7 +759,7 @@ void listEstatesByZone(const char *zoneCode)
     rentalOfficeNode = malloc(sizeof(struct rentalOffice));
     while (fread(rentalOfficeNode, sizeof(struct rentalOffice), 1, rentalOfficeFile))
     {
-        if (strcmp(rentalOfficeNode->zone, zoneCode) == 0)
+        if (strcmp(rentalOfficeNode->zone, zoneCode) == 0 && strcmp(rentalOfficeNode->deleteDate, "0") == 0)
         {
             printf("\nZone: %s\t\tAddress: %s\t\tType: %s\t\tAge: %s\t\tSize: %s", rentalOfficeNode->zone, rentalOfficeNode->address, rentalOfficeNode->estateType, rentalOfficeNode->ageEstate, rentalOfficeNode->size);
             printf("\nFloors: %s\t\tInfrastructure: %s\t\tNum: %s\t\tMortgage: %s", rentalOfficeNode->floors, rentalOfficeNode->infrastructure, rentalOfficeNode->contactNum, rentalOfficeNode->mortgage);
@@ -813,7 +813,7 @@ void listEstatesByAge(int minAge, int maxAge)
     while (fread(officeNode, sizeof(struct officeSale), 1, officeFile))
     {
         int age = atoi(officeNode->ageEstate);
-        if (age >= minAge && age <= maxAge)
+        if (age >= minAge && age <= maxAge && strcmp(officeNode->deleteDate, "0") == 0)
         {
             printf("\nZone: %s\t\tAddress: %s\t\tType: %s\t\tAge: %s", officeNode->zone, officeNode->address, officeNode->estateType, officeNode->ageEstate);
             printf("\nSize: %s\t\tFloors: %s\t\tInfrastructure: %s\t\tNum: %s", officeNode->size, officeNode->floors, officeNode->infrastructure, officeNode->contactNum);
@@ -828,7 +828,7 @@ void listEstatesByAge(int minAge, int maxAge)
     while (fread(rentalResidentialNode, sizeof(struct rentalResidental), 1, rentalResidentialFile))
     {
         int age = atoi(rentalResidentialNode->ageEstate);
-        if (age >= minAge && age <= maxAge)
+        if (age >= minAge && age <= maxAge && strcmp(rentalResidentialNode->deleteDate, "0") == 0)
         {
             printf("\nZone: %s\t\tAddress: %s\t\tType: %s\t\tAge: %s\t\tSize: %s", rentalResidentialNode->zone, rentalResidentialNode->address, rentalResidentialNode->estateType, rentalResidentialNode->ageEstate, rentalResidentialNode->size);
             printf("\nFloors: %s\t\tInfrastructure: %s\t\tNum: %s\t\tMortgage: %s", rentalResidentialNode->floors, rentalResidentialNode->infrastructure, rentalResidentialNode->contactNum, rentalResidentialNode->mortgage);
@@ -843,7 +843,7 @@ void listEstatesByAge(int minAge, int maxAge)
     while (fread(rentalOfficeNode, sizeof(struct rentalOffice), 1, rentalOfficeFile))
     {
         int age = atoi(rentalOfficeNode->ageEstate);
-        if (age >= minAge && age <= maxAge)
+        if (age >= minAge && age <= maxAge && strcmp(rentalOfficeNode->deleteDate, "0") == 0)
         {
             printf("\nZone: %s\t\tAddress: %s\t\tType: %s\t\tAge: %s\t\tSize: %s", rentalOfficeNode->zone, rentalOfficeNode->address, rentalOfficeNode->estateType, rentalOfficeNode->ageEstate, rentalOfficeNode->size);
             printf("\nFloors: %s\t\tInfrastructure: %s\t\tNum: %s\t\tMortgage: %s", rentalOfficeNode->floors, rentalOfficeNode->infrastructure, rentalOfficeNode->contactNum, rentalOfficeNode->mortgage);
@@ -882,7 +882,7 @@ void listEstatesBySize(int minSize, int maxSize)
     while (fread(residentialNode, sizeof(struct residentalSale), 1, residentialFile))
     {
         int size = atoi(residentialNode->infrastructure);
-        if (size >= minSize && size <= maxSize)
+        if (size >= minSize && size <= maxSize && strcmp(residentialNode->deleteDate, "0") == 0)
         {
             printf("\nZone: %s\t\tAddress: %s\t\tType: %s\t\tAge: %s", residentialNode->zone, residentialNode->address, residentialNode->estateType, residentialNode->ageEstate);
             printf("\nSize: %s\t\tFloors: %s\t\tInfrastructure: %s\t\tNum: %s", residentialNode->size, residentialNode->floors, residentialNode->infrastructure, residentialNode->contactNum);
@@ -897,7 +897,7 @@ void listEstatesBySize(int minSize, int maxSize)
     while (fread(officeNode, sizeof(struct officeSale), 1, officeFile))
     {
         int size = atoi(officeNode->infrastructure);
-        if (size >= minSize && size <= maxSize)
+        if (size >= minSize && size <= maxSize && strcmp(officeNode->deleteDate, "0") == 0)
         {
             printf("\nZone: %s\t\tAddress: %s\t\tType: %s\t\tAge: %s", officeNode->zone, officeNode->address, officeNode->estateType, officeNode->ageEstate);
             printf("\nSize: %s\t\tFloors: %s\t\tInfrastructure: %s\t\tNum: %s", officeNode->size, officeNode->floors, officeNode->infrastructure, officeNode->contactNum);
@@ -912,7 +912,7 @@ void listEstatesBySize(int minSize, int maxSize)
     while (fread(rentalResidentialNode, sizeof(struct rentalResidental), 1, rentalResidentialFile))
     {
         int size = atoi(rentalResidentialNode->infrastructure);
-        if (size >= minSize && size <= maxSize)
+        if (size >= minSize && size <= maxSize && strcmp(rentalResidentialNode->deleteDate, "0") == 0)
         {
             printf("\nZone: %s\t\tAddress: %s\t\tType: %s\t\tAge: %s\t\tSize: %s", rentalResidentialNode->zone, rentalResidentialNode->address, rentalResidentialNode->estateType, rentalResidentialNode->ageEstate, rentalResidentialNode->size);
             printf("\nFloors: %s\t\tInfrastructure: %s\t\tNum: %s\t\tMortgage: %s", rentalResidentialNode->floors, rentalResidentialNode->infrastructure, rentalResidentialNode->contactNum, rentalResidentialNode->mortgage);
@@ -926,7 +926,7 @@ void listEstatesBySize(int minSize, int maxSize)
     while (fread(rentalOfficeNode, sizeof(struct rentalOffice), 1, rentalOfficeFile))
     {
         int size = atoi(rentalOfficeNode->infrastructure);
-        if (size >= minSize && size <= maxSize)
+        if (size >= minSize && size <= maxSize && strcmp(rentalOfficeNode->deleteDate, "0") == 0)
         {
             printf("\nZone: %s\t\tAddress: %s\t\tType: %s\t\tAge: %s\t\tSize: %s", rentalOfficeNode->zone, rentalOfficeNode->address, rentalOfficeNode->estateType, rentalOfficeNode->ageEstate, rentalOfficeNode->size);
             printf("\nFloors: %s\t\tInfrastructure: %s\t\tNum: %s\t\tMortgage: %s", rentalOfficeNode->floors, rentalOfficeNode->infrastructure, rentalOfficeNode->contactNum, rentalOfficeNode->mortgage);
@@ -965,7 +965,7 @@ void listEstatesByPrice(int minPrice, int maxPrice)
     while (fread(residentialNode, sizeof(struct residentalSale), 1, residentialFile))
     {
         int price = atoi(residentialNode->price);
-        if (price >= minPrice && price <= maxPrice)
+        if (price >= minPrice && price <= maxPrice && strcmp(residentialNode->deleteDate, "0") == 0)
         {
             printf("\nZone: %s\t\tAddress: %s\t\tType: %s\t\tAge: %s", residentialNode->zone, residentialNode->address, residentialNode->estateType, residentialNode->ageEstate);
             printf("\nSize: %s\t\tFloors: %s\t\tInfrastructure: %s\t\tNum: %s", residentialNode->size, residentialNode->floors, residentialNode->infrastructure, residentialNode->contactNum);
@@ -980,7 +980,7 @@ void listEstatesByPrice(int minPrice, int maxPrice)
     while (fread(officeNode, sizeof(struct officeSale), 1, officeFile))
     {
         int price = atoi(officeNode->price);
-        if (price >= minPrice && price <= maxPrice)
+        if (price >= minPrice && price <= maxPrice && strcmp(officeNode->deleteDate, "0") == 0)
         {
             printf("\nZone: %s\t\tAddress: %s\t\tType: %s\t\tAge: %s", officeNode->zone, officeNode->address, officeNode->estateType, officeNode->ageEstate);
             printf("\nSize: %s\t\tFloors: %s\t\tInfrastructure: %s\t\tNum: %s", officeNode->size, officeNode->floors, officeNode->infrastructure, officeNode->contactNum);
@@ -994,7 +994,7 @@ void listEstatesByPrice(int minPrice, int maxPrice)
     while (fread(landNode, sizeof(struct landSale), 1, landFile))
     {
         int price = atoi(landNode->price);
-        if (price >= minPrice && price <= maxPrice)
+        if (price >= minPrice && price <= maxPrice && strcmp(landNode->deleteDate, "0") == 0)
         {
             printf("\nAddress: %s\t\tLand Type: %s\t\tSize: %s", landNode->address, landNode->landType, landNode->size);
             printf("\nNum: %s\t\tPrice: %s", landNode->contactNum, landNode->price);
@@ -1031,7 +1031,7 @@ void listEstatesByRooms(char *rooms)
     residentialNode = malloc(sizeof(struct residentalSale));
     while (fread(residentialNode, sizeof(struct residentalSale), 1, residentialFile))
     {
-        if (strcmp(residentialNode->bedrooms, rooms) == 0)
+        if (strcmp(residentialNode->bedrooms, rooms) == 0 && strcmp(residentialNode->deleteDate, "0") == 0)
         {
             printf("\nZone: %s\t\tAddress: %s\t\tType: %s\t\tAge: %s", residentialNode->zone, residentialNode->address, residentialNode->estateType, residentialNode->ageEstate);
             printf("\nSize: %s\t\tFloors: %s\t\tInfrastructure: %s\t\tNum: %s", residentialNode->size, residentialNode->floors, residentialNode->infrastructure, residentialNode->contactNum);
@@ -1043,7 +1043,7 @@ void listEstatesByRooms(char *rooms)
     officeNode = malloc(sizeof(struct officeSale));
     while (fread(officeNode, sizeof(struct officeSale), 1, officeFile))
     {
-        if (strcmp(officeNode->officeRooms, rooms) == 0)
+        if (strcmp(officeNode->officeRooms, rooms) == 0 && strcmp(officeNode->deleteDate, "0") == 0)
         {
             printf("\nZone: %s\t\tAddress: %s\t\tType: %s\t\tAge: %s", officeNode->zone, officeNode->address, officeNode->estateType, officeNode->ageEstate);
             printf("\nSize: %s\t\tFloors: %s\t\tInfrastructure: %s\t\tNum: %s", officeNode->size, officeNode->floors, officeNode->infrastructure, officeNode->contactNum);
@@ -1058,7 +1058,7 @@ void listEstatesByRooms(char *rooms)
     rentalResidentialNode = malloc(sizeof(struct rentalResidental));
     while (fread(rentalResidentialNode, sizeof(struct rentalResidental), 1, rentalResidentialFile))
     {
-        if (strcmp(rentalResidentialNode->bedrooms, rooms) == 0)
+        if (strcmp(rentalResidentialNode->bedrooms, rooms) == 0 && strcmp(rentalResidentialNode->deleteDate, "0") == 0)
         {
             printf("\nZone: %s\t\tAddress: %s\t\tType: %s\t\tAge: %s\t\tSize: %s", rentalResidentialNode->zone, rentalResidentialNode->address, rentalResidentialNode->estateType, rentalResidentialNode->ageEstate, rentalResidentialNode->size);
             printf("\nFloors: %s\t\tInfrastructure: %s\t\tNum: %s\t\tMortgage: %s", rentalResidentialNode->floors, rentalResidentialNode->infrastructure, rentalResidentialNode->contactNum, rentalResidentialNode->mortgage);
@@ -1072,7 +1072,7 @@ void listEstatesByRooms(char *rooms)
     rentalOfficeNode = malloc(sizeof(struct rentalOffice));
     while (fread(rentalOfficeNode, sizeof(struct rentalOffice), 1, rentalOfficeFile))
     {
-        if (strcmp(rentalOfficeNode->bedrooms, rooms) == 0)
+        if (strcmp(rentalOfficeNode->bedrooms, rooms) == 0 && strcmp(rentalOfficeNode->deleteDate, "0") == 0)
         {
             printf("\nZone: %s\t\tAddress: %s\t\tType: %s\t\tAge: %s\t\tSize: %s", rentalOfficeNode->zone, rentalOfficeNode->address, rentalOfficeNode->estateType, rentalOfficeNode->ageEstate, rentalOfficeNode->size);
             printf("\nFloors: %s\t\tInfrastructure: %s\t\tNum: %s\t\tMortgage: %s", rentalOfficeNode->floors, rentalOfficeNode->infrastructure, rentalOfficeNode->contactNum, rentalOfficeNode->mortgage);
@@ -1111,8 +1111,11 @@ void totalEstatesValue()
     residentialNode = malloc(sizeof(struct residentalSale));
     while (fread(residentialNode, sizeof(struct residentalSale), 1, residentialFile))
     {
-        int price = atoi(residentialNode->price);
-        toatal += price;
+        if (strcmp(residentialNode->deleteDate, "0") == 0)
+        {
+            int price = atoi(residentialNode->price);
+            toatal += price;
+        }
     }
     fclose(residentialFile);
 
@@ -1120,16 +1123,22 @@ void totalEstatesValue()
     officeNode = malloc(sizeof(struct officeSale));
     while (fread(officeNode, sizeof(struct officeSale), 1, officeFile))
     {
-        int price = atoi(officeNode->price);
-        toatal += price;
+        if (strcmp(officeNode->deleteDate, "0") == 0)
+        {
+            int price = atoi(officeNode->price);
+            toatal += price;
+        }
     }
     fclose(officeFile);
     // Process land sales
     landNode = malloc(sizeof(struct landSale));
     while (fread(landNode, sizeof(struct landSale), 1, landFile))
     {
-        int price = atoi(landNode->price);
-        toatal += price;
+        if (strcmp(landNode->deleteDate, "0") == 0)
+        {
+            int price = atoi(landNode->price);
+            toatal += price;
+        }
     }
     fclose(landFile);
     printf("The total value of the estates for sale in system is: %d$", toatal);
@@ -1163,7 +1172,7 @@ void listByRentAndMortgage(int minMortgage, int maxMortgage, int minRent, int ma
     {
         int mortgage = atoi(rentalResidentialNode->mortgage);
         int rent = atoi(rentalResidentialNode->rent);
-        if (mortgage >= minMortgage && mortgage <= maxMortgage && rent >= minRent && rent <= maxRent)
+        if (mortgage >= minMortgage && mortgage <= maxMortgage && rent >= minRent && rent <= maxRent && strcmp(rentalResidentialNode->deleteDate, "0") == 0)
         {
             printf("\nZone: %s\t\tAddress: %s\t\tType: %s\t\tAge: %s\t\tSize: %s", rentalResidentialNode->zone, rentalResidentialNode->address, rentalResidentialNode->estateType, rentalResidentialNode->ageEstate, rentalResidentialNode->size);
             printf("\nFloors: %s\t\tInfrastructure: %s\t\tNum: %s\t\tMortgage: %s", rentalResidentialNode->floors, rentalResidentialNode->infrastructure, rentalResidentialNode->contactNum, rentalResidentialNode->mortgage);
@@ -1179,7 +1188,7 @@ void listByRentAndMortgage(int minMortgage, int maxMortgage, int minRent, int ma
     {
         int mortgage = atoi(rentalOfficeNode->mortgage);
         int rent = atoi(rentalOfficeNode->rent);
-        if (mortgage >= minMortgage && mortgage <= maxMortgage && rent >= minRent && rent <= maxRent)
+        if (mortgage >= minMortgage && mortgage <= maxMortgage && rent >= minRent && rent <= maxRent && strcmp(rentalOfficeNode->deleteDate, "0") == 0)
         {
             printf("\nZone: %s\t\tAddress: %s\t\tType: %s\t\tAge: %s\t\tSize: %s", rentalOfficeNode->zone, rentalOfficeNode->address, rentalOfficeNode->estateType, rentalOfficeNode->ageEstate, rentalOfficeNode->size);
             printf("\nFloors: %s\t\tInfrastructure: %s\t\tNum: %s\t\tMortgage: %s", rentalOfficeNode->floors, rentalOfficeNode->infrastructure, rentalOfficeNode->contactNum, rentalOfficeNode->mortgage);
@@ -1194,7 +1203,7 @@ void listByRentAndMortgage(int minMortgage, int maxMortgage, int minRent, int ma
     {
         int mortgage = atoi(rentalLandNode->mortgage);
         int rent = atoi(rentalLandNode->rent);
-        if (mortgage >= minMortgage && mortgage <= maxMortgage && rent >= minRent && rent <= maxRent)
+        if (mortgage >= minMortgage && mortgage <= maxMortgage && rent >= minRent && rent <= maxRent && strcmp(rentalLandNode->deleteDate, "0") == 0)
         {
             printf("\nAddress: %s\t\tLand Type: %s\t\tSize: %s", rentalLandNode->address, rentalLandNode->landType, rentalLandNode->size);
             printf("\nNum: %s\t\tmortgage: %s\t\tRent: %s", rentalLandNode->contactNum, rentalLandNode->mortgage, rentalLandNode->rent);
