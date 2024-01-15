@@ -163,6 +163,24 @@ int isUsernameTaken(char username[50])
     fclose(fp);
     return 0; // Username is not taken
 }
+void ExitProject()
+{
+    system("cls");
+    int i;
+    char ThankYou[100] = " ========= Thank You =========\n";
+    char HaveNiceDay[100] = " ======= Have Nice Day =======\n";
+    for (i = 0; i < strlen(ThankYou); i++)
+    {
+        printf("%c", ThankYou[i]);
+        Sleep(40);
+    }
+    for (i = 0; i < strlen(HaveNiceDay); i++)
+    {
+        printf("%c", HaveNiceDay[i]);
+        Sleep(40);
+    }
+    exit(0);
+}
 void addResidentalSale(struct user usr)
 {
     struct residentalSale *newEstate = malloc(sizeof(struct residentalSale));
@@ -1335,7 +1353,6 @@ void reports(struct user usr)
             printf("\n5. List of estates by the price range");
             printf("\n6. List of estates by the specific number of rooms");
             printf("\n7. Total value of the estates in the system");
-            // Write admin reports in the end!!
             printf("\n8. List of rental estates sorted by mortgage and rent");
             printf("\n9. Back to the main menu");
             printf("\n\nYour choice:\t");
@@ -1376,7 +1393,6 @@ void reports(struct user usr)
                 printf("Enter number of the rooms: ");
                 scanf("%s", &rooms);
                 listEstatesByRooms(rooms);
-                break;
                 break;
             case 7:
                 totalEstatesValue();
@@ -1458,7 +1474,6 @@ void reports(struct user usr)
                 printf("Enter number of the rooms: ");
                 scanf("%s", &rooms);
                 listEstatesByRooms(rooms);
-                break;
                 break;
             case 7:
                 totalEstatesValue();
@@ -1593,7 +1608,7 @@ void mainMenu(struct user usr)
             // Add function here
             break;
         case 6:
-            // Add function here
+            ExitProject();
             break;
         default:
             printf("\nInvalid choice! Please try again.\n");
@@ -1678,7 +1693,7 @@ void login()
 {
     FILE *fp;
     char username[50], pword[50];
-    int userFound;
+    int userFound, count = 0;
 
     do
     {
@@ -1743,10 +1758,21 @@ void login()
 
         if (!userFound)
         {
+            count++;
             printf("\n\nInvalid username or password!! Please try again.");
             Beep(800, 300);
         }
-
+        // Stop the program while there is to much invalid password or username
+        if (count == 5)
+        {
+            printf("Too many attempts!!! Please try again after 15 minutes.");
+            Sleep(900000);
+        }
+        else if (count == 10)
+        {
+            printf("Too many attempts!!! Please try again after 30 minutes.");
+            Sleep(1800000);
+        }
         fclose(fp);
     } while (!userFound);
 }
@@ -1778,11 +1804,9 @@ void main()
             login();
             break;
         case 3:
-            printf("Goodbye, have a nice day :)");
-            exit(0);
+            ExitProject();
         default:
             printf("Error, Invalid input! try again");
-
             break;
         }
     }
