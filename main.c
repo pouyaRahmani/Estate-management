@@ -50,6 +50,7 @@ struct officeSale
     char deleteDate[21];
     struct officeSale *next;
 };
+
 struct landSale
 {
     char address[200];
@@ -61,6 +62,7 @@ struct landSale
     char deleteDate[21];
     struct landSale *next;
 };
+
 struct rentalResidental
 {
     char zone[50];
@@ -95,6 +97,7 @@ struct rentalOffice
     char deleteDate[21];
     struct rentalOffice *next;
 };
+
 struct rentalLand
 {
     char address[200];
@@ -107,6 +110,7 @@ struct rentalLand
     char deleteDate[21];
     struct rentalLand *next;
 };
+
 struct user *userHead = NULL, *userLast, *userNode;
 struct residentalSale *residentalSaleHead = NULL, *residentalSaleLast, *residentalSaleNode;
 struct officeSale *officeSaleHead = NULL, *officeSaleLast, *officeSaleNode;
@@ -1314,27 +1318,38 @@ void lastActive()
     }
     fclose(usersFile);
 }
-void swap(struct user *xp, struct user *yp)
+
+struct user *swap(struct user *usr1, struct user *usr2)
 {
-    struct user temp = *xp;
-    *xp = *yp;
-    *yp = temp;
+    struct user *temp = usr2->link;
+    usr2->link = usr1;
+    usr1->link = temp;
+
+    return usr2;
 }
 
-void bubbleSort(struct user arr[], int n)
+void bubbleSort(struct user **start, int num)
 {
+    struct user **h;
     int i, j;
     bool swapped;
-    for (i = 0; i < n - 1; i++)
+    for (i = 0; i < num - 1; i++)
     {
         swapped = false;
-        for (j = 0; j < n - i - 1; j++)
+        h = start;
+
+        for (j = 0; j < num - i - 1; j++)
         {
-            if (arr[j].totalAdded < arr[j + 1].totalAdded) // Change this condition
-            {
-                swap(&arr[j], &arr[j + 1]);
+            struct user *user1 = *h;
+            struct user *user2 = user1->link;
+
+            if (user1->totalAdded < user2->totalAdded)
+            { // update the link after swapping
+                *h = swap(user1, user2);
                 swapped = true;
             }
+
+            h = &((*h)->link);
         }
 
         // If no two elements were swapped
@@ -1343,6 +1358,54 @@ void bubbleSort(struct user arr[], int n)
             break;
     }
 }
+
+void insertNode(struct user **head, struct user *newNode)
+{
+    if (*head == NULL || (*head)->totalAdded <= newNode->totalAdded)
+    {
+        newNode->link = *head;
+        *head = newNode;
+    }
+    else
+    {
+        struct user *current = *head;
+        while (current->link != NULL && current->link->totalAdded > newNode->totalAdded)
+        {
+            current = current->link;
+        }
+        newNode->link = current->link;
+        current->link = newNode;
+    }
+}
+
+void printList(struct user *head)
+{
+    struct user *temp = head;
+    while (temp != NULL)
+    {
+        printf("User: %s\t\tTotal added:%d\n", temp->username, temp->totalAdded);
+        printf("\n---------------------------------------------------------\n");
+        temp = temp->link;
+    }
+}
+
+int countUsers()
+{
+    struct user userNode;
+    int numberOfUsers = 0;
+    FILE *usersFile;
+    // Count the number of users in the file
+    while (fread(&userNode, sizeof(struct user), 1, usersFile))
+    {
+        numberOfUsers++;
+    }
+
+    // Reset the file position indicator
+    fseek(usersFile, 0, SEEK_SET);
+
+    return numberOfUsers;
+}
+
 void userRegistrations()
 {
     FILE *usersFile, *residentialFile, *officeFile, *landFile, *rentalResidentialFile, *rentalOfficeFile, *rentalLandFile;
@@ -1353,13 +1416,9 @@ void userRegistrations()
     struct rentalResidental *rentalResidentialNode;
     struct rentalOffice *rentalOfficeNode;
     struct rentalLand *rentalLandNode;
-    int numberOfUsers = 0;
+    int numberOfUsers = countUsers();
+
     usersFile = fopen("Users.dat", "rb");
-    if (usersFile == NULL)
-    {
-        printf("Error opening Users.dat\n");
-        return;
-    }
     residentialFile = fopen("ResidentialSales.dat", "rb");
     officeFile = fopen("OfficeSales.dat", "rb");
     landFile = fopen("LandSales.dat", "rb");
@@ -1367,19 +1426,17 @@ void userRegistrations()
     rentalOfficeFile = fopen("RentalOffice.dat", "rb");
     rentalLandFile = fopen("RentalLands.dat", "rb");
 
-    userNode = malloc(sizeof(struct user));
     residentialNode = malloc(sizeof(struct residentalSale));
+    officeNode = malloc(sizeof(struct officeSale));
+    landNode = malloc(sizeof(struct landSale));
+    rentalResidentialNode = malloc(sizeof(struct rentalResidental));
+    rentalOfficeNode = malloc(sizeof(struct rentalOffice));
+    rentalLandNode = malloc(sizeof(struct rentalLand));
+    userNode = malloc(sizeof(struct user));
+    struct user *head = NULL; // Linked list head
+
 
     while (fread(userNode, sizeof(struct user), 1, usersFile))
-    {
-        numberOfUsers++;
-    }
-
-    struct user *users = malloc(sizeof(struct user) * numberOfUsers);
-    // Read users from the file
-    fseek(usersFile, 0, SEEK_SET);
-    fread(users, sizeof(struct user), numberOfUsers, usersFile);
-    for (int k = 0; k < numberOfUsers; k++)
     {
         int totalCount = 0;
 
@@ -1391,72 +1448,76 @@ void userRegistrations()
         fseek(rentalOfficeFile, 0, SEEK_SET);
         fseek(rentalLandFile, 0, SEEK_SET);
 
-        // Read and count from residentialFile
-        residentialNode = malloc(sizeof(struct residentalSale));
         while (fread(residentialNode, sizeof(struct residentalSale), 1, residentialFile))
         {
-            if (strcmp(users[k].username, residentialNode->addedByUser) == 0)
+            if (strcmp(userNode->username, residentialNode->addedByUser) == 0)
             {
                 totalCount++;
             }
         }
-        free(residentialNode);
-        officeNode = malloc(sizeof(struct officeSale));
+
         while (fread(officeNode, sizeof(struct officeSale), 1, officeFile))
         {
-            if (strcmp(users[k].username, officeNode->addedByUser) == 0)
+            if (strcmp(userNode->username, officeNode->addedByUser) == 0)
             {
                 totalCount++;
             }
         }
-        free(officeNode);
-        landNode = malloc(sizeof(struct landSale));
+
         while (fread(landNode, sizeof(struct landSale), 1, landFile))
         {
-            if (strcmp(users[k].username, landNode->addedByUser) == 0)
+            if (strcmp(userNode->username, landNode->addedByUser) == 0)
             {
                 totalCount++;
             }
         }
-        free(landNode);
-        rentalResidentialNode = malloc(sizeof(struct rentalResidental));
+
         while (fread(rentalResidentialNode, sizeof(struct rentalResidental), 1, rentalResidentialFile))
         {
-            if (strcmp(users[k].username, rentalResidentialNode->addedByUser) == 0)
+            if (strcmp(userNode->username, rentalResidentialNode->addedByUser) == 0)
             {
                 totalCount++;
             }
         }
-        free(rentalResidentialNode);
-        rentalOfficeNode = malloc(sizeof(struct rentalOffice));
+
         while (fread(rentalOfficeNode, sizeof(struct rentalOffice), 1, rentalOfficeFile))
         {
-            if (strcmp(users[k].username, rentalOfficeNode->addedByUser) == 0)
+            if (strcmp(userNode->username, rentalOfficeNode->addedByUser) == 0)
             {
                 totalCount++;
             }
         }
-        free(rentalOfficeNode);
-        rentalLandNode = malloc(sizeof(struct rentalLand));
+
         while (fread(rentalLandNode, sizeof(struct rentalLand), 1, rentalLandFile))
         {
-            if (strcmp(users[k].username, rentalLandNode->addedByUser) == 0)
+            if (strcmp(userNode->username, rentalLandNode->addedByUser) == 0)
             {
                 totalCount++;
             }
         }
-        free(rentalLandNode);
-        users[k].totalAdded = totalCount;
+
+        userNode->totalAdded = totalCount;
+
+        // Create a new node
+        struct user *newNode = malloc(sizeof(struct user));
+        if (newNode == NULL)
+        {
+            // Handle memory allocation error
+            exit(EXIT_FAILURE);
+        }
+
+        // Copy data to the new node
+        strcpy(newNode->username, userNode->username);
+        newNode->totalAdded = userNode->totalAdded;
+        newNode->link = NULL;
+
+        // Insert the new node into the sorted linked list
+        insertNode(&head, newNode);
     }
-    // Sort users based on totalAdded using bubble sort
-    bubbleSort(users, numberOfUsers);
+    bubbleSort(&head, numberOfUsers);
 
     // Print the sorted report
-    for (int i = 0; i < numberOfUsers; i++)
-    {
-        printf("User: %s\t\tTotal added:%d\n", users[i].username, users[i].totalAdded);
-        printf("\n---------------------------------------------------------\n");
-    }
+    printList(head);
 
     // Close all files
     fclose(usersFile);
@@ -1469,8 +1530,14 @@ void userRegistrations()
 
     // Free allocated memory
     free(userNode);
-    free(users);
+    free(residentialNode);
+    free(officeNode);
+    free(landNode);
+    free(rentalResidentialNode);
+    free(rentalOfficeNode);
+    free(rentalLandNode);
 }
+
 int date(char *deleteDate)
 {
     int year, month, day;
