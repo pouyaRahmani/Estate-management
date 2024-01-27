@@ -2,6 +2,7 @@
 #include <conio.h>
 #include <windows.h>
 #include <time.h>
+#include <stdbool.h>
 
 struct user
 {
@@ -12,6 +13,7 @@ struct user
     char phone[50];
     char userID[50];
     char date[21];
+    int totalAdded;
     struct user *link;
 };
 
@@ -1312,6 +1314,35 @@ void lastActive()
     }
     fclose(usersFile);
 }
+void swap(struct user *xp, struct user *yp)
+{
+    struct user temp = *xp;
+    *xp = *yp;
+    *yp = temp;
+}
+
+void bubbleSort(struct user arr[], int n)
+{
+    int i, j;
+    bool swapped;
+    for (i = 0; i < n - 1; i++)
+    {
+        swapped = false;
+        for (j = 0; j < n - i - 1; j++)
+        {
+            if (arr[j].totalAdded < arr[j + 1].totalAdded) // Change this condition
+            {
+                swap(&arr[j], &arr[j + 1]);
+                swapped = true;
+            }
+        }
+
+        // If no two elements were swapped
+        // by inner loop, then break
+        if (swapped == false)
+            break;
+    }
+}
 void userRegistrations()
 {
     FILE *usersFile, *residentialFile, *officeFile, *landFile, *rentalResidentialFile, *rentalOfficeFile, *rentalLandFile;
@@ -1322,8 +1353,13 @@ void userRegistrations()
     struct rentalResidental *rentalResidentialNode;
     struct rentalOffice *rentalOfficeNode;
     struct rentalLand *rentalLandNode;
-
+    int numberOfUsers = 0;
     usersFile = fopen("Users.dat", "rb");
+    if (usersFile == NULL)
+    {
+        printf("Error opening Users.dat\n");
+        return;
+    }
     residentialFile = fopen("ResidentialSales.dat", "rb");
     officeFile = fopen("OfficeSales.dat", "rb");
     landFile = fopen("LandSales.dat", "rb");
@@ -1333,20 +1369,18 @@ void userRegistrations()
 
     userNode = malloc(sizeof(struct user));
     residentialNode = malloc(sizeof(struct residentalSale));
-    officeNode = malloc(sizeof(struct officeSale));
-    landNode = malloc(sizeof(struct landSale));
-    rentalResidentialNode = malloc(sizeof(struct rentalResidental));
-    rentalOfficeNode = malloc(sizeof(struct rentalOffice));
-    rentalLandNode = malloc(sizeof(struct rentalLand));
 
     while (fread(userNode, sizeof(struct user), 1, usersFile))
     {
-        int residentialCount = 0;
-        int officeCount = 0;
-        int landCount = 0;
-        int rentalResidentialCount = 0;
-        int rentalOfficeCount = 0;
-        int rentalLandCount = 0;
+        numberOfUsers++;
+    }
+
+    struct user *users = malloc(sizeof(struct user) * numberOfUsers);
+    // Read users from the file
+    fseek(usersFile, 0, SEEK_SET);
+    fread(users, sizeof(struct user), numberOfUsers, usersFile);
+    for (int k = 0; k < numberOfUsers; k++)
+    {
         int totalCount = 0;
 
         // Reset the file position indicators for each estate type
@@ -1357,63 +1391,71 @@ void userRegistrations()
         fseek(rentalOfficeFile, 0, SEEK_SET);
         fseek(rentalLandFile, 0, SEEK_SET);
 
+        // Read and count from residentialFile
+        residentialNode = malloc(sizeof(struct residentalSale));
         while (fread(residentialNode, sizeof(struct residentalSale), 1, residentialFile))
         {
-            if (strcmp(userNode->username, residentialNode->addedByUser) == 0)
+            if (strcmp(users[k].username, residentialNode->addedByUser) == 0)
             {
-                residentialCount++;
                 totalCount++;
             }
         }
-
+        free(residentialNode);
+        officeNode = malloc(sizeof(struct officeSale));
         while (fread(officeNode, sizeof(struct officeSale), 1, officeFile))
         {
-            if (strcmp(userNode->username, officeNode->addedByUser) == 0)
+            if (strcmp(users[k].username, officeNode->addedByUser) == 0)
             {
-                officeCount++;
                 totalCount++;
             }
         }
-
+        free(officeNode);
+        landNode = malloc(sizeof(struct landSale));
         while (fread(landNode, sizeof(struct landSale), 1, landFile))
         {
-            if (strcmp(userNode->username, landNode->addedByUser) == 0)
+            if (strcmp(users[k].username, landNode->addedByUser) == 0)
             {
-                landCount++;
                 totalCount++;
             }
         }
-
+        free(landNode);
+        rentalResidentialNode = malloc(sizeof(struct rentalResidental));
         while (fread(rentalResidentialNode, sizeof(struct rentalResidental), 1, rentalResidentialFile))
         {
-            if (strcmp(userNode->username, rentalResidentialNode->addedByUser) == 0)
+            if (strcmp(users[k].username, rentalResidentialNode->addedByUser) == 0)
             {
-                rentalResidentialCount++;
                 totalCount++;
             }
         }
-
+        free(rentalResidentialNode);
+        rentalOfficeNode = malloc(sizeof(struct rentalOffice));
         while (fread(rentalOfficeNode, sizeof(struct rentalOffice), 1, rentalOfficeFile))
         {
-            if (strcmp(userNode->username, rentalOfficeNode->addedByUser) == 0)
+            if (strcmp(users[k].username, rentalOfficeNode->addedByUser) == 0)
             {
-                rentalOfficeCount++;
                 totalCount++;
             }
         }
-
+        free(rentalOfficeNode);
+        rentalLandNode = malloc(sizeof(struct rentalLand));
         while (fread(rentalLandNode, sizeof(struct rentalLand), 1, rentalLandFile))
         {
-            if (strcmp(userNode->username, rentalLandNode->addedByUser) == 0)
+            if (strcmp(users[k].username, rentalLandNode->addedByUser) == 0)
             {
-                rentalLandCount++;
                 totalCount++;
             }
         }
+        free(rentalLandNode);
+        users[k].totalAdded = totalCount;
+    }
+    // Sort users based on totalAdded using bubble sort
+    bubbleSort(users, numberOfUsers);
 
-        printf("User: %s\t\tResidential: %d\t\tOffice: %d\t\tLand: %d\nRental Residential: %d\t\tRental Office: %d\t\tRental Land: %d\t\tTotal added:%d\n",
-               userNode->username, residentialCount, officeCount, landCount, rentalResidentialCount, rentalOfficeCount, rentalLandCount, totalCount);
-        printf("\n-----------------------------------------------------------------------------------------------------------------\n");
+    // Print the sorted report
+    for (int i = 0; i < numberOfUsers; i++)
+    {
+        printf("User: %s\t\tTotal added:%d\n", users[i].username, users[i].totalAdded);
+        printf("\n---------------------------------------------------------\n");
     }
 
     // Close all files
@@ -1427,12 +1469,7 @@ void userRegistrations()
 
     // Free allocated memory
     free(userNode);
-    free(residentialNode);
-    free(officeNode);
-    free(landNode);
-    free(rentalResidentialNode);
-    free(rentalOfficeNode);
-    free(rentalLandNode);
+    free(users);
 }
 int date(char *deleteDate)
 {
@@ -1789,7 +1826,7 @@ void reports(struct user usr)
                 printf("\nInvalid choice! Please try again.\n");
                 break;
             }
-        } while (choice != 9);
+        } while (choice != 11);
     }
     else // Admin reports
     {
@@ -1889,7 +1926,7 @@ void reports(struct user usr)
                 printf("\nInvalid choice! Please try again.\n");
                 break;
             }
-        } while (choice != 13);
+        } while (choice != 14);
     }
 }
 void deleteResidentalSale()
@@ -2258,7 +2295,7 @@ void mainMenu(struct user usr)
             changeProfile(&usr);
             break;
         case 5:
-            // Add function here
+            return;
             break;
         case 6:
             ExitProject();
@@ -2294,6 +2331,7 @@ void signUp()
         takeInput(userNode->phone);
         printf("\nEnter phone ID:\t");
         takeInput(userNode->userID);
+        userNode->totalAdded = 0;
 
         do // Check if username is different
         {
@@ -2356,7 +2394,7 @@ void login()
         takeInput(username);
         printf("\nEnter your password:\t");
         takePassword(pword);
-        fp = fopen("Users.dat", "rb+");
+        fp = fopen("Users.dat", "rb");
 
         while (!feof(fp))
         {
