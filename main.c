@@ -112,7 +112,7 @@ struct rentalLand
     struct rentalLand *next;
 };
 
-struct user *userHead = NULL, *userLast, *userNode, *admin;
+struct user *userHead = NULL, *userLast, *userNode;
 struct residentalSale *residentalSaleHead = NULL, *residentalSaleLast, *residentalSaleNode;
 struct officeSale *officeSaleHead = NULL, *officeSaleLast, *officeSaleNode;
 struct landSale *landSaleHead = NULL, *landSaleLast, *landSaleNode;
@@ -166,7 +166,7 @@ int isUsernameTaken(char username[50])
     node = malloc(sizeof(struct user));
     while (fread(node, sizeof(struct user), 1, fp))
     {
-        if (strcmp(node->username, username) == 0 || strcmp(username, "admin") == 0)
+        if (strcmp(node->username, username) == 0 && node->username != "admin")
         {
             fclose(fp);
             return 1; // Username is already taken
@@ -2578,6 +2578,11 @@ int isValidID(char *nationalCode)
     }
 
     fp = fopen("Users.dat", "rb");
+    if (fp == NULL)
+    {
+        printf("Error opening file");
+        return 1; // File error
+    }
 
     node = malloc(sizeof(struct user));
 
@@ -2635,87 +2640,87 @@ void signUp()
         } while (1);
 
         // Checking the Email address
-
-        printf("\nEnter your email:\t");
-        takeInput(userNode->email);
-        int validEmail = isValidEmail(userNode->email);
-
-        if (validEmail == 0)
+        do
         {
-            break;
-        }
-        else if (validEmail == 1)
+            printf("\nEnter your email:\t");
+            takeInput(userNode->email);
+            int validEmail = isValidEmail(userNode->email);
+
+            if (validEmail == 0)
+            {
+                break;
+            }
+            else if (validEmail == 1)
+            {
+                printf("Invalid Email!! Try again");
+                Beep(750, 300);
+            }
+            else
+            {
+                printf("\nEmail is already taken. Try again");
+                Beep(750, 300);
+            }
+
+        } while (1);
+
+        // Checking the phone number
+        do
         {
-            printf("Invalid Email!! Try again");
+            printf("\nEnter phone number:\t");
+            takeInput(userNode->phone);
+            int validNum = isValidPhoneNumber(userNode->phone);
+            if (validNum == 0)
+            {
+                break;
+            }
+            else if (validNum == 1)
+            {
+                printf("Invalid Phone number!! Try again");
+                Beep(750, 300);
+            }
+            else
+            {
+                printf("\nPhone number is already taken. Try again");
+                Beep(750, 300);
+            }
+        } while (1);
+
+        do
+        {
+            printf("\nEnter your national code:\t");
+            takeInput(userNode->userID);
+            int validID = isValidID(userNode->userID);
+            if (validID == 0)
+            {
+                break;
+            }
+            else if (validID == 1)
+            {
+                printf("Invalid national code!! Try again");
+                Beep(750, 300);
+            }
+            else
+            {
+                printf("\nnational code is already taken. Try again");
+                Beep(750, 300);
+            }
+        } while (1);
+
+        userNode->totalAdded = 0;
+
+        do // Check if username is different
+        {
+            printf("\nEnter your username:\t");
+            takeInput(userNode->username);
+            if (isUsernameTaken(userNode->username) == 0)
+            {
+                break;
+            }
+
+            printf("\nUsername is already taken. Please choose another one.");
             Beep(750, 300);
-        }
-        else
-        {
-            printf("\nEmail is already taken. Try again");
-            Beep(750, 300);
-        }
+        } while (1);
 
-    } while (1);
-
-    // Checking the phone number
-    do
-    {
-        printf("\nEnter phone number:\t");
-        takeInput(userNode->phone);
-        int validNum = isValidPhoneNumber(userNode->phone);
-        if (validNum == 0)
-        {
-            break;
-        }
-        else if (validNum == 1)
-        {
-            printf("Invalid Phone number!! Try again");
-            Beep(750, 300);
-        }
-        else
-        {
-            printf("\nPhone number is already taken. Try again");
-            Beep(750, 300);
-        }
-    } while (1);
-
-    do
-    {
-        printf("\nEnter your national code:\t");
-        takeInput(userNode->userID);
-        int validID = isValidID(userNode->userID);
-        if (validID == 0)
-        {
-            break;
-        }
-        else if (validID == 1)
-        {
-            printf("Invalid national code!! Try again");
-            Beep(750, 300);
-        }
-        else
-        {
-            printf("\nnational code is already taken. Try again");
-            Beep(750, 300);
-        }
-    } while (1);
-
-    userNode->totalAdded = 0;
-
-    do // Check if username is different
-    {
-        printf("\nEnter your username:\t");
-        takeInput(userNode->username);
-        if (isUsernameTaken(userNode->username) == 0)
-        {
-            break;
-        }
-
-        printf("\nUsername is already taken. Please choose another one.");
-        Beep(750, 300);
-    } while (1);
-    do
-    {
         printf("\nEnter your password:\t");
         takePassword(userNode->password);
         printf("\nConfirm your password:\t");
@@ -2766,19 +2771,27 @@ void login()
         takePassword(pword);
         fp = fopen("Users.dat", "rb");
 
-        if (!strcmp(username, admin->username) && !strcmp(pword, admin->password))
+        while (!feof(fp))
         {
-            system("cls");
-            printf("\n\t\t\t\tWelcome %s", admin->fullName);
-            printf("\n\n|Full name:\t%s", admin->fullName);
-            printf("\n|Username:\t%s", admin->username);
-            userFound = 1;
+            userNode = malloc(sizeof(struct user));
+            fread(userNode, sizeof(struct user), 1, fp);
 
-            mainMenu(*admin);
-            break; // Exit the loop once the user is found
+            if (userHead == NULL)
+            {
+                userHead = userNode;
+                userLast = userNode;
+                userLast->link = NULL;
+            }
+            else
+            {
+                userLast->link = userNode;
+                userLast = userNode;
+                userLast->link = NULL;
+            }
         }
 
-        while (fread(userNode, sizeof(struct user), 1, fp) == 1)
+        userNode = userHead;
+        while (userNode)
         {
             if (!strcmp(userNode->username, username) && !strcmp(userNode->password, pword))
             {
@@ -2834,16 +2847,6 @@ void main()
 {
     system("color 0b");
     int role;
-
-    // Creat admin in the memory by starting the program
-    admin = malloc(sizeof(struct user));
-    if (admin)
-    {
-        strcpy(admin->username, "admin");
-        strcpy(admin->password, "admin");
-        strcpy(admin->fullName, "pouya rahmani");
-        admin->totalAdded = 0;
-    }
 
     while (1)
     {
