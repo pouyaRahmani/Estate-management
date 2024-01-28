@@ -1,5 +1,6 @@
 #include <stdio.h>
 #include <conio.h>
+#include <ctype.h>
 #include <windows.h>
 #include <time.h>
 #include <stdbool.h>
@@ -1435,7 +1436,6 @@ void userRegistrations()
     userNode = malloc(sizeof(struct user));
     struct user *head = NULL; // Linked list head
 
-
     while (fread(userNode, sizeof(struct user), 1, usersFile))
     {
         int totalCount = 0;
@@ -2288,7 +2288,7 @@ void changeProfile(struct user *currentUser)
         current = malloc(sizeof(struct user));
         if (current == NULL)
         {
-            printf("\nMemory allocation error!");
+            printf("\nERROR: Memory is not allocated!");
             fclose(fp);
             return;
         }
@@ -2345,7 +2345,8 @@ void changeProfile(struct user *currentUser)
         printf("\n2. Change Email");
         printf("\n3. Change Phone Number");
         printf("\n4. Change User ID");
-        printf("\n5. Back to Menu");
+        printf("\n5. Change full name");
+        printf("\n6. Save and exite");
         printf("\n\nYour choice:\t");
         scanf("%d", &choice);
         getchar(); // for not reading the \n
@@ -2355,24 +2356,29 @@ void changeProfile(struct user *currentUser)
         case 1:
             printf("\nEnter your new password:\t");
             takePassword(temp->password);
-            printf("\nPassword changed successfully!");
+            printf("\nPassword changed successfully. Please restart the program!");
             break;
         case 2:
             printf("\nEnter your new email:\t");
             takeInput(temp->email);
-            printf("\nEmail changed successfully!");
+            printf("\nEmail changed successfully. Please restart the program!");
             break;
         case 3:
             printf("\nEnter your new phone number:\t");
             takeInput(temp->phone);
-            printf("\nPhone number changed successfully!");
+            printf("\nPhone number changed successfully. Please restart the program!");
             break;
         case 4:
             printf("\nEnter your new User ID:\t");
             takeInput(temp->userID);
-            printf("\nUser ID changed successfully!");
+            printf("\nUser ID changed successfully. Please restart the program!");
             break;
         case 5:
+            printf("\nEnter your new full name:\t");
+            takeInput(temp->fullName);
+            printf("\nFull name changed successfully. Please restart the program!");
+            break;
+        case 6:
             // Open the file in write mode
             fclose(fp);
             fp = fopen("Users.dat", "rb+");
@@ -2453,6 +2459,156 @@ void mainMenu(struct user usr)
     } while (choice != 6);
 }
 
+int isValidName(char *name)
+{
+    // Check if the name contains only English alphabet characters
+    for (int i = 0; i < strlen(name); i++)
+    {
+        if (!isalpha(name[i]))
+        {
+            return 1; // Invalid name
+        }
+    }
+    return 0; // Valid name
+}
+
+int isValidEmail(char *email)
+{
+    // Check if '@' and '.' are present in the email
+    char *atSymbol = strchr(email, '@');
+    char *dotSymbol = strchr(email, '.');
+    int valid = 0;
+    // Check if '@' and '.' exist, and there is at least one character before and after '@'
+    if (atSymbol != NULL && dotSymbol != NULL &&
+        atSymbol != email && dotSymbol > atSymbol + 1 &&
+        dotSymbol < email + strlen(email) - 1)
+    {
+        valid = 0; // Valid email address
+    }
+    else
+    {
+        valid = 1; // Invalid email address
+    }
+
+    FILE *fp;
+    struct user *node;
+    fp = fopen("Users.dat", "rb");
+    node = malloc(sizeof(struct user));
+
+    while (fread(node, sizeof(struct user), 1, fp))
+    {
+        if (strcmp(node->email, email) == 0)
+        {
+            valid = 2; // Email is already taken
+            break;
+        }
+    }
+
+    fclose(fp);
+    free(node);
+    return valid;
+}
+
+int isValidPhoneNumber(char *phoneNumber)
+{
+    FILE *fp;
+    struct user *node;
+    fp = fopen("Users.dat", "rb");
+    node = malloc(sizeof(struct user));
+    int valid = 0;
+
+    // Check if the phone number is exactly 11 digits and contains only numeric characters
+    if (strlen(phoneNumber) == 11)
+    {
+        if (phoneNumber[0] == '0' && isdigit(phoneNumber[1]))
+        {
+            for (int i = 1; i < 11; i++)
+            {
+                if (!isdigit(phoneNumber[i]))
+                {
+                    valid = 1; // Invalid phone number
+                    break;
+                }
+            }
+
+            if (valid == 0)
+            { // If phone number is still considered valid, check if it's already taken
+                while (fread(node, sizeof(struct user), 1, fp))
+                {
+                    if (strcmp(node->phone, phoneNumber) == 0)
+                    {
+                        valid = 2; // Phone number is already taken
+                        break;
+                    }
+                }
+            }
+        }
+        else
+        {
+            valid = 1; // Invalid phone number
+        }
+    }
+    else
+    {
+        valid = 1; // Invalid phone number
+    }
+
+    fclose(fp);
+    free(node);
+    return valid;
+}
+
+int isValidID(char *nationalCode)
+{
+    FILE *fp;
+    struct user *node;
+
+    // Check if the national code is exactly 10 digits and contains only numeric characters
+    if (strlen(nationalCode) != 10 || nationalCode[0] != '0')
+    {
+        return 1; // Invalid national code
+    }
+
+    for (int i = 0; i < 10; i++)
+    {
+        if (!isdigit(nationalCode[i]))
+        {
+            return 1; // Invalid national code
+        }
+    }
+
+    fp = fopen("Users.dat", "rb");
+    if (fp == NULL)
+    {
+        printf("Error opening file");
+        return 1; // File error
+    }
+
+    node = malloc(sizeof(struct user));
+
+    int isTaken = 0;
+
+    while (fread(node, sizeof(struct user), 1, fp))
+    {
+        if (strcmp(node->userID, nationalCode) == 0)
+        {
+            isTaken = 1;
+        }
+    }
+
+    fclose(fp);
+    free(node);
+
+    if (isTaken)
+    {
+        return 2; // ID is already taken
+    }
+    else
+    {
+        return 0; // Valid national code
+    }
+}
+
 void signUp()
 {
     FILE *fp;
@@ -2469,14 +2625,87 @@ void signUp()
 
     do
     {
-        printf("\n\nEnter your full name:\t");
-        takeInput(userNode->fullName);
-        printf("\nEnter your email:\t");
-        takeInput(userNode->email);
-        printf("\nEnter phone number:\t");
-        takeInput(userNode->phone);
-        printf("\nEnter phone ID:\t");
-        takeInput(userNode->userID);
+        // Check for valid name
+        do
+        {
+            printf("\n\nEnter your full name:\t");
+            takeInput(userNode->fullName);
+            if (isValidName(userNode->fullName) == 0)
+            {
+                break;
+            }
+
+            printf("\nInvalid name!! Try again");
+            Beep(750, 300);
+        } while (1);
+
+        // Checking the Email address
+        do
+        {
+            printf("\nEnter your email:\t");
+            takeInput(userNode->email);
+            int validEmail = isValidEmail(userNode->email);
+
+            if (validEmail == 0)
+            {
+                break;
+            }
+            else if (validEmail == 1)
+            {
+                printf("Invalid Email!! Try again");
+                Beep(750, 300);
+            }
+            else
+            {
+                printf("\nEmail is already taken. Try again");
+                Beep(750, 300);
+            }
+
+        } while (1);
+
+        // Checking the phone number
+        do
+        {
+            printf("\nEnter phone number:\t");
+            takeInput(userNode->phone);
+            int validNum = isValidPhoneNumber(userNode->phone);
+            if (validNum == 0)
+            {
+                break;
+            }
+            else if (validNum == 1)
+            {
+                printf("Invalid Phone number!! Try again");
+                Beep(750, 300);
+            }
+            else
+            {
+                printf("\nPhone number is already taken. Try again");
+                Beep(750, 300);
+            }
+        } while (1);
+
+        do
+        {
+            printf("\nEnter your national code:\t");
+            takeInput(userNode->userID);
+            int validID = isValidID(userNode->userID);
+            if (validID == 0)
+            {
+                break;
+            }
+            else if (validID == 1)
+            {
+                printf("Invalid national code!! Try again");
+                Beep(750, 300);
+            }
+            else
+            {
+                printf("\nnational code is already taken. Try again");
+                Beep(750, 300);
+            }
+        } while (1);
+
         userNode->totalAdded = 0;
 
         do // Check if username is different
