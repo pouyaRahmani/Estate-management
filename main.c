@@ -2278,6 +2278,64 @@ void changeProfile(struct user *currentUser)
         return;
     }
 
+    // Read existing users from the file and build a linked list
+    struct user *head = NULL;
+    struct user *prev = NULL;
+    struct user *current = NULL;
+
+    while (1)
+    {
+        current = malloc(sizeof(struct user));
+        if (current == NULL)
+        {
+            printf("\nMemory allocation error!");
+            fclose(fp);
+            return;
+        }
+
+        if (fread(current, sizeof(struct user), 1, fp) != 1)
+        {
+            free(current);
+            break; // Reached end of file
+        }
+
+        if (head == NULL)
+        {
+            head = current;
+        }
+        else
+        {
+            prev->link = current;
+        }
+
+        prev = current;
+    }
+
+    // Find the position of the current user in the linked list
+    struct user *temp = head;
+    while (temp != NULL)
+    {
+        if (strcmp(temp->userID, currentUser->userID) == 0)
+        {
+            break; // Found the current user
+        }
+        temp = temp->link;
+    }
+
+    if (temp == NULL)
+    {
+        printf("\nUser not found in the file!");
+        fclose(fp);
+        // Free allocated memory for the linked list
+        while (head != NULL)
+        {
+            temp = head;
+            head = head->link;
+            free(temp);
+        }
+        return;
+    }
+
     int choice;
     do
     {
@@ -2296,37 +2354,58 @@ void changeProfile(struct user *currentUser)
         {
         case 1:
             printf("\nEnter your new password:\t");
-            takePassword(currentUser->password);
+            takePassword(temp->password);
             printf("\nPassword changed successfully!");
             break;
         case 2:
             printf("\nEnter your new email:\t");
-            takeInput(currentUser->email);
+            takeInput(temp->email);
             printf("\nEmail changed successfully!");
             break;
         case 3:
             printf("\nEnter your new phone number:\t");
-            takeInput(currentUser->phone);
+            takeInput(temp->phone);
             printf("\nPhone number changed successfully!");
             break;
         case 4:
             printf("\nEnter your new User ID:\t");
-            takeInput(currentUser->userID);
+            takeInput(temp->userID);
             printf("\nUser ID changed successfully!");
             break;
         case 5:
-            // Write the updated user data back to the file
-            fseek(fp, -sizeof(struct user), SEEK_CUR); // Move the file pointer back by the size of struct user
-            fwrite(currentUser, sizeof(struct user), 1, fp);
+            // Open the file in write mode
+            fclose(fp);
+            fp = fopen("Users.dat", "rb+");
+            if (fp == NULL)
+            {
+                printf("\nError opening the file!");
+                return;
+            }
+
+            // Write the linked list back to the file
+            temp = head;
+            while (temp != NULL)
+            {
+                fwrite(temp, sizeof(struct user), 1, fp);
+                temp = temp->link;
+            }
+
             fclose(fp); // Close the file
+
+            // Free allocated memory for the linked list
+            while (head != NULL)
+            {
+                temp = head;
+                head = head->link;
+                free(temp);
+            }
+
             return;
         default:
             printf("\nInvalid choice! Please try again.\n");
             break;
         }
     } while (1);
-
-    fclose(fp); // Close the file
 }
 
 void mainMenu(struct user usr)
