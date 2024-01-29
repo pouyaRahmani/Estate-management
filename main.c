@@ -120,12 +120,105 @@ struct rentalResidental *rentalResidentalHead = NULL, *rentalResidentalLast, *re
 struct rentalOffice *rentalOfficeHead = NULL, *rentalOfficeLast, *rentalOfficeNode;
 struct rentalLand *rentalLandHead = NULL, *rentalLandLast, *rentalLandNode;
 
+void takeInput(char ch[50]);
+void takePassword(char pwd[50]);
+int isUsernameTaken(char username[50]);
+void ExitProject();
+void addResidentalSale(struct user usr);
+void addOfficeSale(struct user usr);
+void addLandSale(struct user usr);
+void addSaleEstate(struct user usr);
+void addRentalResidental(struct user usr);
+void addRentalOffice(struct user usr);
+void addRentalLand(struct user usr);
+void addRentalEstate(struct user usr);
+void addEstate(struct user usr);
+void countEstates();
+void listEstatesByZone(const char *zoneCode);
+void listEstatesByAge(int minAge, int maxAge);
+void listEstatesBySize(int minSize, int maxSize);
+void listEstatesByPrice(int minPrice, int maxPrice);
+void listEstatesByRooms(char *rooms);
+void totalEstatesValue();
+void listByRentAndMortgage(int minMortgage, int maxMortgage, int minRent, int maxRent);
+void listEstatesByFloor(const char *floorNum);
+void lastActive();
+
+struct user *swap(struct user *usr1, struct user *usr2)
+{
+    struct user *temp = usr2->link;
+    usr2->link = usr1;
+    usr1->link = temp;
+
+    return usr2;
+}
+
+// Declare functions prototypes
+void bubbleSort(struct user **start, int num);
+void insertNode(struct user **head, struct user *newNode);
+void printList(struct user *head);
+int countUsers();
+void userRegistrations();
+int date(char *deleteDate);
+void deleteReports();
+void registrationReport();
+void reports(struct user usr);
+void deleteResidentalSale();
+void deleteOfficeSale();
+void deleteLandSale();
+void deleteRentalResidental();
+void deleteRentalOffice();
+void deleteRentalLand();
+void deleteEstate();
+void changeProfile(struct user *currentUser);
+void mainMenu(struct user usr);
+int isValidName(char *name);
+int isValidEmail(char *email);
+int isValidPhoneNumber(char *phoneNumber);
+int isValidID(char *nationalCode);
+int isStrongPassword(char *password);
+void signUp();
+void login();
+
+void main()
+{
+    system("color 0b");
+    int role;
+
+    while (1)
+    {
+        system("cls");
+        printf("\n\t\t\t\t---=====Welcome to estate management system=====---");
+        printf("\nPlease choose an action");
+        printf("\n1.Signup");
+        printf("\n2.Login");
+        printf("\n3.Exit");
+        printf("\n\nYour choice:\t");
+        scanf("%d", &role);
+        fgetc(stdin);
+
+        switch (role)
+        {
+        case 1:
+            signUp();
+            break;
+        case 2:
+            login();
+            break;
+        case 3:
+            ExitProject();
+        default:
+            printf("Error, Invalid input! try again");
+            break;
+        }
+    }
+}
+
 void takeInput(char ch[50])
 {
     gets(ch);
 }
 
-// Replace password with *
 void takePassword(char pwd[50])
 {
 #define Enter 13
@@ -133,6 +226,7 @@ void takePassword(char pwd[50])
 #define BKSPC 8
     int i = 0;
     char ch;
+    // Replace password with * for the security
     while (1)
     {
         ch = getch();
@@ -156,6 +250,7 @@ void takePassword(char pwd[50])
         }
     }
 }
+
 int isUsernameTaken(char username[50])
 {
     FILE *fp;
@@ -176,6 +271,7 @@ int isUsernameTaken(char username[50])
     fclose(fp);
     return 0; // Username is not taken
 }
+
 void ExitProject()
 {
     system("cls");
@@ -194,6 +290,7 @@ void ExitProject()
     }
     exit(0);
 }
+
 void addResidentalSale(struct user usr)
 {
     struct residentalSale *newEstate = malloc(sizeof(struct residentalSale));
@@ -257,6 +354,7 @@ void addResidentalSale(struct user usr)
     printf("\n\n Press any key to continue...");
     getch();
 }
+
 void addOfficeSale(struct user usr)
 {
     struct officeSale *newEstate = malloc(sizeof(struct officeSale));
@@ -320,6 +418,7 @@ void addOfficeSale(struct user usr)
     printf("\n\n Press any key to continue...");
     getch();
 }
+
 void addLandSale(struct user usr)
 {
     struct landSale *newEstate = malloc(sizeof(struct landSale));
@@ -365,36 +464,48 @@ void addLandSale(struct user usr)
     printf("\n\n Press any key to continue...");
     getch();
 }
+
 void addSaleEstate(struct user usr)
 {
     int choice;
-    printf("\n\t\t\t\tAdding new estate for sale");
-    printf("\n\n1. Add residental property");
-    printf("\n2. Add office property");
-    printf("\n3. Add land property");
-    printf("\n4. Back to menu");
-    printf("\n\nYour choice:\t");
-    scanf("%d", &choice);
-    getchar();
-    switch (choice)
+    system("cls");
+
+    do
     {
-    case 1:
-        addResidentalSale(usr);
-        break;
-    case 2:
-        addOfficeSale(usr);
-        break;
-    case 3:
-        addLandSale(usr);
-        break;
-    case 4:
-        // Return to the main menu
-        break;
-    default:
-        printf("\nInvalid choice! Please try again.\n");
-        break;
-    }
+        printf("\n\t\t\t\tAdding new estate for sale");
+        printf("\n\n1. Add residental property");
+        printf("\n2. Add office property");
+        printf("\n3. Add land property");
+        printf("\n4. Back to menu");
+        printf("\n\nYour choice:\t");
+        scanf("%d", &choice);
+        getchar();
+        switch (choice)
+        {
+        case 1:
+            system("cls");
+            addResidentalSale(usr);
+            break;
+        case 2:
+            system("cls");
+            addOfficeSale(usr);
+            break;
+        case 3:
+            system("cls");
+            addLandSale(usr);
+            break;
+        case 4:
+            system("cls");
+            // Return to the main menu
+            break;
+        default:
+            system("cls");
+            printf("\nInvalid choice! Please try again.\n");
+            break;
+        }
+    } while (choice != 4);
 }
+
 void addRentalResidental(struct user usr)
 {
     struct rentalResidental *newEstate = malloc(sizeof(struct rentalResidental));
@@ -461,6 +572,7 @@ void addRentalResidental(struct user usr)
     printf("\n\n Press any key to continue...");
     getch();
 }
+
 void addRentalOffice(struct user usr)
 {
     struct rentalOffice *newEstate = malloc(sizeof(struct rentalOffice));
@@ -527,6 +639,7 @@ void addRentalOffice(struct user usr)
     printf("\n\n Press any key to continue...");
     getch();
 }
+
 void addRentalLand(struct user usr)
 {
     struct rentalLand *newEstate = malloc(sizeof(struct rentalLand));
@@ -578,59 +691,81 @@ void addRentalLand(struct user usr)
     printf("\n\n Press any key to continue...");
     getch();
 }
+
 void addRentalEstate(struct user usr)
 {
     int choice;
-    printf("\n\t\t\t\tAdding new rental estate");
-    printf("\n\n1. Add residental property");
-    printf("\n2. Add office property");
-    printf("\n3. Add land property");
-    printf("\n4. Back to menu");
-    printf("\n\nYour choice:\t");
-    scanf("%d", &choice);
-    getchar();
-    switch (choice)
+    system("cls");
+
+    do
     {
-    case 1:
-        addRentalResidental(usr);
-        break;
-    case 2:
-        addRentalOffice(usr);
-        break;
-    case 3:
-        addRentalLand(usr);
-        break;
-    case 4:
-        // Return to the main menu
-        break;
-    default:
-        printf("\nInvalid choice! Please try again.\n");
-        break;
-    }
+        printf("\n\t\t\t\tAdding new rental estate");
+        printf("\n\n1. Add residental property");
+        printf("\n2. Add office property");
+        printf("\n3. Add land property");
+        printf("\n4. Back to menu");
+        printf("\n\nYour choice:\t");
+        scanf("%d", &choice);
+        getchar();
+        switch (choice)
+        {
+        case 1:
+            system("cls");
+            addRentalResidental(usr);
+            break;
+        case 2:
+            system("cls");
+            addRentalOffice(usr);
+            break;
+        case 3:
+            system("cls");
+            addRentalLand(usr);
+            break;
+        case 4:
+            system("cls");
+            // Return to the main menu
+            break;
+        default:
+            system("cls");
+            printf("\nInvalid choice! Please try again.\n");
+            break;
+        }
+    } while (choice != 4);
 }
+
 void addEstate(struct user usr)
 {
-    printf("\nChoose action do you want to take");
-    printf("\n1. Add estates for sale");
-    printf("\n2. Add estates for rent");
-    printf("\n3. Back to menu");
-    printf("\nYour choice:\t");
     int choice;
-    scanf("%d", &choice);
-    getchar();
-    switch (choice)
-    {
-    case 1:
-        addSaleEstate(usr);
-        break;
-    case 2:
-        addRentalEstate(usr);
-        break;
 
-    default:
-        break;
-    }
+    do
+    {
+        printf("\nChoose action do you want to take");
+        printf("\n1. Add estates for sale");
+        printf("\n2. Add estates for rent");
+        printf("\n3. Back to menu");
+        printf("\nYour choice:\t");
+        scanf("%d", &choice);
+        getchar();
+
+        switch (choice)
+        {
+        case 1:
+            addSaleEstate(usr);
+            break;
+        case 2:
+            addRentalEstate(usr);
+            break;
+        case 3:
+            system("cls");
+            break;
+        default:
+            system("cls");
+            printf("\n\nInvalid choice! Please try again\n");
+            break;
+        }
+    } while (choice != 3);
 }
+
 void countEstates()
 {
     FILE *residentialFile, *officeFile, *landFile, *rentalResidentialFile, *rentalOfficeFile, *rentalLandFile;
@@ -648,13 +783,7 @@ void countEstates()
     rentalResidentialFile = fopen("RentalResidental.dat", "rb");
     rentalOfficeFile = fopen("RentalOffice.dat", "rb");
     rentalLandFile = fopen("RentalLands.dat", "rb");
-    // // This part will be used when all the files is existing
-    // if (residentialFile == NULL || officeFile == NULL || landFile == NULL ||
-    //     rentalResidentialFile == NULL || rentalOfficeFile == NULL || rentalLandFile == NULL)
-    // {
-    //     printf("Error opening one or more files.\n");
-    //     return;
-    // }
+
     residentialNode = malloc(sizeof(struct residentalSale));
     while (fread(residentialNode, sizeof(struct residentalSale), 1, residentialFile))
     {
@@ -704,6 +833,7 @@ void countEstates()
     printf("\nNumber of existing rental office estates: %d", rentalOfficeCount);
     printf("\nNumber of existing rental land estates: %d\n", rentalLandCount);
 }
+
 void listEstatesByZone(const char *zoneCode)
 {
     FILE *residentialFile, *officeFile, *landFile, *rentalResidentialFile, *rentalOfficeFile, *rentalLandFile;
@@ -783,6 +913,7 @@ void listEstatesByZone(const char *zoneCode)
     free(rentalOfficeNode);
     return;
 }
+
 void listEstatesByAge(int minAge, int maxAge)
 {
     FILE *residentialFile, *officeFile, *landFile, *rentalResidentialFile, *rentalOfficeFile, *rentalLandFile;
@@ -867,6 +998,7 @@ void listEstatesByAge(int minAge, int maxAge)
     free(rentalOfficeNode);
     return;
 }
+
 void listEstatesBySize(int minSize, int maxSize)
 {
     FILE *residentialFile, *officeFile, *landFile, *rentalResidentialFile, *rentalOfficeFile, *rentalLandFile;
@@ -950,6 +1082,7 @@ void listEstatesBySize(int minSize, int maxSize)
     free(rentalOfficeNode);
     return;
 }
+
 void listEstatesByPrice(int minPrice, int maxPrice)
 {
     FILE *residentialFile, *officeFile, *landFile, *rentalResidentialFile, *rentalOfficeFile, *rentalLandFile;
@@ -1017,6 +1150,7 @@ void listEstatesByPrice(int minPrice, int maxPrice)
     free(landNode);
     return;
 }
+
 void listEstatesByRooms(char *rooms)
 {
     FILE *residentialFile, *officeFile, *landFile, *rentalResidentialFile, *rentalOfficeFile, *rentalLandFile;
@@ -1096,6 +1230,7 @@ void listEstatesByRooms(char *rooms)
     free(rentalOfficeNode);
     return;
 }
+
 void totalEstatesValue()
 {
     FILE *residentialFile, *officeFile, *landFile, *rentalResidentialFile, *rentalOfficeFile, *rentalLandFile;
@@ -1156,6 +1291,7 @@ void totalEstatesValue()
     free(landNode);
     return;
 }
+
 void listByRentAndMortgage(int minMortgage, int maxMortgage, int minRent, int maxRent)
 {
     FILE *residentialFile, *officeFile, *landFile, *rentalResidentialFile, *rentalOfficeFile, *rentalLandFile;
@@ -1225,6 +1361,7 @@ void listByRentAndMortgage(int minMortgage, int maxMortgage, int minRent, int ma
     free(rentalOfficeNode);
     return;
 }
+
 void listEstatesByFloor(const char *floorNum)
 {
     FILE *residentialFile, *officeFile, *landFile, *rentalResidentialFile, *rentalOfficeFile, *rentalLandFile;
@@ -1305,6 +1442,7 @@ void listEstatesByFloor(const char *floorNum)
     free(rentalOfficeNode);
     return;
 }
+
 void lastActive()
 {
     FILE *usersFile;
@@ -1318,15 +1456,6 @@ void lastActive()
         printf("\n---------------------------------------------------------------------------------------------\n");
     }
     fclose(usersFile);
-}
-
-struct user *swap(struct user *usr1, struct user *usr2)
-{
-    struct user *temp = usr2->link;
-    usr2->link = usr1;
-    usr1->link = temp;
-
-    return usr2;
 }
 
 void bubbleSort(struct user **start, int num)
@@ -1546,6 +1675,7 @@ int date(char *deleteDate)
     date = (year * 12 + month) * 30 + day;
     return date;
 }
+
 void deleteReports()
 {
     FILE *residentialFile, *officeFile, *landFile, *rentalResidentialFile, *rentalOfficeFile, *rentalLandFile;
@@ -1686,6 +1816,7 @@ void deleteReports()
     free(rentalOfficeNode);
     return;
 }
+
 void registrationReport()
 {
     FILE *residentialFile, *officeFile, *landFile, *rentalResidentialFile, *rentalOfficeFile, *rentalLandFile;
@@ -1802,17 +1933,18 @@ void registrationReport()
     free(rentalOfficeNode);
     return;
 }
+
 void reports(struct user usr)
 {
     char zoneCode[50], rooms[50], floorNum[50];
     int choice;
     int minAge, maxAge, minSize, maxSize, minPrice, maxPrice;
     int minMortgage, maxMortgage, minRent, maxRent;
-    if (strcmp(usr.username, "admin") != 0) // Users report
+
+    if (strcmp(usr.username, "admin") != 0) // Check if the user is not admin then show the options
     {
         do
         {
-            // system("cls");
             printf("\n\t\t\t\t---===== Reports =====---");
             printf("\n\n1. Number of exiting estates in the system");
             printf("\n2. List of estates by the specific zone(by the zone's code)");
@@ -1828,17 +1960,21 @@ void reports(struct user usr)
             printf("\n\nYour choice:\t");
             scanf("%d", &choice);
             getchar(); // for not reading the \n
+
             switch (choice)
             {
             case 1:
+                system("cls");
                 countEstates();
                 break;
             case 2:
+                system("cls");
                 printf("Enter the zone code: ");
                 scanf("%s", &zoneCode);
                 listEstatesByZone(zoneCode);
                 break;
             case 3:
+                system("cls");
                 printf("Enter min age of the estate: ");
                 scanf("%d", &minAge);
                 printf("Enter max age of the estate: ");
@@ -1846,6 +1982,7 @@ void reports(struct user usr)
                 listEstatesByAge(minAge, maxAge);
                 break;
             case 4:
+                system("cls");
                 printf("Enter min infrastructure size of the estate: ");
                 scanf("%d", &minSize);
                 printf("Enter max infrastructure size of the estate: ");
@@ -1853,6 +1990,7 @@ void reports(struct user usr)
                 listEstatesBySize(minSize, maxSize);
                 break;
             case 5:
+                system("cls");
                 printf("Enter min price of the estate: ");
                 scanf("%d", &minPrice);
                 printf("Enter max price of the estate: ");
@@ -1860,14 +1998,17 @@ void reports(struct user usr)
                 listEstatesByPrice(minPrice, maxPrice);
                 break;
             case 6:
+                system("cls");
                 printf("Enter number of the rooms: ");
                 scanf("%s", &rooms);
                 listEstatesByRooms(rooms);
                 break;
             case 7:
+                system("cls");
                 totalEstatesValue();
                 break;
             case 8:
+                system("cls");
                 printf("Enter min mortgage: ");
                 scanf("%d", &minMortgage);
                 printf("Enter max mortgage: ");
@@ -1879,23 +2020,27 @@ void reports(struct user usr)
                 listByRentAndMortgage(minMortgage, maxMortgage, minRent, maxRent);
                 break;
             case 9:
+                system("cls");
                 registrationReport();
                 break;
             case 10:
+                system("cls");
                 printf("Enter a floor number");
                 scanf("%s", &floorNum);
                 listEstatesByFloor(floorNum);
                 break;
             case 11:
+                system("cls");
                 // Return to the main menu
                 break;
             default:
+                system("cls");
                 printf("\nInvalid choice! Please try again.\n");
                 break;
             }
         } while (choice != 11);
     }
-    else // Admin reports
+    else // Admin reports with especial options
     {
         do
         {
@@ -1918,17 +2063,21 @@ void reports(struct user usr)
             printf("\n\nYour choice:\t");
             scanf("%d", &choice);
             getchar(); // for not reading the \n
+
             switch (choice)
             {
             case 1:
+                system("cls");
                 countEstates();
                 break;
             case 2:
+                system("cls");
                 printf("Enter the zone code: ");
                 scanf("%s", &zoneCode);
                 listEstatesByZone(zoneCode);
                 break;
             case 3:
+                system("cls");
                 printf("Enter min age of the estate: ");
                 scanf("%d", &minAge);
                 printf("Enter max age of the estate: ");
@@ -1936,6 +2085,7 @@ void reports(struct user usr)
                 listEstatesByAge(minAge, maxAge);
                 break;
             case 4:
+                system("cls");
                 printf("Enter min infrastructure size of the estate: ");
                 scanf("%d", &minSize);
                 printf("Enter max infrastructure size of the estate: ");
@@ -1943,6 +2093,7 @@ void reports(struct user usr)
                 listEstatesBySize(minSize, maxSize);
                 break;
             case 5:
+                system("cls");
                 printf("Enter min price of the estate: ");
                 scanf("%d", &minPrice);
                 printf("Enter max price of the estate: ");
@@ -1950,14 +2101,17 @@ void reports(struct user usr)
                 listEstatesByPrice(minPrice, maxPrice);
                 break;
             case 6:
+                system("cls");
                 printf("Enter number of the rooms: ");
                 scanf("%s", &rooms);
                 listEstatesByRooms(rooms);
                 break;
             case 7:
+                system("cls");
                 totalEstatesValue();
                 break;
             case 8:
+                system("cls");
                 printf("Enter min mortgage: ");
                 scanf("%d", &minMortgage);
                 printf("Enter max mortgage: ");
@@ -1969,33 +2123,41 @@ void reports(struct user usr)
                 listByRentAndMortgage(minMortgage, maxMortgage, minRent, maxRent);
                 break;
             case 9:
+                system("cls");
                 userRegistrations();
                 break;
             case 10:
+                system("cls");
                 printf("Enter a floor number");
                 scanf("%s", &floorNum);
                 listEstatesByFloor(floorNum);
                 break;
             case 11:
+                system("cls");
                 registrationReport();
                 break;
             case 12:
+                system("cls");
                 printf("\n\t\t\t\t---===== Delete Reports =====---\n");
                 deleteReports();
                 break;
             case 13:
+                system("cls");
                 lastActive();
                 break;
             case 14:
+                system("cls");
                 // Return to the main menu
                 break;
             default:
+                system("cls");
                 printf("\nInvalid choice! Please try again.\n");
                 break;
             }
         } while (choice != 14);
     }
 }
+
 void deleteResidentalSale()
 {
     FILE *residentialFile;
@@ -2033,6 +2195,7 @@ void deleteResidentalSale()
     fclose(residentialFile);
     free(residentialNode);
 }
+
 void deleteOfficeSale()
 {
     FILE *officeFile;
@@ -2070,6 +2233,7 @@ void deleteOfficeSale()
     fclose(officeFile);
     free(officeSaleNode);
 }
+
 void deleteLandSale()
 {
     FILE *landFile;
@@ -2107,6 +2271,7 @@ void deleteLandSale()
     fclose(landFile);
     free(landSaleNode);
 }
+
 void deleteRentalResidental()
 {
     FILE *rentalResidentialFile;
@@ -2144,6 +2309,7 @@ void deleteRentalResidental()
     fclose(rentalResidentialFile);
     free(rentalResidentialNode);
 }
+
 void deleteRentalOffice()
 {
     FILE *rentalOfficeFile;
@@ -2181,6 +2347,7 @@ void deleteRentalOffice()
     fclose(rentalOfficeFile);
     free(rentalOfficeNode);
 }
+
 void deleteRentalLand()
 {
     FILE *rentalLandFile;
@@ -2226,7 +2393,6 @@ void deleteEstate()
 
     do
     {
-        // system("cls");
         printf("\n\t\t\t\t---===== Estate Delete =====---");
         printf("\nChoose the type of estate you want to delete");
         printf("\n\n1. Delete residental estate sale");
@@ -2242,32 +2408,41 @@ void deleteEstate()
         switch (choice)
         {
         case 1:
+            system("cls");
             deleteResidentalSale();
             break;
         case 2:
+            system("cls");
             deleteOfficeSale();
             break;
         case 3:
+            system("cls");
             deleteLandSale();
             break;
         case 4:
+            system("cls");
             deleteRentalResidental();
             break;
         case 5:
+            system("cls");
             deleteRentalOffice();
             break;
         case 6:
+            system("cls");
             deleteRentalLand();
             break;
         case 7:
+            system("cls");
             // Return to the menu
             break;
         default:
+            system("cls");
             printf("\nInvalid choice! Please try again.\n");
             break;
         }
     } while (choice != 7);
 }
+
 void changeProfile(struct user *currentUser)
 {
     FILE *fp;
@@ -2285,6 +2460,7 @@ void changeProfile(struct user *currentUser)
 
     while (1)
     {
+        // This loop will read user info form the file and create current node for them
         current = malloc(sizeof(struct user));
         if (current == NULL)
         {
@@ -2346,7 +2522,7 @@ void changeProfile(struct user *currentUser)
         printf("\n3. Change Phone Number");
         printf("\n4. Change User ID");
         printf("\n5. Change full name");
-        printf("\n6. Save and exite");
+        printf("\n6. Back to the menu");
         printf("\n\nYour choice:\t");
         scanf("%d", &choice);
         getchar(); // for not reading the \n
@@ -2354,31 +2530,37 @@ void changeProfile(struct user *currentUser)
         switch (choice)
         {
         case 1:
+            system("cls");
             printf("\nEnter your new password:\t");
             takePassword(temp->password);
-            printf("\nPassword changed successfully. Please restart the program!");
+            printf("\nPassword changed successfully. Go back to the menu and restart the program!");
             break;
         case 2:
+            system("cls");
             printf("\nEnter your new email:\t");
             takeInput(temp->email);
-            printf("\nEmail changed successfully. Please restart the program!");
+            printf("\nEmail changed successfully. Go back to the menu and restart the program!");
             break;
         case 3:
+            system("cls");
             printf("\nEnter your new phone number:\t");
             takeInput(temp->phone);
-            printf("\nPhone number changed successfully. Please restart the program!");
+            printf("\nPhone number changed successfully. Go back to the menu and restart the program!");
             break;
         case 4:
+            system("cls");
             printf("\nEnter your new User ID:\t");
             takeInput(temp->userID);
-            printf("\nUser ID changed successfully. Please restart the program!");
+            printf("\nUser ID changed successfully. Go back to the menu and restart the program!");
             break;
         case 5:
+            system("cls");
             printf("\nEnter your new full name:\t");
             takeInput(temp->fullName);
-            printf("\nFull name changed successfully. Please restart the program!");
+            printf("\nFull name changed successfully. Go back to the menu and restart the program!");
             break;
         case 6:
+            system("cls");
             // Open the file in write mode
             fclose(fp);
             fp = fopen("Users.dat", "rb+");
@@ -2420,7 +2602,7 @@ void mainMenu(struct user usr)
 
     do
     {
-        // system("cls");
+        system("cls");
         printf("\n\t\t\t\t---===== Welcome to Estate Management System =====---");
         printf("\n\t\t\t\t\t\t   Main Menu");
         printf("\n\n1. Add new estate");
@@ -2435,25 +2617,33 @@ void mainMenu(struct user usr)
         switch (choice)
         {
         case 1:
+            system("cls");
             addEstate(usr);
             break;
         case 2:
+            system("cls");
             deleteEstate();
             break;
         case 3:
+            system("cls");
             reports(usr);
             break;
         case 4:
+            system("cls");
             changeProfile(&usr);
             break;
         case 5:
+            system("cls");
             return;
             break;
         case 6:
+            system("cls");
             ExitProject();
             break;
         default:
-            printf("\nInvalid choice! Please try again.\n");
+            system("cls");
+            printf("\n\nInvalid choice! Please press any key to continue...\n");
+            getch();
             break;
         }
     } while (choice != 6);
@@ -2578,14 +2768,7 @@ int isValidID(char *nationalCode)
     }
 
     fp = fopen("Users.dat", "rb");
-    if (fp == NULL)
-    {
-        printf("Error opening file");
-        return 1; // File error
-    }
-
     node = malloc(sizeof(struct user));
-
     int isTaken = 0;
 
     while (fread(node, sizeof(struct user), 1, fp))
@@ -2609,12 +2792,63 @@ int isValidID(char *nationalCode)
     }
 }
 
+int isStrongPassword(char *password)
+{
+    // Check if password length is at least 8 characters
+    if (strlen(password) < 8)
+    {
+        return 1; // Password is less than 8 characters
+    }
+
+    // Check if password includes both uppercase and lowercase characters
+    int hasUppercase = 0, hasLowercase = 0, i;
+
+    for (i = 0; i < strlen(password); i++)
+    {
+        if (isupper(password[i]))
+        {
+            hasUppercase = 1;
+        }
+        else if (islower(password[i]))
+        {
+            hasLowercase = 1;
+        }
+    }
+
+    if (!hasUppercase || !hasLowercase)
+    {
+        return 1; // Password doesn't include both uppercase and lowercase characters
+    }
+
+    // Check if password includes at least one special character
+    char *specialCharacters = "!@#$%^&*()-_=+[]{}|;:'\",.<>?/";
+    int hasSpecialCharacter = 0;
+
+    for (i = 0; i < strlen(password); i++)
+    {
+        if (strchr(specialCharacters, password[i]) != NULL)
+        {
+            hasSpecialCharacter = 1;
+            break;
+        }
+    }
+
+    if (!hasSpecialCharacter)
+    {
+        return 2; // Password doesn't include special characters
+    }
+
+    // Password meets all criteria
+    return 0;
+}
+
 void signUp()
 {
     FILE *fp;
     char password2[50];
     time_t t;
     struct tm *local_time;
+    system("cls");
 
     userNode = malloc(sizeof(struct user));
     if (userNode == NULL)
@@ -2623,106 +2857,125 @@ void signUp()
         exit(EXIT_FAILURE);
     }
 
+    // Check for valid name
     do
     {
-        // Check for valid name
-        do
+        printf("\n\nEnter your full name:\t");
+        takeInput(userNode->fullName);
+        if (isValidName(userNode->fullName) == 0)
         {
-            printf("\n\nEnter your full name:\t");
-            takeInput(userNode->fullName);
-            if (isValidName(userNode->fullName) == 0)
-            {
-                break;
-            }
+            break;
+        }
 
-            printf("\nInvalid name!! Try again");
+        printf("\nInvalid name!! Try again");
+        Beep(750, 300);
+    } while (1);
+
+    // Checking the Email address
+    do
+    {
+        printf("\nEnter your email:\t");
+        takeInput(userNode->email);
+        int validEmail = isValidEmail(userNode->email);
+
+        if (validEmail == 0)
+        {
+            break;
+        }
+        else if (validEmail == 1)
+        {
+            printf("Invalid Email!! Try again");
             Beep(750, 300);
-        } while (1);
-
-        // Checking the Email address
-        do
+        }
+        else
         {
-            printf("\nEnter your email:\t");
-            takeInput(userNode->email);
-            int validEmail = isValidEmail(userNode->email);
-
-            if (validEmail == 0)
-            {
-                break;
-            }
-            else if (validEmail == 1)
-            {
-                printf("Invalid Email!! Try again");
-                Beep(750, 300);
-            }
-            else
-            {
-                printf("\nEmail is already taken. Try again");
-                Beep(750, 300);
-            }
-
-        } while (1);
-
-        // Checking the phone number
-        do
-        {
-            printf("\nEnter phone number:\t");
-            takeInput(userNode->phone);
-            int validNum = isValidPhoneNumber(userNode->phone);
-            if (validNum == 0)
-            {
-                break;
-            }
-            else if (validNum == 1)
-            {
-                printf("Invalid Phone number!! Try again");
-                Beep(750, 300);
-            }
-            else
-            {
-                printf("\nPhone number is already taken. Try again");
-                Beep(750, 300);
-            }
-        } while (1);
-
-        do
-        {
-            printf("\nEnter your national code:\t");
-            takeInput(userNode->userID);
-            int validID = isValidID(userNode->userID);
-            if (validID == 0)
-            {
-                break;
-            }
-            else if (validID == 1)
-            {
-                printf("Invalid national code!! Try again");
-                Beep(750, 300);
-            }
-            else
-            {
-                printf("\nnational code is already taken. Try again");
-                Beep(750, 300);
-            }
-        } while (1);
-
-        userNode->totalAdded = 0;
-
-        do // Check if username is different
-        {
-            printf("\nEnter your username:\t");
-            takeInput(userNode->username);
-            if (isUsernameTaken(userNode->username) == 0)
-            {
-                break;
-            }
-
-            printf("\nUsername is already taken. Please choose another one.");
+            printf("\nEmail is already taken. Try again");
             Beep(750, 300);
+        }
+
+    } while (1);
+
+    // Checking the phone number
+    do
+    {
+        printf("\nEnter phone number:\t");
+        takeInput(userNode->phone);
+        int validNum = isValidPhoneNumber(userNode->phone);
+        if (validNum == 0)
+        {
+            break;
+        }
+        else if (validNum == 1)
+        {
+            printf("Invalid Phone number!! Try again");
+            Beep(750, 300);
+        }
+        else
+        {
+            printf("\nPhone number is already taken. Try again");
+            Beep(750, 300);
+        }
+    } while (1);
+
+    do
+    {
+        printf("\nEnter your national code:\t");
+        takeInput(userNode->userID);
+        int validID = isValidID(userNode->userID);
+        if (validID == 0)
+        {
+            break;
+        }
+        else if (validID == 1)
+        {
+            printf("Invalid national code!! Try again");
+            Beep(750, 300);
+        }
+        else
+        {
+            printf("\nnational code is already taken. Try again");
+            Beep(750, 300);
+        }
+    } while (1);
+
+    userNode->totalAdded = 0;
+
+    do // Check if username is different
+    {
+        printf("\nEnter your username:\t");
+        takeInput(userNode->username);
+        if (isUsernameTaken(userNode->username) == 0)
+        {
+            break;
+        }
+
+        printf("\nUsername is already taken. Please choose another one.");
+        Beep(750, 300);
+    } while (1);
+
+    do
+    {
+        do
+        {
+            printf("\nEnter your password:\t");
+            takePassword(userNode->password);
+            int strongPass = isStrongPassword(userNode->password);
+            if (strongPass == 0)
+            {
+                break;
+            }
+            else if (strongPass == 1)
+            {
+                printf("\nPassword most be at least 8 character and included upper and lower cases!! Try again");
+                Beep(750, 300);
+            }
+            else
+            {
+                printf("\nPassword must include special character. Try again");
+                Beep(750, 300);
+            }
         } while (1);
 
-        printf("\nEnter your password:\t");
-        takePassword(userNode->password);
         printf("\nConfirm your password:\t");
         takePassword(password2);
 
@@ -2760,6 +3013,7 @@ void login()
     FILE *fp;
     char username[50], pword[50];
     int userFound, count = 0;
+    system("cls");
 
     do
     {
@@ -2813,8 +3067,9 @@ void login()
                 printf("\n|Phone number:\t%s", userNode->phone);
                 printf("\n|ID:\t%s", userNode->userID);
                 printf("\n|Last login:\t%s", userNode->date);
+                printf("\n\nPress any key to continue...");
                 userFound = 1;
-
+                getch();
                 mainMenu(*userNode);
                 break; // Exit the loop once the user is found
             }
@@ -2841,39 +3096,4 @@ void login()
         }
         fclose(fp);
     } while (!userFound);
-}
-
-void main()
-{
-    system("color 0b");
-
-    int role;
-
-    while (1)
-    {
-        // system("cls");
-        printf("\n\t\t\t\t---=====Welcome to estate management system=====---");
-        printf("\nPlease choose an action");
-        printf("\n1.Signup");
-        printf("\n2.Login");
-        printf("\n3.Exit");
-        printf("\n\nYour choice:\t");
-        scanf("%d", &role);
-        fgetc(stdin);
-
-        switch (role)
-        {
-        case 1:
-            signUp();
-            break;
-        case 2:
-            login();
-            break;
-        case 3:
-            ExitProject();
-        default:
-            printf("Error, Invalid input! try again");
-            break;
-        }
-    }
 }
