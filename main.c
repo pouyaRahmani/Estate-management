@@ -153,6 +153,7 @@ struct user *swap(struct user *usr1, struct user *usr2)
     return usr2;
 }
 
+// Declare functions prototypes
 void bubbleSort(struct user **start, int num);
 void insertNode(struct user **head, struct user *newNode);
 void printList(struct user *head);
@@ -2459,6 +2460,7 @@ void changeProfile(struct user *currentUser)
 
     while (1)
     {
+        // This loop will read user info form the file and create current node for them
         current = malloc(sizeof(struct user));
         if (current == NULL)
         {
