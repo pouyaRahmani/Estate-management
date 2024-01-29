@@ -120,12 +120,103 @@ struct rentalResidental *rentalResidentalHead = NULL, *rentalResidentalLast, *re
 struct rentalOffice *rentalOfficeHead = NULL, *rentalOfficeLast, *rentalOfficeNode;
 struct rentalLand *rentalLandHead = NULL, *rentalLandLast, *rentalLandNode;
 
+void takeInput(char ch[50]);
+void takePassword(char pwd[50]);
+int isUsernameTaken(char username[50]);
+void ExitProject();
+void addResidentalSale(struct user usr);
+void addOfficeSale(struct user usr);
+void addLandSale(struct user usr);
+void addSaleEstate(struct user usr);
+void addRentalResidental(struct user usr);
+void addRentalOffice(struct user usr);
+void addRentalLand(struct user usr);
+void addRentalEstate(struct user usr);
+void addEstate(struct user usr);
+void countEstates();
+void listEstatesByZone(const char *zoneCode);
+void listEstatesByAge(int minAge, int maxAge);
+void listEstatesBySize(int minSize, int maxSize);
+void listEstatesByPrice(int minPrice, int maxPrice);
+void listEstatesByRooms(char *rooms);
+void totalEstatesValue();
+void listByRentAndMortgage(int minMortgage, int maxMortgage, int minRent, int maxRent);
+void listEstatesByFloor(const char *floorNum);
+void lastActive();
+
+struct user *swap(struct user *usr1, struct user *usr2)
+{
+    struct user *temp = usr2->link;
+    usr2->link = usr1;
+    usr1->link = temp;
+
+    return usr2;
+}
+
+void bubbleSort(struct user **start, int num);
+void insertNode(struct user **head, struct user *newNode);
+void printList(struct user *head);
+int countUsers();
+void userRegistrations();
+int date(char *deleteDate);
+void deleteReports();
+void registrationReport();
+void reports(struct user usr);
+void deleteResidentalSale();
+void deleteOfficeSale();
+void deleteLandSale();
+void deleteRentalResidental();
+void deleteRentalOffice();
+void deleteRentalLand();
+void deleteEstate();
+void changeProfile(struct user *currentUser);
+void mainMenu(struct user usr);
+int isValidName(char *name);
+int isValidEmail(char *email);
+int isValidPhoneNumber(char *phoneNumber);
+int isValidID(char *nationalCode);
+void signUp();
+void login();
+
+void main()
+{
+    system("color 0b");
+    int role;
+
+    while (1)
+    {
+        // system("cls");
+        printf("\n\t\t\t\t---=====Welcome to estate management system=====---");
+        printf("\nPlease choose an action");
+        printf("\n1.Signup");
+        printf("\n2.Login");
+        printf("\n3.Exit");
+        printf("\n\nYour choice:\t");
+        scanf("%d", &role);
+        fgetc(stdin);
+
+        switch (role)
+        {
+        case 1:
+            signUp();
+            break;
+        case 2:
+            login();
+            break;
+        case 3:
+            ExitProject();
+        default:
+            printf("Error, Invalid input! try again");
+            break;
+        }
+    }
+}
+
 void takeInput(char ch[50])
 {
     gets(ch);
 }
 
-// Replace password with *
 void takePassword(char pwd[50])
 {
 #define Enter 13
@@ -133,6 +224,7 @@ void takePassword(char pwd[50])
 #define BKSPC 8
     int i = 0;
     char ch;
+    // Replace password with * for the security
     while (1)
     {
         ch = getch();
@@ -156,6 +248,7 @@ void takePassword(char pwd[50])
         }
     }
 }
+
 int isUsernameTaken(char username[50])
 {
     FILE *fp;
@@ -176,6 +269,7 @@ int isUsernameTaken(char username[50])
     fclose(fp);
     return 0; // Username is not taken
 }
+
 void ExitProject()
 {
     system("cls");
@@ -194,6 +288,7 @@ void ExitProject()
     }
     exit(0);
 }
+
 void addResidentalSale(struct user usr)
 {
     struct residentalSale *newEstate = malloc(sizeof(struct residentalSale));
@@ -257,6 +352,7 @@ void addResidentalSale(struct user usr)
     printf("\n\n Press any key to continue...");
     getch();
 }
+
 void addOfficeSale(struct user usr)
 {
     struct officeSale *newEstate = malloc(sizeof(struct officeSale));
@@ -320,6 +416,7 @@ void addOfficeSale(struct user usr)
     printf("\n\n Press any key to continue...");
     getch();
 }
+
 void addLandSale(struct user usr)
 {
     struct landSale *newEstate = malloc(sizeof(struct landSale));
@@ -365,6 +462,7 @@ void addLandSale(struct user usr)
     printf("\n\n Press any key to continue...");
     getch();
 }
+
 void addSaleEstate(struct user usr)
 {
     int choice;
@@ -395,6 +493,7 @@ void addSaleEstate(struct user usr)
         break;
     }
 }
+
 void addRentalResidental(struct user usr)
 {
     struct rentalResidental *newEstate = malloc(sizeof(struct rentalResidental));
@@ -461,6 +560,7 @@ void addRentalResidental(struct user usr)
     printf("\n\n Press any key to continue...");
     getch();
 }
+
 void addRentalOffice(struct user usr)
 {
     struct rentalOffice *newEstate = malloc(sizeof(struct rentalOffice));
@@ -527,6 +627,7 @@ void addRentalOffice(struct user usr)
     printf("\n\n Press any key to continue...");
     getch();
 }
+
 void addRentalLand(struct user usr)
 {
     struct rentalLand *newEstate = malloc(sizeof(struct rentalLand));
@@ -578,6 +679,7 @@ void addRentalLand(struct user usr)
     printf("\n\n Press any key to continue...");
     getch();
 }
+
 void addRentalEstate(struct user usr)
 {
     int choice;
@@ -608,6 +710,7 @@ void addRentalEstate(struct user usr)
         break;
     }
 }
+
 void addEstate(struct user usr)
 {
     printf("\nChoose action do you want to take");
@@ -631,6 +734,7 @@ void addEstate(struct user usr)
         break;
     }
 }
+
 void countEstates()
 {
     FILE *residentialFile, *officeFile, *landFile, *rentalResidentialFile, *rentalOfficeFile, *rentalLandFile;
@@ -648,13 +752,7 @@ void countEstates()
     rentalResidentialFile = fopen("RentalResidental.dat", "rb");
     rentalOfficeFile = fopen("RentalOffice.dat", "rb");
     rentalLandFile = fopen("RentalLands.dat", "rb");
-    // // This part will be used when all the files is existing
-    // if (residentialFile == NULL || officeFile == NULL || landFile == NULL ||
-    //     rentalResidentialFile == NULL || rentalOfficeFile == NULL || rentalLandFile == NULL)
-    // {
-    //     printf("Error opening one or more files.\n");
-    //     return;
-    // }
+
     residentialNode = malloc(sizeof(struct residentalSale));
     while (fread(residentialNode, sizeof(struct residentalSale), 1, residentialFile))
     {
@@ -704,6 +802,7 @@ void countEstates()
     printf("\nNumber of existing rental office estates: %d", rentalOfficeCount);
     printf("\nNumber of existing rental land estates: %d\n", rentalLandCount);
 }
+
 void listEstatesByZone(const char *zoneCode)
 {
     FILE *residentialFile, *officeFile, *landFile, *rentalResidentialFile, *rentalOfficeFile, *rentalLandFile;
@@ -783,6 +882,7 @@ void listEstatesByZone(const char *zoneCode)
     free(rentalOfficeNode);
     return;
 }
+
 void listEstatesByAge(int minAge, int maxAge)
 {
     FILE *residentialFile, *officeFile, *landFile, *rentalResidentialFile, *rentalOfficeFile, *rentalLandFile;
@@ -867,6 +967,7 @@ void listEstatesByAge(int minAge, int maxAge)
     free(rentalOfficeNode);
     return;
 }
+
 void listEstatesBySize(int minSize, int maxSize)
 {
     FILE *residentialFile, *officeFile, *landFile, *rentalResidentialFile, *rentalOfficeFile, *rentalLandFile;
@@ -950,6 +1051,7 @@ void listEstatesBySize(int minSize, int maxSize)
     free(rentalOfficeNode);
     return;
 }
+
 void listEstatesByPrice(int minPrice, int maxPrice)
 {
     FILE *residentialFile, *officeFile, *landFile, *rentalResidentialFile, *rentalOfficeFile, *rentalLandFile;
@@ -1017,6 +1119,7 @@ void listEstatesByPrice(int minPrice, int maxPrice)
     free(landNode);
     return;
 }
+
 void listEstatesByRooms(char *rooms)
 {
     FILE *residentialFile, *officeFile, *landFile, *rentalResidentialFile, *rentalOfficeFile, *rentalLandFile;
@@ -1096,6 +1199,7 @@ void listEstatesByRooms(char *rooms)
     free(rentalOfficeNode);
     return;
 }
+
 void totalEstatesValue()
 {
     FILE *residentialFile, *officeFile, *landFile, *rentalResidentialFile, *rentalOfficeFile, *rentalLandFile;
@@ -1156,6 +1260,7 @@ void totalEstatesValue()
     free(landNode);
     return;
 }
+
 void listByRentAndMortgage(int minMortgage, int maxMortgage, int minRent, int maxRent)
 {
     FILE *residentialFile, *officeFile, *landFile, *rentalResidentialFile, *rentalOfficeFile, *rentalLandFile;
@@ -1225,6 +1330,7 @@ void listByRentAndMortgage(int minMortgage, int maxMortgage, int minRent, int ma
     free(rentalOfficeNode);
     return;
 }
+
 void listEstatesByFloor(const char *floorNum)
 {
     FILE *residentialFile, *officeFile, *landFile, *rentalResidentialFile, *rentalOfficeFile, *rentalLandFile;
@@ -1305,6 +1411,7 @@ void listEstatesByFloor(const char *floorNum)
     free(rentalOfficeNode);
     return;
 }
+
 void lastActive()
 {
     FILE *usersFile;
@@ -1318,15 +1425,6 @@ void lastActive()
         printf("\n---------------------------------------------------------------------------------------------\n");
     }
     fclose(usersFile);
-}
-
-struct user *swap(struct user *usr1, struct user *usr2)
-{
-    struct user *temp = usr2->link;
-    usr2->link = usr1;
-    usr1->link = temp;
-
-    return usr2;
 }
 
 void bubbleSort(struct user **start, int num)
@@ -1546,6 +1644,7 @@ int date(char *deleteDate)
     date = (year * 12 + month) * 30 + day;
     return date;
 }
+
 void deleteReports()
 {
     FILE *residentialFile, *officeFile, *landFile, *rentalResidentialFile, *rentalOfficeFile, *rentalLandFile;
@@ -1686,6 +1785,7 @@ void deleteReports()
     free(rentalOfficeNode);
     return;
 }
+
 void registrationReport()
 {
     FILE *residentialFile, *officeFile, *landFile, *rentalResidentialFile, *rentalOfficeFile, *rentalLandFile;
@@ -1802,6 +1902,7 @@ void registrationReport()
     free(rentalOfficeNode);
     return;
 }
+
 void reports(struct user usr)
 {
     char zoneCode[50], rooms[50], floorNum[50];
@@ -1996,6 +2097,7 @@ void reports(struct user usr)
         } while (choice != 14);
     }
 }
+
 void deleteResidentalSale()
 {
     FILE *residentialFile;
@@ -2033,6 +2135,7 @@ void deleteResidentalSale()
     fclose(residentialFile);
     free(residentialNode);
 }
+
 void deleteOfficeSale()
 {
     FILE *officeFile;
@@ -2070,6 +2173,7 @@ void deleteOfficeSale()
     fclose(officeFile);
     free(officeSaleNode);
 }
+
 void deleteLandSale()
 {
     FILE *landFile;
@@ -2107,6 +2211,7 @@ void deleteLandSale()
     fclose(landFile);
     free(landSaleNode);
 }
+
 void deleteRentalResidental()
 {
     FILE *rentalResidentialFile;
@@ -2144,6 +2249,7 @@ void deleteRentalResidental()
     fclose(rentalResidentialFile);
     free(rentalResidentialNode);
 }
+
 void deleteRentalOffice()
 {
     FILE *rentalOfficeFile;
@@ -2181,6 +2287,7 @@ void deleteRentalOffice()
     fclose(rentalOfficeFile);
     free(rentalOfficeNode);
 }
+
 void deleteRentalLand()
 {
     FILE *rentalLandFile;
@@ -2268,6 +2375,7 @@ void deleteEstate()
         }
     } while (choice != 7);
 }
+
 void changeProfile(struct user *currentUser)
 {
     FILE *fp;
@@ -2346,7 +2454,7 @@ void changeProfile(struct user *currentUser)
         printf("\n3. Change Phone Number");
         printf("\n4. Change User ID");
         printf("\n5. Change full name");
-        printf("\n6. Save and exite");
+        printf("\n6. Back to the menu");
         printf("\n\nYour choice:\t");
         scanf("%d", &choice);
         getchar(); // for not reading the \n
@@ -2356,27 +2464,27 @@ void changeProfile(struct user *currentUser)
         case 1:
             printf("\nEnter your new password:\t");
             takePassword(temp->password);
-            printf("\nPassword changed successfully. Please restart the program!");
+            printf("\nPassword changed successfully. Go back to the menu and restart the program!");
             break;
         case 2:
             printf("\nEnter your new email:\t");
             takeInput(temp->email);
-            printf("\nEmail changed successfully. Please restart the program!");
+            printf("\nEmail changed successfully. Go back to the menu and restart the program!");
             break;
         case 3:
             printf("\nEnter your new phone number:\t");
             takeInput(temp->phone);
-            printf("\nPhone number changed successfully. Please restart the program!");
+            printf("\nPhone number changed successfully. Go back to the menu and restart the program!");
             break;
         case 4:
             printf("\nEnter your new User ID:\t");
             takeInput(temp->userID);
-            printf("\nUser ID changed successfully. Please restart the program!");
+            printf("\nUser ID changed successfully. Go back to the menu and restart the program!");
             break;
         case 5:
             printf("\nEnter your new full name:\t");
             takeInput(temp->fullName);
-            printf("\nFull name changed successfully. Please restart the program!");
+            printf("\nFull name changed successfully. Go back to the menu and restart the program!");
             break;
         case 6:
             // Open the file in write mode
@@ -2578,14 +2686,7 @@ int isValidID(char *nationalCode)
     }
 
     fp = fopen("Users.dat", "rb");
-    if (fp == NULL)
-    {
-        printf("Error opening file");
-        return 1; // File error
-    }
-
     node = malloc(sizeof(struct user));
-
     int isTaken = 0;
 
     while (fread(node, sizeof(struct user), 1, fp))
@@ -2841,38 +2942,4 @@ void login()
         }
         fclose(fp);
     } while (!userFound);
-}
-
-void main()
-{
-    system("color 0b");
-    int role;
-
-    while (1)
-    {
-        // system("cls");
-        printf("\n\t\t\t\t---=====Welcome to estate management system=====---");
-        printf("\nPlease choose an action");
-        printf("\n1.Signup");
-        printf("\n2.Login");
-        printf("\n3.Exit");
-        printf("\n\nYour choice:\t");
-        scanf("%d", &role);
-        fgetc(stdin);
-
-        switch (role)
-        {
-        case 1:
-            signUp();
-            break;
-        case 2:
-            login();
-            break;
-        case 3:
-            ExitProject();
-        default:
-            printf("Error, Invalid input! try again");
-            break;
-        }
-    }
 }
