@@ -175,6 +175,7 @@ int isValidName(char *name);
 int isValidEmail(char *email);
 int isValidPhoneNumber(char *phoneNumber);
 int isValidID(char *nationalCode);
+int isStrongPassword(char *password);
 void signUp();
 void login();
 
@@ -2710,6 +2711,56 @@ int isValidID(char *nationalCode)
     }
 }
 
+int isStrongPassword(char *password)
+{
+    // Check if password length is at least 8 characters
+    if (strlen(password) < 8)
+    {
+        return 1; // Password is less than 8 characters
+    }
+
+    // Check if password includes both uppercase and lowercase characters
+    int hasUppercase = 0, hasLowercase = 0, i;
+
+    for (i = 0; i < strlen(password); i++)
+    {
+        if (isupper(password[i]))
+        {
+            hasUppercase = 1;
+        }
+        else if (islower(password[i]))
+        {
+            hasLowercase = 1;
+        }
+    }
+
+    if (!hasUppercase || !hasLowercase)
+    {
+        return 1; // Password doesn't include both uppercase and lowercase characters
+    }
+
+    // Check if password includes at least one special character
+    char *specialCharacters = "!@#$%^&*()-_=+[]{}|;:'\",.<>?/";
+    int hasSpecialCharacter = 0;
+
+    for (i = 0; i < strlen(password); i++)
+    {
+        if (strchr(specialCharacters, password[i]) != NULL)
+        {
+            hasSpecialCharacter = 1;
+            break;
+        }
+    }
+
+    if (!hasSpecialCharacter)
+    {
+        return 2; // Password doesn't include special characters
+    }
+
+    // Password meets all criteria
+    return 0;
+}
+
 void signUp()
 {
     FILE *fp;
@@ -2724,106 +2775,125 @@ void signUp()
         exit(EXIT_FAILURE);
     }
 
+    // Check for valid name
     do
     {
-        // Check for valid name
-        do
+        printf("\n\nEnter your full name:\t");
+        takeInput(userNode->fullName);
+        if (isValidName(userNode->fullName) == 0)
         {
-            printf("\n\nEnter your full name:\t");
-            takeInput(userNode->fullName);
-            if (isValidName(userNode->fullName) == 0)
-            {
-                break;
-            }
+            break;
+        }
 
-            printf("\nInvalid name!! Try again");
+        printf("\nInvalid name!! Try again");
+        Beep(750, 300);
+    } while (1);
+
+    // Checking the Email address
+    do
+    {
+        printf("\nEnter your email:\t");
+        takeInput(userNode->email);
+        int validEmail = isValidEmail(userNode->email);
+
+        if (validEmail == 0)
+        {
+            break;
+        }
+        else if (validEmail == 1)
+        {
+            printf("Invalid Email!! Try again");
             Beep(750, 300);
-        } while (1);
-
-        // Checking the Email address
-        do
+        }
+        else
         {
-            printf("\nEnter your email:\t");
-            takeInput(userNode->email);
-            int validEmail = isValidEmail(userNode->email);
-
-            if (validEmail == 0)
-            {
-                break;
-            }
-            else if (validEmail == 1)
-            {
-                printf("Invalid Email!! Try again");
-                Beep(750, 300);
-            }
-            else
-            {
-                printf("\nEmail is already taken. Try again");
-                Beep(750, 300);
-            }
-
-        } while (1);
-
-        // Checking the phone number
-        do
-        {
-            printf("\nEnter phone number:\t");
-            takeInput(userNode->phone);
-            int validNum = isValidPhoneNumber(userNode->phone);
-            if (validNum == 0)
-            {
-                break;
-            }
-            else if (validNum == 1)
-            {
-                printf("Invalid Phone number!! Try again");
-                Beep(750, 300);
-            }
-            else
-            {
-                printf("\nPhone number is already taken. Try again");
-                Beep(750, 300);
-            }
-        } while (1);
-
-        do
-        {
-            printf("\nEnter your national code:\t");
-            takeInput(userNode->userID);
-            int validID = isValidID(userNode->userID);
-            if (validID == 0)
-            {
-                break;
-            }
-            else if (validID == 1)
-            {
-                printf("Invalid national code!! Try again");
-                Beep(750, 300);
-            }
-            else
-            {
-                printf("\nnational code is already taken. Try again");
-                Beep(750, 300);
-            }
-        } while (1);
-
-        userNode->totalAdded = 0;
-
-        do // Check if username is different
-        {
-            printf("\nEnter your username:\t");
-            takeInput(userNode->username);
-            if (isUsernameTaken(userNode->username) == 0)
-            {
-                break;
-            }
-
-            printf("\nUsername is already taken. Please choose another one.");
+            printf("\nEmail is already taken. Try again");
             Beep(750, 300);
+        }
+
+    } while (1);
+
+    // Checking the phone number
+    do
+    {
+        printf("\nEnter phone number:\t");
+        takeInput(userNode->phone);
+        int validNum = isValidPhoneNumber(userNode->phone);
+        if (validNum == 0)
+        {
+            break;
+        }
+        else if (validNum == 1)
+        {
+            printf("Invalid Phone number!! Try again");
+            Beep(750, 300);
+        }
+        else
+        {
+            printf("\nPhone number is already taken. Try again");
+            Beep(750, 300);
+        }
+    } while (1);
+
+    do
+    {
+        printf("\nEnter your national code:\t");
+        takeInput(userNode->userID);
+        int validID = isValidID(userNode->userID);
+        if (validID == 0)
+        {
+            break;
+        }
+        else if (validID == 1)
+        {
+            printf("Invalid national code!! Try again");
+            Beep(750, 300);
+        }
+        else
+        {
+            printf("\nnational code is already taken. Try again");
+            Beep(750, 300);
+        }
+    } while (1);
+
+    userNode->totalAdded = 0;
+
+    do // Check if username is different
+    {
+        printf("\nEnter your username:\t");
+        takeInput(userNode->username);
+        if (isUsernameTaken(userNode->username) == 0)
+        {
+            break;
+        }
+
+        printf("\nUsername is already taken. Please choose another one.");
+        Beep(750, 300);
+    } while (1);
+
+    do
+    {
+        do
+        {
+            printf("\nEnter your password:\t");
+            takePassword(userNode->password);
+            int strongPass = isStrongPassword(userNode->password);
+            if (strongPass == 0)
+            {
+                break;
+            }
+            else if (strongPass == 1)
+            {
+                printf("\nPassword most be at least 8 character and included upper and lower cases!! Try again");
+                Beep(750, 300);
+            }
+            else
+            {
+                printf("\nPassword must include special character. Try again");
+                Beep(750, 300);
+            }
         } while (1);
 
-        printf("\nEnter your password:\t");
-        takePassword(userNode->password);
         printf("\nConfirm your password:\t");
         takePassword(password2);
 
