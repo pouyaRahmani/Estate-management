@@ -2405,6 +2405,7 @@ void deleteEstate()
         printf("\n\nYour choice:\t");
         scanf("%d", &choice);
         getchar();
+
         switch (choice)
         {
         case 1:
@@ -3008,6 +3009,66 @@ void signUp()
     getch();
 }
 
+void forgetPassword()
+{
+    FILE *usersFile;
+    struct user *userNode;
+    char username[50], ID[50], newPassword[50];
+
+    printf("\nPlease enter the user details to change your password");
+    printf("\nEnter your username: ");
+    scanf("%s", username);
+    printf("\nEnter your national code: ");
+    scanf("%s", ID);
+
+    usersFile = fopen("Users.dat", "rb+");
+    if (usersFile == NULL)
+    {
+        printf("\nError opening the file!");
+        return;
+    }
+
+    userNode = malloc(sizeof(struct user));
+    if (userNode == NULL)
+    {
+        printf("\nMemory allocation error!");
+        fclose(usersFile);
+        return;
+    }
+
+    int userFound = 0;
+
+    while (fread(userNode, sizeof(struct user), 1, usersFile))
+    {
+        if (strcmp(userNode->userID, ID) == 0 && strcmp(userNode->username, username) == 0)
+        {
+            printf("\nEnter new password: ");
+            takePassword(newPassword);
+
+            // Update the password
+            strcpy(userNode->password, newPassword);
+
+            // Save the updated user data back to the file
+            fseek(usersFile, -sizeof(struct user), SEEK_CUR); // Move the file pointer back by the size of struct user
+            fwrite(userNode, sizeof(struct user), 1, usersFile);
+
+            printf("\nPassword changed successfully!");
+
+            userFound = 1;
+            break; // Exit the loop once the user is found
+        }
+    }
+
+    if (!userFound)
+    {
+        printf("\nUser not found or incorrect details provided.");
+        return;
+    }
+
+    fclose(usersFile);
+    free(userNode);
+}
+
 void login()
 {
     FILE *fp;
@@ -3083,6 +3144,35 @@ void login()
             printf("\n\nInvalid username or password!! Please try again.");
             Beep(800, 300);
         }
+
+        if (count == 2)
+        {
+            int choice;
+
+            do
+            {
+                printf("\n\nDid you forget your password?");
+                printf("\n1. Yes\n2. No continue\n");
+                printf("Your choice : ");
+                scanf("%d", &choice);
+                getchar();
+
+                switch (choice)
+                {
+                case 1:
+                    forgetPassword();
+                    break;
+                case 2:
+                    continue;
+                    break;
+                default:
+                    printf("\n\nInvalid choice, please try again...\n");
+                    Beep(800, 300);
+                    break;
+                }
+            } while (choice != 2);
+        }
+
         // Stop the program while there is to much invalid password or username
         if (count == 5)
         {
