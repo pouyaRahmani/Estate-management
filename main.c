@@ -1524,6 +1524,15 @@ int countUsers()
     struct user userNode;
     int numberOfUsers = 0;
     FILE *usersFile;
+
+    usersFile = fopen("Users.dat", "rb");
+    if (usersFile == NULL)
+    {
+        // Handle file opening error
+        printf("Error opening Users.dat file.\n");
+        exit(EXIT_FAILURE);
+    }
+
     // Count the number of users in the file
     while (fread(&userNode, sizeof(struct user), 1, usersFile))
     {
@@ -1532,6 +1541,9 @@ int countUsers()
 
     // Reset the file position indicator
     fseek(usersFile, 0, SEEK_SET);
+
+    // Close the file
+    fclose(usersFile);
 
     return numberOfUsers;
 }
@@ -3013,7 +3025,7 @@ void forgetPassword()
 {
     FILE *usersFile;
     struct user *userNode;
-    char username[50], ID[50], newPassword[50];
+    char username[50], ID[50], newPassword[50], confirmPassword[50];
 
     printf("\nPlease enter the user details to change your password");
     printf("\nEnter your username: ");
@@ -3042,8 +3054,18 @@ void forgetPassword()
     {
         if (strcmp(userNode->userID, ID) == 0 && strcmp(userNode->username, username) == 0)
         {
-            printf("\nEnter new password: ");
-            takePassword(newPassword);
+            do
+            {
+                printf("\nEnter new password: ");
+                takePassword(newPassword);
+                printf("\nEnter the new password again: ");
+                takePassword(confirmPassword);
+
+                if (strcmp(newPassword, confirmPassword) != 0)
+                {
+                    printf("\nPasswords do not match. Please try again.");
+                }
+            } while (strcmp(newPassword, confirmPassword) != 0);
 
             // Update the password
             strcpy(userNode->password, newPassword);
@@ -3062,7 +3084,6 @@ void forgetPassword()
     if (!userFound)
     {
         printf("\nUser not found or incorrect details provided.");
-        return;
     }
 
     fclose(usersFile);
@@ -3148,9 +3169,10 @@ void login()
         if (count == 2)
         {
             int choice;
-
+            count = 3;
             do
             {
+                system("cls");
                 printf("\n\nDid you forget your password?");
                 printf("\n1. Yes\n2. No continue\n");
                 printf("Your choice : ");
@@ -3166,8 +3188,9 @@ void login()
                     continue;
                     break;
                 default:
-                    printf("\n\nInvalid choice, please try again...\n");
+                    printf("\n\nInvalid choice, press any key and try again...\n");
                     Beep(800, 300);
+                    getch();
                     break;
                 }
             } while (choice != 2);
