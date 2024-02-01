@@ -143,6 +143,7 @@ void totalEstatesValue();
 void listByRentAndMortgage(int minMortgage, int maxMortgage, int minRent, int maxRent);
 void listEstatesByFloor(const char *floorNum);
 void lastActive();
+void modifyPassword(char password[50]);
 
 struct user *swap(struct user *usr1, struct user *usr2)
 {
@@ -217,38 +218,6 @@ void main()
 void takeInput(char ch[50])
 {
     gets(ch);
-}
-
-void takePassword(char pwd[50])
-{
-#define Enter 13
-#define Tab 9
-#define BKSPC 8
-    int i = 0;
-    char ch;
-    // Replace password with * for the security
-    while (1)
-    {
-        ch = getch();
-        if (ch == Enter || ch == Tab)
-        {
-            pwd[i] = '\0';
-            break;
-        }
-        else if (ch == BKSPC)
-        {
-            if (i > 0)
-            {
-                i--;
-                printf("\b \b");
-            }
-        }
-        else
-        {
-            pwd[i++] = ch;
-            printf("* \b");
-        }
-    }
 }
 
 int isUsernameTaken(char username[50])
@@ -863,8 +832,10 @@ void listEstatesByZone(const char *zoneCode)
             printf("\n-------------------------------------------------------------------------------------------------------------\n");
         }
     }
+
     fclose(residentialFile);
     officeNode = malloc(sizeof(struct officeSale));
+
     while (fread(officeNode, sizeof(struct officeSale), 1, officeFile))
     {
         if (strcmp(officeNode->zone, zoneCode) == 0 && strcmp(officeNode->deleteDate, "0") == 0)
@@ -2526,6 +2497,7 @@ void changeProfile(struct user *currentUser)
     }
 
     int choice;
+    int change = 0;
     do
     {
         // system("cls");
@@ -2546,67 +2518,74 @@ void changeProfile(struct user *currentUser)
             system("cls");
             printf("\nEnter your new password:\t");
             takePassword(temp->password);
+            modifyPassword(temp->password);
             printf("\nPassword changed successfully. Go back to the menu and restart the program!");
+            change++;
             break;
         case 2:
             system("cls");
             printf("\nEnter your new email:\t");
             takeInput(temp->email);
             printf("\nEmail changed successfully. Go back to the menu and restart the program!");
+            change++;
             break;
         case 3:
             system("cls");
             printf("\nEnter your new phone number:\t");
             takeInput(temp->phone);
             printf("\nPhone number changed successfully. Go back to the menu and restart the program!");
+            change++;
             break;
         case 4:
             system("cls");
             printf("\nEnter your new User ID:\t");
             takeInput(temp->userID);
             printf("\nUser ID changed successfully. Go back to the menu and restart the program!");
+            change++;
             break;
         case 5:
             system("cls");
             printf("\nEnter your new full name:\t");
             takeInput(temp->fullName);
             printf("\nFull name changed successfully. Go back to the menu and restart the program!");
+            change++;
             break;
         case 6:
-            system("cls");
             // Open the file in write mode
-            fclose(fp);
-            fp = fopen("Users.dat", "rb+");
-            if (fp == NULL)
+            if (change)
             {
-                printf("\nError opening the file!");
+                fp = fopen("Users.dat", "rb+");
+                if (fp == NULL)
+                {
+                    printf("\nError opening the file!");
+                    return;
+                }
+
+                // Find the position of the current user in the file
+                fseek(fp, (long)(temp - head) * sizeof(struct user), SEEK_SET);
+
+                // Write the updated user back to the file
+                fwrite(temp, sizeof(struct user), 1, fp);
+
+                // Close the file
+                fclose(fp);
+
+                // Free allocated memory for the linked list
+                // while (head != NULL)
+                // {
+                //     temp = head;
+                //     head = head->link;
+                //     free(temp);
+                // }
                 return;
             }
 
-            // Write the linked list back to the file
-            temp = head;
-            while (temp != NULL)
-            {
-                fwrite(temp, sizeof(struct user), 1, fp);
-                temp = temp->link;
-            }
-
-            fclose(fp); // Close the file
-
-            // Free allocated memory for the linked list
-            while (head != NULL)
-            {
-                temp = head;
-                head = head->link;
-                free(temp);
-            }
-
-            return;
+            break;
         default:
             printf("\nInvalid choice! Please try again.\n");
             break;
         }
-    } while (1);
+    } while (choice != 6);
 }
 
 void mainMenu(struct user usr)
@@ -2855,6 +2834,55 @@ int isStrongPassword(char *password)
     return 0;
 }
 
+void takePassword(char pwd[50])
+{
+#define Enter 13
+#define Tab 9
+#define BKSPC 8
+    int i = 0;
+    char ch;
+    // Replace password with * for the security
+    while (1)
+    {
+        ch = getch();
+        if (ch == Enter || ch == Tab)
+        {
+            pwd[i] = '\0';
+            break;
+        }
+        else if (ch == BKSPC)
+        {
+            if (i > 0)
+            {
+                i--;
+                printf("\b \b");
+            }
+        }
+        else
+        {
+            pwd[i++] = ch;
+            printf("* \b");
+        }
+    }
+}
+
+// Function to change password saving in the file
+void modifyPassword(char password[50])
+{
+    int length = strlen(password);
+    for (int i = 0; i < length / 2; i++)
+    {
+        // Swap characters from the beginning and end of the password
+        char temp = password[i];
+        password[i] = password[length - i - 1];
+        password[length - i - 1] = temp;
+
+        // Change ASCII codes with various characters
+        password[i] = password[i] + i * 2;
+        password[length - i - 1] = password[length - i - 1] + (i * 3 + 2);
+    }
+}
+
 void signUp()
 {
     FILE *fp;
@@ -2972,7 +3000,10 @@ void signUp()
         {
             printf("\nEnter your password:\t");
             takePassword(userNode->password);
+            // Modify the password before saving
+            modifyPassword(userNode->password);
             int strongPass = isStrongPassword(userNode->password);
+
             if (strongPass == 0)
             {
                 break;
@@ -2992,6 +3023,9 @@ void signUp()
         printf("\nConfirm your password:\t");
         takePassword(password2);
 
+        // Modify the confirmation password before comparing
+        modifyPassword(password2);
+
         // Compare two passwords
         if (strcmp(userNode->password, password2))
         {
@@ -3002,7 +3036,7 @@ void signUp()
 
     printf("\nYour password matched");
 
-    fp = fopen("Users.dat", "ab"); // Use "wb" for the first write
+    fp = fopen("Users.dat", "ab");
     if (fp == NULL)
     {
         printf("Error opening file.\n");
@@ -3034,6 +3068,7 @@ void forgetPassword()
     scanf("%s", ID);
 
     usersFile = fopen("Users.dat", "rb+");
+
     if (usersFile == NULL)
     {
         printf("\nError opening the file!");
@@ -3067,6 +3102,9 @@ void forgetPassword()
                 }
             } while (strcmp(newPassword, confirmPassword) != 0);
 
+            // Modify the new password before updating
+            modifyPassword(newPassword);
+
             // Update the password
             strcpy(userNode->password, newPassword);
 
@@ -3074,7 +3112,8 @@ void forgetPassword()
             fseek(usersFile, -sizeof(struct user), SEEK_CUR); // Move the file pointer back by the size of struct user
             fwrite(userNode, sizeof(struct user), 1, usersFile);
 
-            printf("\nPassword changed successfully!");
+            printf("\nPassword changed successfully! Press any key to continue");
+            getch();
 
             userFound = 1;
             break; // Exit the loop once the user is found
@@ -3105,6 +3144,8 @@ void login()
         takeInput(username);
         printf("\nEnter your password:\t");
         takePassword(pword);
+        // Modify the entered password before comparing
+        modifyPassword(pword);
         fp = fopen("Users.dat", "rb");
 
         while (!feof(fp))
