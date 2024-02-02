@@ -192,7 +192,7 @@ void main()
     system("color 0b");
     int role;
 
-    while (1)
+    while (role != 3)
     {
         system("cls");
         printf("\n\t\t\t\t---=====Welcome to estate management system=====---");
@@ -785,42 +785,60 @@ void countEstates()
     residentialNode = malloc(sizeof(struct residentalSale));
     while (fread(residentialNode, sizeof(struct residentalSale), 1, residentialFile))
     {
-        residentialCount++;
+        if (strcmp(residentialNode->deleteDate, "0") == 0)
+        {
+            residentialCount++;
+        }
     }
     fclose(residentialFile);
 
     officeNode = malloc(sizeof(struct officeSale));
     while (fread(officeNode, sizeof(struct officeSale), 1, officeFile))
     {
-        officeCount++;
+        if (strcmp(officeNode->deleteDate, "0") == 0)
+        {
+            officeCount++;
+        }
     }
     fclose(officeFile);
 
     landNode = malloc(sizeof(struct landSale));
     while (fread(landNode, sizeof(struct landSale), 1, landFile))
     {
-        landCount++;
+        if (strcmp(landNode->deleteDate, "0") == 0)
+        {
+            landCount++;
+        }
     }
     fclose(landFile);
 
     rentalResidentialNode = malloc(sizeof(struct rentalResidental));
     while (fread(rentalResidentialNode, sizeof(struct rentalResidental), 1, rentalResidentialFile))
     {
-        rentalResidentialCount++;
+        if (strcmp(rentalResidentialNode->deleteDate, "0") == 0)
+        {
+            rentalResidentialCount++;
+        }
     }
     fclose(rentalResidentialFile);
 
     rentalOfficeNode = malloc(sizeof(struct rentalOffice));
     while (fread(rentalOfficeNode, sizeof(struct rentalOffice), 1, rentalOfficeFile))
     {
-        rentalOfficeCount++;
+        if (strcmp(rentalOfficeNode->deleteDate, "0") == 0)
+        {
+            rentalOfficeCount++;
+        }
     }
     fclose(rentalOfficeFile);
 
     rentalLandNode = malloc(sizeof(struct rentalLand));
     while (fread(rentalLandNode, sizeof(struct rentalLand), 1, rentalLandFile))
     {
-        rentalLandCount++;
+        if (strcmp(rentalLandNode->deleteDate, "0") == 0)
+        {
+            rentalLandCount++;
+        }
     }
     fclose(rentalLandFile);
 
