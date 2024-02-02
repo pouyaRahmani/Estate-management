@@ -2487,66 +2487,27 @@ void changeProfile(struct user *currentUser)
         return;
     }
 
-    // Read existing users from the file and build a linked list
-    struct user *head = NULL;
-    struct user *prev = NULL;
-    struct user *current = NULL;
+    struct user temp;
 
-    while (1)
+    // Find the position of the current user in the file
+    while (fread(&temp, sizeof(struct user), 1, fp) == 1)
     {
-        current = malloc(sizeof(struct user));
-        if (current == NULL)
-        {
-            printf("\nERROR: Memory is not allocated!");
-            fclose(fp);
-            return;
-        }
-
-        if (fread(current, sizeof(struct user), 1, fp) != 1)
-        {
-            free(current);
-            break; // Reached end of file
-        }
-
-        if (head == NULL)
-        {
-            head = current;
-        }
-        else
-        {
-            prev->link = current;
-        }
-
-        prev = current;
-    }
-
-    // Find the position of the current user in the linked list
-    struct user *temp = head;
-    while (temp != NULL)
-    {
-        if (strcmp(temp->userID, currentUser->userID) == 0)
+        if (strcmp(temp.userID, currentUser->userID) == 0)
         {
             break; // Found the current user
         }
-        temp = temp->link;
     }
 
-    if (temp == NULL)
+    if (feof(fp))
     {
         printf("\nUser not found in the file!");
         fclose(fp);
-        // Free allocated memory for the linked list
-        while (head != NULL)
-        {
-            temp = head;
-            head = head->link;
-            free(temp);
-        }
         return;
     }
 
     int choice;
     int change = 0;
+
     do
     {
         printf("\n\t\t\t\t---===== Change Profile =====---");
@@ -2564,63 +2525,65 @@ void changeProfile(struct user *currentUser)
         {
         case 1:
             printf("\nEnter your new password:\t");
-            takePassword(temp->password);
-            modifyPassword(temp->password);
-            printf(ss"\nPassword changed successfully. Press any key to continue..."se);
+            takePassword(temp.password);
+            modifyPassword(temp.password);
+            printf(ss "\nPassword changed successfully. Press any key to continue..." se);
             change++;
-            getch();
+            getchar();
             system("color 0b");
             break;
         case 2:
             printf("\nEnter your new email:\t");
-            takeInput(temp->email);
-            printf(ss"\nEmail changed successfully. Press any key to continue..."se);
+            takeInput(temp.email);
+            printf(ss "\nEmail changed successfully. Press any key to continue..." se);
             change++;
-            getch();
+            getchar();
             system("color 0b");
             break;
         case 3:
             printf("\nEnter your new phone number:\t");
-            takeInput(temp->phone);
-            printf(ss"\nPhone number changed successfully. Press any key to continue..."se);
+            takeInput(temp.phone);
+            printf(ss "\nPhone number changed successfully. Press any key to continue..." se);
             change++;
-            getch();
+            getchar();
             system("color 0b");
             break;
         case 4:
             printf("\nEnter your new User ID:\t");
-            takeInput(temp->userID);
-            printf(ss"\nUser ID changed successfully. Press any key to continue..."se);
+            takeInput(temp.userID);
+            printf(ss "\nUser ID changed successfully. Press any key to continue..." se);
             change++;
-            getch();
+            getchar();
             system("color 0b");
             break;
         case 5:
             printf("\nEnter your new full name:\t");
-            takeInput(temp->fullName);
-            printf(ss"\nFull name changed successfully. Press any key to continue..."se);
+            takeInput(temp.fullName);
+            printf(ss "\nFull name changed successfully. Press any key to continue..." se);
             change++;
-            getch();
+            getchar();
             system("color 0b");
             break;
         case 6:
-            if (change)
-            {
-                fseek(fp, (long)(temp - head) * sizeof(struct user), SEEK_SET);
-                fwrite(temp, sizeof(struct user), 1, fp);
-                fclose(fp);
-                return;
-            }
+            // Move the file pointer to the beginning of the user record
+            fseek(fp, -sizeof(struct user), SEEK_CUR);
+
+            // Write the updated user back to the file
+            fwrite(&temp, sizeof(struct user), 1, fp);
+
+            // Close the file
+            fclose(fp);
+            printf(ss "\nProfile changes saved successfully. Press any key to continue..." se);
+            getchar();
+            system("color 0b");
             break;
         default:
-            printf(es"\nInvalid choice! Press any key and try again."ee);
+            printf(es "\nInvalid choice! Press any key and try again." ee);
             getch();
             system("color 0b");
             break;
         }
     } while (choice != 6);
-
-    fclose(fp);
 }
 
 void mainMenu(struct user usr)
