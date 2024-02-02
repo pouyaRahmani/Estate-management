@@ -181,12 +181,18 @@ int isStrongPassword(char *password);
 void signUp();
 void login();
 
+// Make colorfull error and success message
+#define es "\x1b[1;31m"
+#define ee "\x1b[0m"
+#define ss "\x1b[1;32m"
+#define se "\x1b[0m"
+
 void main()
 {
     system("color 0b");
     int role;
 
-    while (1)
+    while (role != 3)
     {
         system("cls");
         printf("\n\t\t\t\t---=====Welcome to estate management system=====---");
@@ -209,8 +215,10 @@ void main()
         case 3:
             ExitProject();
         default:
-            printf("Error, Invalid input! Press any key to continue");
+            printf(es "Error, Invalid input! Press any key to continue" ee);
+            Beep(800, 300);
             getch();
+            system("color 0b");
             break;
         }
     }
@@ -309,7 +317,7 @@ void addResidentalSale(struct user usr)
     fclose(fp);
 
     // Display property features
-    printf("\nResidential property added successfully!");
+    printf(ss "\nResidential property added successfully!");
     printf("\nZone: %s", newEstate->zone);
     printf("\nAddress: %s", newEstate->address);
     printf("\nEstate Type: %s", newEstate->estateType);
@@ -321,8 +329,10 @@ void addResidentalSale(struct user usr)
     printf("\nBedrooms: %s", newEstate->bedrooms);
     printf("\nPrice: %s", newEstate->price);
     printf("\nAdded by User: %s", usr.username);
-    printf("\n\n Press any key to continue...");
+    printf("\n\n Press any key to continue..." se);
     getch();
+    system("cls");
+    system("color 0b");
 }
 
 void addOfficeSale(struct user usr)
@@ -373,7 +383,7 @@ void addOfficeSale(struct user usr)
     fclose(fp);
 
     // Display property features
-    printf("\nOffice property added successfully!");
+    printf(ss "\nOffice property added successfully!");
     printf("\nZone: %s", newEstate->zone);
     printf("\nAddress: %s", newEstate->address);
     printf("\nEstate Type: %s", newEstate->estateType);
@@ -385,8 +395,10 @@ void addOfficeSale(struct user usr)
     printf("\nOffice Rooms: %s", newEstate->officeRooms);
     printf("\nPrice: %s", newEstate->price);
     printf("\nAdded by User: %s", usr.username);
-    printf("\n\n Press any key to continue...");
+    printf("\n\n Press any key to continue..." se);
     getch();
+    system("cls");
+    system("color 0b");
 }
 
 void addLandSale(struct user usr)
@@ -424,15 +436,17 @@ void addLandSale(struct user usr)
     fwrite(newEstate, sizeof(struct landSale), 1, fp);
     fclose(fp);
     // Display property features
-    printf("\nLand property added successfully!");
+    printf(ss "\nLand property added successfully!");
     printf("\nAddress: %s", newEstate->address);
     printf("\nLand type: %s", newEstate->landType);
     printf("\nArea: %s", newEstate->size);
     printf("\nContact Number: %s", newEstate->contactNum);
     printf("\nPrice: %s", newEstate->price);
     printf("\nAdded by User: %s", usr.username);
-    printf("\n\n Press any key to continue...");
+    printf("\n\n Press any key to continue..." se);
     getch();
+    system("cls");
+    system("color 0b");
 }
 
 void addSaleEstate(struct user usr)
@@ -470,7 +484,9 @@ void addSaleEstate(struct user usr)
             break;
         default:
             system("cls");
-            printf("\nInvalid choice! Please try again.\n");
+            printf(es "\nInvalid choice! press any key and try again.\n" ee);
+            getch();
+            system("color 0b");
             break;
         }
     } while (choice != 4);
@@ -526,7 +542,7 @@ void addRentalResidental(struct user usr)
     fclose(fp);
 
     // Display property features
-    printf("\nRental Residential property added successfully!");
+    printf(ss "\nRental Residential property added successfully!");
     printf("\nZone: %s", newEstate->zone);
     printf("\nAddress: %s", newEstate->address);
     printf("\nEstate Type: %s", newEstate->estateType);
@@ -539,8 +555,10 @@ void addRentalResidental(struct user usr)
     printf("\nMortgage: %s", newEstate->mortgage);
     printf("\nRent: %s", newEstate->rent);
     printf("\nAdded by User: %s", usr.username);
-    printf("\n\n Press any key to continue...");
+    printf("\n\n Press any key to continue..." se);
     getch();
+    system("cls");
+    system("color 0b");
 }
 
 void addRentalOffice(struct user usr)
@@ -593,7 +611,7 @@ void addRentalOffice(struct user usr)
     fclose(fp);
 
     // Display property features
-    printf("\nRental office property added successfully!");
+    printf(ss "\nRental office property added successfully!");
     printf("\nZone: %s", newEstate->zone);
     printf("\nAddress: %s", newEstate->address);
     printf("\nEstate Type: %s", newEstate->estateType);
@@ -606,8 +624,10 @@ void addRentalOffice(struct user usr)
     printf("\nMortgage: %s", newEstate->mortgage);
     printf("\nRent: %s", newEstate->rent);
     printf("\nAdded by User: %s", usr.username);
-    printf("\n\n Press any key to continue...");
+    printf("\n\n Press any key to continue..." se);
     getch();
+    system("cls");
+    system("color 0b");
 }
 
 void addRentalLand(struct user usr)
@@ -650,7 +670,7 @@ void addRentalLand(struct user usr)
     fclose(fp);
 
     // Display property features
-    printf("\nLand property added successfully!");
+    printf(ss "\nLand property added successfully!");
     printf("\nAddress: %s", newEstate->address);
     printf("\nLand type: %s", newEstate->landType);
     printf("\nArea: %s", newEstate->size);
@@ -658,8 +678,10 @@ void addRentalLand(struct user usr)
     printf("\nMortgage: %s", newEstate->mortgage);
     printf("\nRent: %s", newEstate->rent);
     printf("\nAdded by User: %s", usr.username);
-    printf("\n\n Press any key to continue...");
+    printf("\n\n Press any key to continue..." se);
     getch();
+    system("cls");
+    system("color 0b");
 }
 
 void addRentalEstate(struct user usr)
@@ -697,7 +719,10 @@ void addRentalEstate(struct user usr)
             break;
         default:
             system("cls");
-            printf("\nInvalid choice! Please try again.\n");
+            printf(es "\nInvalid choice! Press any key and try again.\n" ee);
+            Beep(800, 300);
+            getch();
+            system("color 0b");
             break;
         }
     } while (choice != 4);
@@ -730,7 +755,10 @@ void addEstate(struct user usr)
             break;
         default:
             system("cls");
-            printf("\n\nInvalid choice! Please try again\n");
+            printf(es "\n\nInvalid choice! Press any key and try again\n" ee);
+            Beep(800, 300);
+            getch();
+            system("color 0b");
             break;
         }
     } while (choice != 3);
@@ -757,42 +785,60 @@ void countEstates()
     residentialNode = malloc(sizeof(struct residentalSale));
     while (fread(residentialNode, sizeof(struct residentalSale), 1, residentialFile))
     {
-        residentialCount++;
+        if (strcmp(residentialNode->deleteDate, "0") == 0)
+        {
+            residentialCount++;
+        }
     }
     fclose(residentialFile);
 
     officeNode = malloc(sizeof(struct officeSale));
     while (fread(officeNode, sizeof(struct officeSale), 1, officeFile))
     {
-        officeCount++;
+        if (strcmp(officeNode->deleteDate, "0") == 0)
+        {
+            officeCount++;
+        }
     }
     fclose(officeFile);
 
     landNode = malloc(sizeof(struct landSale));
     while (fread(landNode, sizeof(struct landSale), 1, landFile))
     {
-        landCount++;
+        if (strcmp(landNode->deleteDate, "0") == 0)
+        {
+            landCount++;
+        }
     }
     fclose(landFile);
 
     rentalResidentialNode = malloc(sizeof(struct rentalResidental));
     while (fread(rentalResidentialNode, sizeof(struct rentalResidental), 1, rentalResidentialFile))
     {
-        rentalResidentialCount++;
+        if (strcmp(rentalResidentialNode->deleteDate, "0") == 0)
+        {
+            rentalResidentialCount++;
+        }
     }
     fclose(rentalResidentialFile);
 
     rentalOfficeNode = malloc(sizeof(struct rentalOffice));
     while (fread(rentalOfficeNode, sizeof(struct rentalOffice), 1, rentalOfficeFile))
     {
-        rentalOfficeCount++;
+        if (strcmp(rentalOfficeNode->deleteDate, "0") == 0)
+        {
+            rentalOfficeCount++;
+        }
     }
     fclose(rentalOfficeFile);
 
     rentalLandNode = malloc(sizeof(struct rentalLand));
     while (fread(rentalLandNode, sizeof(struct rentalLand), 1, rentalLandFile))
     {
-        rentalLandCount++;
+        if (strcmp(rentalLandNode->deleteDate, "0") == 0)
+        {
+            rentalLandCount++;
+        }
     }
     fclose(rentalLandFile);
 
@@ -2019,7 +2065,10 @@ void reports(struct user usr)
                 break;
             default:
                 system("cls");
-                printf("\nInvalid choice! Please try again.\n");
+                printf(es "\nInvalid choice! Press any key and try again.\n" ee);
+                Beep(800, 300);
+                getch();
+                system("color 0b");
                 break;
             }
         } while (choice != 11);
@@ -2135,7 +2184,10 @@ void reports(struct user usr)
                 break;
             default:
                 system("cls");
-                printf("\nInvalid choice! Please try again.\n");
+                printf(es "\nInvalid choice! Press any key and try again.\n" ee);
+                Beep(800, 300);
+                getch();
+                system("color 0b");
                 break;
             }
         } while (choice != 14);
@@ -2172,7 +2224,9 @@ void deleteResidentalSale()
             fseek(residentialFile, -sizeof(struct residentalSale), SEEK_CUR);
             fwrite(residentialNode, sizeof(struct residentalSale), 1, residentialFile);
 
-            printf("Estate at address %s deleted successfully.", deleteAddress);
+            printf(ss "Estate at address %s deleted successfully. Press any key to continue..." se, deleteAddress);
+            getch();
+            system("color 0b");
             break; // No need to continue searching
         }
     }
@@ -2210,7 +2264,9 @@ void deleteOfficeSale()
             fseek(officeFile, -sizeof(struct officeSale), SEEK_CUR);
             fwrite(officeSaleNode, sizeof(struct officeSale), 1, officeFile);
 
-            printf("Estate at address %s deleted successfully.", deleteAddress);
+            printf(ss "Estate at address %s deleted successfully. Press any key to continue..." se, deleteAddress);
+            getch();
+            system("color 0b");
             break; // No need to continue searching
         }
     }
@@ -2248,7 +2304,9 @@ void deleteLandSale()
             fseek(landFile, -sizeof(struct landSale), SEEK_CUR);
             fwrite(landSaleNode, sizeof(struct landSale), 1, landFile);
 
-            printf("Estate at address %s deleted successfully.", deleteAddress);
+            printf(ss "Estate at address %s deleted successfully. Press any key to continue..." se, deleteAddress);
+            getch();
+            system("color 0b");
             break; // No need to continue searching
         }
     }
@@ -2286,7 +2344,9 @@ void deleteRentalResidental()
             fseek(rentalResidentialFile, -sizeof(struct rentalResidental), SEEK_CUR);
             fwrite(rentalResidentialNode, sizeof(struct rentalResidental), 1, rentalResidentialFile);
 
-            printf("Estate at address %s deleted successfully.", deleteAddress);
+            printf(ss "Estate at address %s deleted successfully. Press any key to continue..." se, deleteAddress);
+            getch();
+            system("color 0b");
             break; // No need to continue searching
         }
     }
@@ -2324,7 +2384,9 @@ void deleteRentalOffice()
             fseek(rentalOfficeFile, -sizeof(struct rentalOffice), SEEK_CUR);
             fwrite(rentalOfficeNode, sizeof(struct rentalOffice), 1, rentalOfficeFile);
 
-            printf("Estate at address %s deleted successfully.", deleteAddress);
+            printf(ss "Estate at address %s deleted successfully. Press any key to continue..." se, deleteAddress);
+            getch();
+            system("color 0b");
             break; // No need to continue searching
         }
     }
@@ -2362,7 +2424,9 @@ void deleteRentalLand()
             fseek(rentalLandFile, -sizeof(struct rentalLand), SEEK_CUR);
             fwrite(rentalLandNode, sizeof(struct rentalLand), 1, rentalLandFile);
 
-            printf("Estate at address %s deleted successfully.", deleteAddress);
+            printf(ss "Estate at address %s deleted successfully. Press any key to continue..." se, deleteAddress);
+            getch();
+            system("color 0b");
             break; // No need to continue searching
         }
     }
@@ -2422,7 +2486,10 @@ void deleteEstate()
             break;
         default:
             system("cls");
-            printf("\nInvalid choice! Please try again.\n");
+            printf(es "\nInvalid choice! Please try again.\n" ee);
+            Beep(800, 300);
+            getch();
+            system("color 0b");
             break;
         }
     } while (choice != 7);
@@ -2438,70 +2505,29 @@ void changeProfile(struct user *currentUser)
         return;
     }
 
-    // Read existing users from the file and build a linked list
-    struct user *head = NULL;
-    struct user *prev = NULL;
-    struct user *current = NULL;
+    struct user temp;
 
-    while (1)
+    // Find the position of the current user in the file
+    while (fread(&temp, sizeof(struct user), 1, fp) == 1)
     {
-        // This loop will read user info form the file and create current node for them
-        current = malloc(sizeof(struct user));
-        if (current == NULL)
-        {
-            printf("\nERROR: Memory is not allocated!");
-            fclose(fp);
-            return;
-        }
-
-        if (fread(current, sizeof(struct user), 1, fp) != 1)
-        {
-            free(current);
-            break; // Reached end of file
-        }
-
-        if (head == NULL)
-        {
-            head = current;
-        }
-        else
-        {
-            prev->link = current;
-        }
-
-        prev = current;
-    }
-
-    // Find the position of the current user in the linked list
-    struct user *temp = head;
-    while (temp != NULL)
-    {
-        if (strcmp(temp->userID, currentUser->userID) == 0)
+        if (strcmp(temp.userID, currentUser->userID) == 0)
         {
             break; // Found the current user
         }
-        temp = temp->link;
     }
 
-    if (temp == NULL)
+    if (feof(fp))
     {
         printf("\nUser not found in the file!");
         fclose(fp);
-        // Free allocated memory for the linked list
-        while (head != NULL)
-        {
-            temp = head;
-            head = head->link;
-            free(temp);
-        }
         return;
     }
 
     int choice;
     int change = 0;
+
     do
     {
-        // system("cls");
         printf("\n\t\t\t\t---===== Change Profile =====---");
         printf("\n\n1. Change Password");
         printf("\n2. Change Email");
@@ -2516,74 +2542,63 @@ void changeProfile(struct user *currentUser)
         switch (choice)
         {
         case 1:
-            system("cls");
             printf("\nEnter your new password:\t");
-            takePassword(temp->password);
-            modifyPassword(temp->password);
-            printf("\nPassword changed successfully. Go back to the menu and restart the program!");
+            takePassword(temp.password);
+            modifyPassword(temp.password);
+            printf(ss "\nPassword changed successfully. Press any key to continue..." se);
             change++;
+            getchar();
+            system("color 0b");
             break;
         case 2:
-            system("cls");
             printf("\nEnter your new email:\t");
-            takeInput(temp->email);
-            printf("\nEmail changed successfully. Go back to the menu and restart the program!");
+            takeInput(temp.email);
+            printf(ss "\nEmail changed successfully. Press any key to continue..." se);
             change++;
+            getchar();
+            system("color 0b");
             break;
         case 3:
-            system("cls");
             printf("\nEnter your new phone number:\t");
-            takeInput(temp->phone);
-            printf("\nPhone number changed successfully. Go back to the menu and restart the program!");
+            takeInput(temp.phone);
+            printf(ss "\nPhone number changed successfully. Press any key to continue..." se);
             change++;
+            getchar();
+            system("color 0b");
             break;
         case 4:
-            system("cls");
             printf("\nEnter your new User ID:\t");
-            takeInput(temp->userID);
-            printf("\nUser ID changed successfully. Go back to the menu and restart the program!");
+            takeInput(temp.userID);
+            printf(ss "\nUser ID changed successfully. Press any key to continue..." se);
             change++;
+            getchar();
+            system("color 0b");
             break;
         case 5:
-            system("cls");
             printf("\nEnter your new full name:\t");
-            takeInput(temp->fullName);
-            printf("\nFull name changed successfully. Go back to the menu and restart the program!");
+            takeInput(temp.fullName);
+            printf(ss "\nFull name changed successfully. Press any key to continue..." se);
             change++;
+            getchar();
+            system("color 0b");
             break;
         case 6:
-            // Open the file in write mode
-            if (change)
-            {
-                fp = fopen("Users.dat", "rb+");
-                if (fp == NULL)
-                {
-                    printf("\nError opening the file!");
-                    return;
-                }
+            // Move the file pointer to the beginning of the user record
+            fseek(fp, -sizeof(struct user), SEEK_CUR);
 
-                // Find the position of the current user in the file
-                fseek(fp, (long)(temp - head) * sizeof(struct user), SEEK_SET);
+            // Write the updated user back to the file
+            fwrite(&temp, sizeof(struct user), 1, fp);
 
-                // Write the updated user back to the file
-                fwrite(temp, sizeof(struct user), 1, fp);
-
-                // Close the file
-                fclose(fp);
-
-                // Free allocated memory for the linked list
-                // while (head != NULL)
-                // {
-                //     temp = head;
-                //     head = head->link;
-                //     free(temp);
-                // }
-                return;
-            }
-
+            // Close the file
+            fclose(fp);
+            printf(ss "\nProfile changes saved successfully. Press any key to continue..." se);
+            getchar();
+            system("color 0b");
             break;
         default:
-            printf("\nInvalid choice! Please try again.\n");
+            printf(es "\nInvalid choice! Press any key and try again." ee);
+            getch();
+            system("color 0b");
             break;
         }
     } while (choice != 6);
@@ -2635,8 +2650,10 @@ void mainMenu(struct user usr)
             break;
         default:
             system("cls");
-            printf("\n\nInvalid choice! Please press any key to continue...\n");
+            printf(es "\n\nInvalid choice! Please press any key to continue...\n" ee);
+            Beep(800, 300);
             getch();
+            system("color 0b");
             break;
         }
     } while (choice != 6);
@@ -2647,7 +2664,7 @@ int isValidName(char *name)
     // Check if the name contains only English alphabet characters
     for (int i = 0; i < strlen(name); i++)
     {
-        if (!isalpha(name[i]))
+        if (!isalpha(name[i]) && !isspace(name[i]))
         {
             return 1; // Invalid name
         }
@@ -2909,8 +2926,10 @@ void signUp()
             break;
         }
 
-        printf("\nInvalid name!! Try again");
+        printf(es "\nInvalid name!! Press any key and try again" ee);
         Beep(750, 300);
+        getch();
+        system("color 0b");
     } while (1);
 
     // Checking the Email address
@@ -2926,13 +2945,17 @@ void signUp()
         }
         else if (validEmail == 1)
         {
-            printf("Invalid Email!! Try again");
+            printf(es "Invalid Email!! Try again" ee);
             Beep(750, 300);
+            getch();
+            system("color 0b");
         }
         else
         {
-            printf("\nEmail is already taken. Try again");
+            printf(es "\nEmail is already taken. Try again" ee);
             Beep(750, 300);
+            getch();
+            system("color 0b");
         }
 
     } while (1);
@@ -2949,13 +2972,17 @@ void signUp()
         }
         else if (validNum == 1)
         {
-            printf("Invalid Phone number!! Try again");
+            printf(es "Invalid Phone number!! Try again" ee);
             Beep(750, 300);
+            getch();
+            system("color 0b");
         }
         else
         {
-            printf("\nPhone number is already taken. Try again");
+            printf(es "\nPhone number is already taken. Try again" ee);
             Beep(750, 300);
+            getch();
+            system("color 0b");
         }
     } while (1);
 
@@ -2970,13 +2997,17 @@ void signUp()
         }
         else if (validID == 1)
         {
-            printf("Invalid national code!! Try again");
+            printf(es "Invalid national code!! Try again" ee);
             Beep(750, 300);
+            getch();
+            system("color 0b");
         }
         else
         {
-            printf("\nnational code is already taken. Try again");
+            printf(es "\nnational code is already taken. Try again" ee);
             Beep(750, 300);
+            getch();
+            system("color 0b");
         }
     } while (1);
 
@@ -2991,8 +3022,10 @@ void signUp()
             break;
         }
 
-        printf("\nUsername is already taken. Please choose another one.");
+        printf(es "\nUsername is already taken. Please choose another one." ee);
         Beep(750, 300);
+        getch();
+        system("color 0b");
     } while (1);
 
     do
@@ -3011,13 +3044,17 @@ void signUp()
             }
             else if (strongPass == 1)
             {
-                printf("\nPassword most be at least 8 character and included upper and lower cases!! Try again");
+                printf(es "\nPassword most be at least 8 character and included upper and lower cases!! Try again" ee);
                 Beep(750, 300);
+                getch();
+                system("color 0b");
             }
             else
             {
-                printf("\nPassword must include special character. Try again");
+                printf(es "\nPassword must include special character. Try again" ee);
                 Beep(750, 300);
+                getch();
+                system("color 0b");
             }
         } while (1);
 
@@ -3030,12 +3067,16 @@ void signUp()
         // Compare two passwords
         if (strcmp(userNode->password, password2))
         {
-            printf("\nYour passwords didn't match. Please try again!");
+            printf(es "\nYour passwords didn't match. Please try again!" ee);
             Beep(750, 300);
+            getch();
+            system("color 0b");
         }
     } while (strcmp(userNode->password, password2));
 
-    printf("\nYour password matched");
+    printf(ss "\nYour password matched, Press any key to continue..." se);
+    getch();
+    system("color 0b");
 
     fp = fopen("Users.dat", "ab");
     if (fp == NULL)
@@ -3052,8 +3093,9 @@ void signUp()
     fwrite(userNode, sizeof(struct user), 1, fp);
     fclose(fp);
 
-    printf("\n\nUser registration was successful. Press any key to continue...");
+    printf(ss "\n\nUser registration was successful. Press any key to continue..." se);
     getch();
+    system("color 0b");
 }
 
 void forgetPassword()
@@ -3113,8 +3155,9 @@ void forgetPassword()
             fseek(usersFile, -sizeof(struct user), SEEK_CUR); // Move the file pointer back by the size of struct user
             fwrite(userNode, sizeof(struct user), 1, usersFile);
 
-            printf("\nPassword changed successfully! Press any key to continue");
+            printf(ss "\nPassword changed successfully! Press any key to continue" se);
             getch();
+            system("color 0b");
 
             userFound = 1;
             break; // Exit the loop once the user is found
@@ -3123,8 +3166,9 @@ void forgetPassword()
 
     if (!userFound)
     {
-        printf("\nUser not found or incorrect details provided. press any key to continue");
+        printf(es "\nUser not found or incorrect details provided. press any key to continue" ee);
         getch();
+        system("color 0b");
     }
 
     fclose(usersFile);
@@ -3205,8 +3249,10 @@ void login()
         if (!userFound)
         {
             count++;
-            printf("\n\nInvalid username or password!! Please try again.");
+            printf(es "\n\nInvalid username or password!! Please try again." ee);
             Beep(800, 300);
+            getch();
+            system("color 0b");
         }
 
         if (count == 2)
@@ -3231,9 +3277,10 @@ void login()
                     continue;
                     break;
                 default:
-                    printf("\n\nInvalid choice, press any key and try again...\n");
+                    printf(es "\n\nInvalid choice, press any key and try again...\n" ee);
                     Beep(800, 300);
                     getch();
+                    system("color 0b");
                     break;
                 }
             } while (choice != 2);
