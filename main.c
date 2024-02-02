@@ -209,7 +209,8 @@ void main()
         case 3:
             ExitProject();
         default:
-            printf("Error, Invalid input! try again");
+            printf("Error, Invalid input! Press any key to continue");
+            getch();
             break;
         }
     }
@@ -3122,7 +3123,8 @@ void forgetPassword()
 
     if (!userFound)
     {
-        printf("\nUser not found or incorrect details provided.");
+        printf("\nUser not found or incorrect details provided. press any key to continue");
+        getch();
     }
 
     fclose(usersFile);
