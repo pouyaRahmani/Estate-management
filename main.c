@@ -145,14 +145,7 @@ void listEstatesByFloor(const char *floorNum);
 void lastActive();
 void modifyPassword(char password[50]);
 
-struct user *swap(struct user *usr1, struct user *usr2)
-{
-    struct user *temp = usr2->link;
-    usr2->link = usr1;
-    usr1->link = temp;
-
-    return usr2;
-}
+struct user *swap(struct user *usr1, struct user *usr2);
 
 // Declare functions prototypes
 void bubbleSort(struct user **start, int num);
@@ -3299,4 +3292,13 @@ void login()
         }
         fclose(fp);
     } while (!userFound);
+}
+
+struct user *swap(struct user *usr1, struct user *usr2)
+{
+    struct user *temp = usr2->link;
+    usr2->link = usr1;
+    usr1->link = temp;
+
+    return usr2;
 }
